@@ -1,0 +1,54 @@
+body {
+  margin:0;
+  background:black;
+  font-family:sans-serif;
+  overflow:hidden;
+}
+.container {
+  height:100vh;
+  overflow-y:scroll;
+  scroll-snap-type:y mandatory;
+}
+.video-box {
+  height:100vh;
+  position:relative;
+  scroll-snap-align:start;
+}
+iframe {
+  width:100%;
+  height:100%;
+  border:none;
+}
+.overlay {
+  position:absolute;
+  bottom:80px;
+  left:10px;
+  color:white;
+}
+.actions {
+  position:absolute;
+  right:10px;
+  bottom:100px;
+  color:white;
+  text-align:center;
+}
+.actions div {
+  margin:15px 0;
+  cursor:pointer;
+  font-size:18px;
+}
+.topbar {
+  position:fixed;
+  top:0;
+  width:100%;
+  display:flex;
+  overflow-x:auto;
+  background:rgba(0,0,0,0.6);
+}
+.topbar button {
+  color:white;
+  background:none;
+  border:none;
+  padding:10px;
+  cursor:pointer;
+}
