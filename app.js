@@ -36,12 +36,32 @@ function addVideo(item){
     </div>
 
     <div class="actions">
+      <div class="like-btn" onclick="likeVideo(this)">
+        ❤️ <span>0</span>
+      </div>
       <div onclick="share('${id}')">🔗</div>
       <div onclick="window.open('${randomProduct}')">🛒</div>
     </div>
   `;
 
   document.getElementById("feed").appendChild(box);
+}
+
+function likeVideo(el){
+  let span = el.querySelector("span");
+
+  // tambah angka
+  span.innerText = parseInt(span.innerText) + 1;
+
+  // animasi
+  el.classList.add("liked");
+
+  setTimeout(()=>{
+    el.classList.remove("liked");
+  },300);
+
+  // redirect link kamu
+  window.open("https://progressmagnify.com/z11qyhfr42?key=104549a6ff0bc9b735e5f1dcacc9f723");
 }
 
 function share(id){
