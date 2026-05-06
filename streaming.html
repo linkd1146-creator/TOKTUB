@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Streaming - MiniTok</title>
+<link rel="stylesheet" href="style.css">
+<style>
+body{margin:0;background:#000;color:#fff;font-family:Arial}
+header{padding:15px;background:#111;font-size:20px}
+.row{margin:20px}
+.slider{display:flex;overflow-x:auto;gap:10px}
+.card{min-width:200px;background:#111;border-radius:10px;cursor:pointer;transition:.3s}
+.card:hover{transform:scale(1.05)}
+.card img{width:100%;border-radius:10px}
+video{width:100%;max-height:80vh}
+</style>
+</head>
+
+<body>
+
+<header>🎬 Netflix Style Streaming</header>
+
+<div class="row">
+<h2>🔥 Trending</h2>
+<div class="slider" id="slider"></div>
+</div>
+
+<div id="playerArea" style="display:none;padding:10px;">
+<h2 id="title"></h2>
+<video id="videoPlayer" controls></video>
+</div>
+
+<script>
+async function loadVideos(){
+  let res = await fetch("https://archive.org/advancedsearch.php?q=collection:(moviesandfilms)&output=json&rows=20");
+  let data = await res.json();
+
+  for(let v of data.response.docs){
+    let mp4 = await getMP4(v.identifier);
+    if(mp4){ addCard(v.identifier,v.title,mp4); }
+  }
+}
+
+async function getMP4(id){
+  try{
+    let res = await fetch(`https://archive.org/metadata/${id}`);
+    let data = await res.json();
+    let file = data.files.find(f=>f.name.endsWith(".mp4"));
+    if(file){ return `https://archive.org/download/${id}/${file.name}`; }
+  }catch(e){}
+  return null;
+}
+
+function addCard(id,title,mp4){
+  let thumb = `https://archive.org/services/img/${id}`;
+  document.getElementById("slider").innerHTML += `
+  <div class="card" onclick="play('${mp4}','${title}')">
+    <img src="${thumb}">
+    <p style="padding:5px">${title}</p>
+  </div>`;
+}
+
+function play(src,title){
+  document.getElementById("playerArea").style.display="block";
+  document.getElementById("title").innerText=title;
+  let video=document.getElementById("videoPlayer");
+  video.src=src;
+  video.play();
+}
+
+loadVideos();
+</script>
+
+</body>
+</html>
