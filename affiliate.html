@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Affiliate Shopee - MiniTok</title>
+
+<style>
+body{
+  margin:0;
+  font-family:Arial, sans-serif;
+  background:#f5f5f5;
+}
+
+/* HEADER */
+.header{
+  background:#ff5722;
+  padding:15px;
+  color:white;
+  font-size:18px;
+  font-weight:bold;
+  text-align:center;
+  position:sticky;
+  top:0;
+  z-index:10;
+}
+
+/* SEARCH */
+.search-box{
+  padding:10px;
+  background:white;
+}
+
+.search-box input{
+  width:100%;
+  padding:10px;
+  border-radius:25px;
+  border:1px solid #ddd;
+  outline:none;
+  font-size:14px;
+}
+
+/* STORE LIST */
+.container{
+  padding:10px;
+}
+
+.store{
+  background:white;
+  border-radius:15px;
+  padding:12px;
+  margin-bottom:12px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  box-shadow:0 2px 8px rgba(0,0,0,0.05);
+  transition:0.2s;
+}
+
+.store:hover{
+  transform:scale(1.02);
+}
+
+.store-info{
+  display:flex;
+  flex-direction:column;
+}
+
+.store-name{
+  font-weight:bold;
+  font-size:15px;
+}
+
+.store-date{
+  font-size:12px;
+  color:gray;
+  margin-top:4px;
+}
+
+.btn{
+  background:#ff5722;
+  color:white;
+  padding:8px 14px;
+  border-radius:20px;
+  text-decoration:none;
+  font-size:12px;
+  font-weight:bold;
+}
+
+/* FOOTER NAV */
+.bottom-nav{
+  position:fixed;
+  bottom:0;
+  width:100%;
+  background:white;
+  display:flex;
+  justify-content:space-around;
+  padding:10px 0;
+  box-shadow:0 -2px 10px rgba(0,0,0,0.1);
+}
+
+.bottom-nav a{
+  text-decoration:none;
+  color:#555;
+  font-size:12px;
+  text-align:center;
+}
+
+.bottom-nav a.active{
+  color:#ff5722;
+  font-weight:bold;
+}
+
+.spacer{
+  height:70px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">🛍 Shopee Partner Store</div>
+
+<div class="search-box">
+  <input type="text" placeholder="Cari nama toko..." onkeyup="searchStore(this.value)">
+</div>
+
+<div class="container" id="storeList">
+
+<div class="store">
+  <div class="store-info">
+    <div class="store-name">ClevonCare</div>
+    <div class="store-date">Mulai: 2026-01-30</div>
+  </div>
+  <a href="https://s.shopee.co.id/2g7ehs3X4U" target="_blank" class="btn">Kunjungi</a>
+</div>
+
+<div class="store">
+  <div class="store-info">
+    <div class="store-name">PaperLab Studio</div>
+  </div>
+  <a href="https://s.shopee.co.id/2qR4uB2tjX" target="_blank" class="btn">Kunjungi</a>
+</div>
+
+<div class="store">
+  <div class="store-info">
+    <div class="store-name">Doreen Beauty</div>
+  </div>
+  <a href="https://s.shopee.co.id/1BIqv79F7V" target="_blank" class="btn">Kunjungi</a>
+</div>
+
+<div class="store">
+  <div class="store-info">
+    <div class="store-name">Goodshoes4U</div>
+  </div>
+  <a href="https://s.shopee.co.id/qg0WVAVnT" target="_blank" class="btn">Kunjungi</a>
+</div>
+
+</div>
+
+<div class="spacer"></div>
+
+<div class="bottom-nav">
+  <a href="index.html">Home</a>
+  <a href="streaming.html">Streaming</a>
+  <a href="affiliate.html" class="active">Affiliate</a>
+  <a href="promo.html">Promo</a>
+</div>
+
+<script>
+function searchStore(keyword){
+  let stores = document.querySelectorAll(".store");
+  keyword = keyword.toLowerCase();
+
+  stores.forEach(store=>{
+    let name = store.innerText.toLowerCase();
+    if(name.includes(keyword)){
+      store.style.display="flex";
+    } else {
+      store.style.display="none";
+    }
+  });
+}
+</script>
+
+</body>
+</html>
