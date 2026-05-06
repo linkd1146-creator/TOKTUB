@@ -1,4 +1,4 @@
-const API_KEY = "ISI_API_KEY_KAMU";
+const API_KEY = "AIzaSyDrOlaKeTgOo9DWw01IzdgDgENHJaX2_DI";
 let nextPageToken = "";
 let currentQuery = "trending shorts";
 let isLoading = false;
