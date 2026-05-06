@@ -60,7 +60,7 @@ function shareSite(){
 }
 
 function openCart(){
-  window.open("https://shopee.co.id/");
+  window.open("https://collshp.com/l0ver5/");
 }
 
 function setCategory(cat){
