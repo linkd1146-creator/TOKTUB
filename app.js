@@ -56,7 +56,7 @@ function likeRedirect(){
 }
 
 function shareSite(){
-  window.open("https://www.blogger.com/blog/page/edit/preview/8837861336550992748/31801609088010289793"));
+  window.open("https://copilot.microsoft.com/");
 }
 
 function openCart(){
