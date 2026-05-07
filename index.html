@@ -5,6 +5,48 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MiniTok.fun - Video Viral</title>
 <link rel="stylesheet" href="style.css">
+
+<style>
+/* MENU */
+.menu-btn{
+  position:fixed;
+  top:15px;
+  right:15px;
+  font-size:28px;
+  color:white;
+  cursor:pointer;
+  z-index:9999;
+}
+
+.dropdown{
+  position:fixed;
+  top:50px;
+  right:15px;
+  background:#111;
+  display:none;
+  flex-direction:column;
+  border-radius:10px;
+  overflow:hidden;
+  min-width:200px;
+  z-index:9999;
+}
+
+.dropdown a{
+  padding:12px;
+  text-decoration:none;
+  color:white;
+  border-bottom:1px solid #222;
+}
+
+.dropdown a:hover{
+  background:#222;
+}
+
+.show{
+  display:flex;
+}
+</style>
+
 </head>
 
 <body>
@@ -19,7 +61,7 @@
   <a href="affiliate.html">Shopee Partner</a>
   <a href="promo.html">Promo</a>
   <a href="blibli.html">Blibli</a>
-  <a href="donasi.html">Blog</a>
+  <a href="donasi.html">Donasi</a>
   <a href="disclaimer.html">Disclaimer</a>
   <a href="privacy.html">Privacy</a>
   <a href="terms.html">Terms</a>
@@ -37,6 +79,13 @@
 
 <div class="container" id="feed"></div>
 
+<script>
+function toggleMenu(){
+  document.getElementById("dropdown").classList.toggle("show");
+}
+</script>
+
 <script src="app.js"></script>
+
 </body>
-</html> 
+</html>
