@@ -1,41 +1,17 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MiniTok.fun - Video Viral</title>
-<link rel="stylesheet" href="style.css">
-</head>
+<!-- GANTI MENU TITIK TIGA LAMA DENGAN INI -->
 
-<body>
+<!-- ☰ MENU BARIS -->
+<div class="menu-btn" onclick="toggleMenu()">☰</div>
 
-<!-- MENU TITIK TIGA -->
-<div class="menu-btn" onclick="toggleMenu()">⋮</div>
-
-<div class="dropdown" id="dropdown">
-  <a href="blog.html">Blog</a>
-  <a href="about.html">About</a>
-  <a href="streaming.html">Streaming</a>
-  <a href="affiliate.html">Shopee Partner</a>
-  <a href="promo.html">Promo</a>
-  <a href="blibli.html">Blibli</a>
-  <a href="disclaimer.html">Disclaimer</a>
-  <a href="privacy.html">Privacy</a>
-  <a href="terms.html">Terms</a>
+<div class="dropdown" id="menu">
+<a href="blog.html">📰 Blog</a>
+<a href="about.html">👤 About</a>
+<a href="streaming.html">🎬 Streaming</a>
+<a href="affiliate.html">🛍 Shopee</a>
+<a href="blibli.html">🛒 Blibli</a>
+<a href="promo.html">🔥 Promo</a>
+<a href="donasi.html">❤️ Donasi Sosial</a>
+<a href="disclaimer.html">⚠ Disclaimer</a>
+<a href="privacy.html">🔒 Privacy</a>
+<a href="terms.html">📄 Terms</a>
 </div>
-
-<!-- CATEGORY TOPBAR -->
-<div class="topbar">
-  <button onclick="setCategory('trending')">🔥 Tren</button>
-  <button onclick="setCategory('comedy')">😂 Lucu</button>
-  <button onclick="setCategory('anime')">🎌 Anime</button>
-  <button onclick="setCategory('news')">📰 Berita</button>
-  <button onclick="setCategory('sports')">⚽ Sport</button>
-  <button onclick="setCategory('product')">🛒 Produk</button>
-</div>
-
-<div class="container" id="feed"></div>
-
-<script src="app.js"></script>
-</body>
-</html>
