@@ -7,7 +7,7 @@
 
 <style>
 body{
-  font-family:Arial;
+  font-family:Arial, sans-serif;
   margin:0;
   background:#0f172a;
   color:white;
@@ -104,7 +104,7 @@ h2{
 }
 
 .category-section{
-  margin-top:60px;
+  margin-top:80px;
   text-align:center;
 }
 
@@ -119,9 +119,8 @@ h2{
   background:rgba(255,255,255,0.05);
   padding:25px;
   border-radius:18px;
-  transition:all 0.4s ease;
   border:1px solid rgba(255,255,255,0.1);
-  backdrop-filter:blur(8px);
+  transition:all 0.4s ease;
 }
 
 .category-card:hover{
@@ -148,10 +147,6 @@ h2{
   background:#00ccaa;
 }
 
-html{
-  scroll-behavior:smooth;
-}
-
 .qris-img{
   width:220px;
   border-radius:15px;
@@ -160,13 +155,17 @@ html{
 
 .back-home{
   text-align:center;
-  margin-top:40px;
+  margin:50px 0;
 }
 
 .back-home a{
   color:#00ffcc;
   text-decoration:none;
   font-weight:bold;
+}
+
+html{
+  scroll-behavior:smooth;
 }
 </style>
 </head>
@@ -192,98 +191,67 @@ html{
 <div class="card anak">
 <h3>👶 Anak-Anak</h3>
 <p>Target: Rp 10.000.000</p>
-<div class="progress">
-<div class="progress-bar" style="width:45%;"></div>
-</div>
+<div class="progress"><div class="progress-bar" style="width:45%;"></div></div>
 <small>Terkumpul: Rp 4.500.000</small>
-
 <div class="nominal">
 <button>Rp10k</button>
 <button>Rp25k</button>
 <button>Rp50k</button>
 <button>Rp100k</button>
 </div>
-
-<div class="report">
-📌 Digunakan untuk: Seragam sekolah, buku, makanan bergizi
-</div>
+<div class="report">📌 Digunakan untuk: Seragam sekolah, buku, makanan bergizi</div>
 </div>
 
 <div class="card lansia">
 <h3>👵 Lansia</h3>
 <p>Target: Rp 8.000.000</p>
-<div class="progress">
-<div class="progress-bar" style="width:60%;"></div>
-</div>
+<div class="progress"><div class="progress-bar" style="width:60%;"></div></div>
 <small>Terkumpul: Rp 4.800.000</small>
-
 <div class="nominal">
 <button>Rp10k</button>
 <button>Rp25k</button>
 <button>Rp50k</button>
 <button>Rp100k</button>
 </div>
-
-<div class="report">
-📌 Digunakan untuk: Sembako & bantuan kesehatan
-</div>
+<div class="report">📌 Digunakan untuk: Sembako & bantuan kesehatan</div>
 </div>
 
 <div class="card keluarga">
 <h3>🤝 Keluarga Tidak Mampu</h3>
 <p>Target: Rp 12.000.000</p>
-
-<div class="progress">
-<div class="progress-bar" style="width:35%;"></div>
-</div>
-
+<div class="progress"><div class="progress-bar" style="width:35%;"></div></div>
 <small>Terkumpul: Rp 4.200.000</small>
-
 <div class="nominal">
 <button>Rp10k</button>
 <button>Rp25k</button>
 <button>Rp50k</button>
 <button>Rp100k</button>
 </div>
-
-<div class="report">
-📌 Digunakan untuk: Paket sembako & biaya sekolah
-</div>
+<div class="report">📌 Digunakan untuk: Paket sembako & biaya sekolah</div>
 </div>
 
 <div class="card disabilitas">
 <h3>♿ Kebutuhan Khusus</h3>
-
 <p>Target: Rp 7.000.000</p>
-
-<div class="progress">
-<div class="progress-bar" style="width:50%;"></div>
-</div>
-
+<div class="progress"><div class="progress-bar" style="width:50%;"></div></div>
 <small>Terkumpul: Rp 3.500.000</small>
-
 <div class="nominal">
 <button>Rp10k</button>
 <button>Rp25k</button>
 <button>Rp50k</button>
 <button>Rp100k</button>
 </div>
-
-<div class="report">
-📌 Digunakan untuk: Alat bantu & terapi
-</div>
+<div class="report">📌 Digunakan untuk: Alat bantu & terapi</div>
 </div>
 
 </div>
 
 <div class="category-section">
 
-<p>
-🤲 DONASI SOSIAL 🤲
-</p>
+<p>🤲 DONASI SOSIAL 🤲</p>
 
 <p>
-Mari bersama kita berbagi dan membantu sesama.
+Mari bersama kita berbagi dan membantu sesama.  
 Setiap donasi yang Anda berikan sangat berarti dan akan disalurkan untuk kegiatan sosial dan bantuan kemanusiaan.
 </p>
 
@@ -316,44 +284,22 @@ Setiap donasi yang Anda berikan sangat berarti dan akan disalurkan untuk kegiata
 </div>
 
 </div>
-
 </div>
 
-<!-- QRIS -->
 <div id="qris" style="margin-top:80px;text-align:center;">
-
 <h2>💳 Scan QRIS Untuk Donasi</h2>
-
 <p>Gunakan aplikasi e-wallet / mobile banking untuk melakukan pembayaran.</p>
 
-<img src="https://blogger.googleusercontent.com/img/a/AVvXsEijXUbk_XUaTAAeGWRNml1jhdAA5IS9xxmxnYfqkqjSFwufnDEm97t6hq3B1rrfYGPwory30S1qM4Z47JexrjR3j9K9sbmsaVWorCbdimuAQByqlT16s8ZBDuRpjo_kt0VyrmjR_q5Cb4DetF400mtySq7MM-EpZOmbp0RpeQFWSipoV7jZUZMC21Rh6M0"
-class="qris-img">
+<img src="https://blogger.googleusercontent.com/img/a/AVvXsEijXUbk_XUaTAAeGWRNml1jhdAA5IS9xxmxnYfqkqjSFwufnDEm97t6hq3B1rrfYGPwory30S1qM4Z47JexrjR3j9K9sbmsaVWorCbdimuAQByqlT16s8ZBDuRpjo_kt0VyrmjR_q5Cb4DetF400mtySq7MM-EpZOmbp0RpeQFWSipoV7jZUZMC21Rh6M0" class="qris-img">
 
 <p style="margin-top:20px;opacity:0.8;">
 Terima kasih atas kepedulian Anda 🙏
 </p>
 
-<h2>🤲 Mengapa Kami Menggalang Donasi Ini?</h2>
-
-<p>
-Di pelosok desa, masih banyak saudara kita hidup dalam keterbatasan.
-Anak-anak kesulitan sekolah, lansia kekurangan bantuan kesehatan,
-dan keluarga harus bertahan dalam kondisi ekonomi sulit.
-</p>
-
-<h2>🎯 Tujuan Donasi</h2>
-
-<p>
-❤️ Bantuan sembako<br>
-📚 Pendidikan anak-anak<br>
-💊 Bantuan kesehatan<br>
-🤝 Program sosial kemanusiaan
-</p>
-
 <h2>🌿 Sebuah Kebaikan, Sebuah Perubahan</h2>
 
 <p>
-Setiap rupiah yang Anda berikan dapat menjadi harapan baru bagi mereka.
+Setiap rupiah yang Anda berikan dapat menjadi harapan baru bagi mereka.  
 Mari bersama hadirkan kebaikan hingga pelosok negeri 💛
 </p>
 
@@ -367,17 +313,12 @@ Mari bersama hadirkan kebaikan hingga pelosok negeri 💛
 
 <script>
 function filterCategory(cat){
-  var cards=document.querySelectorAll('.card');
-
+  var cards = document.querySelectorAll('.card');
   cards.forEach(function(card){
-    if(cat==='all'){
-      card.style.display='block';
-    }else{
-      if(card.classList.contains(cat)){
-        card.style.display='block';
-      }else{
-        card.style.display='none';
-      }
+    if(cat === 'all'){
+      card.style.display = 'block';
+    } else {
+      card.style.display = card.classList.contains(cat) ? 'block' : 'none';
     }
   });
 }
