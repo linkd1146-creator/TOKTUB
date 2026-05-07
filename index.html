@@ -1,6 +1,110 @@
-<!-- GANTI MENU TITIK TIGA LAMA DENGAN INI -->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MiniTok</title>
 
-<!-- ☰ MENU BARIS -->
+<link rel="stylesheet" href="style.css">
+
+<style>
+body{
+  margin:0;
+  background:black;
+  font-family:Arial;
+  overflow:hidden;
+}
+
+/* FEED */
+.feed{
+  height:100vh;
+  overflow-y:scroll;
+  scroll-snap-type:y mandatory;
+}
+
+.video-box{
+  height:100vh;
+  position:relative;
+  scroll-snap-align:start;
+}
+
+iframe{
+  width:100%;
+  height:100%;
+  border:none;
+}
+
+/* Overlay */
+.overlay{
+  position:absolute;
+  bottom:90px;
+  left:10px;
+  color:white;
+  text-shadow:0 0 5px black;
+  max-width:70%;
+}
+
+/* Action */
+.actions{
+  position:absolute;
+  right:10px;
+  bottom:120px;
+  color:white;
+  font-size:24px;
+  text-align:center;
+}
+
+.actions div{
+  margin:12px 0;
+  cursor:pointer;
+}
+
+/* MENU BUTTON */
+.menu-btn{
+  position:fixed;
+  top:15px;
+  right:15px;
+  font-size:26px;
+  color:white;
+  cursor:pointer;
+  z-index:1000;
+}
+
+/* DROPDOWN */
+.dropdown{
+  position:fixed;
+  top:55px;
+  right:15px;
+  background:white;
+  border-radius:10px;
+  display:none;
+  flex-direction:column;
+  min-width:220px;
+  z-index:1000;
+  box-shadow:0 10px 25px rgba(0,0,0,0.4);
+}
+
+.dropdown a{
+  padding:12px;
+  text-decoration:none;
+  color:black;
+  border-bottom:1px solid #eee;
+  font-size:14px;
+}
+
+.dropdown a:hover{
+  background:#f2f2f2;
+}
+
+.show{
+  display:flex;
+}
+</style>
+</head>
+
+<body>
+
+<!-- ☰ MENU POJOK KANAN -->
 <div class="menu-btn" onclick="toggleMenu()">☰</div>
 
 <div class="dropdown" id="menu">
@@ -15,3 +119,27 @@
 <a href="privacy.html">🔒 Privacy</a>
 <a href="terms.html">📄 Terms</a>
 </div>
+
+<!-- VIDEO FEED -->
+<div class="feed" id="feed"></div>
+
+<script>
+function toggleMenu(){
+  document.getElementById("menu").classList.toggle("show");
+}
+
+/* Tutup menu kalau klik luar */
+document.addEventListener("click", function(e){
+  const menu = document.getElementById("menu");
+  const btn = document.querySelector(".menu-btn");
+  if(!menu.contains(e.target) && !btn.contains(e.target)){
+    menu.classList.remove("show");
+  }
+});
+</script>
+
+<!-- APP.JS UNTUK VIDEO -->
+<script src="app.js"></script>
+
+</body>
+</html>
