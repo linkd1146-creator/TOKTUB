@@ -5,8 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MiniTok</title>
 
-<link rel="stylesheet" href="style.css">
-
 <style>
 body{
   margin:0;
@@ -15,7 +13,7 @@ body{
   overflow:hidden;
 }
 
-/* FEED */
+/* FEED VIDEO */
 .feed{
   height:100vh;
   overflow-y:scroll;
@@ -34,17 +32,17 @@ iframe{
   border:none;
 }
 
-/* Overlay */
+/* Overlay text */
 .overlay{
   position:absolute;
   bottom:90px;
-  left:10px;
+  left:15px;
   color:white;
   text-shadow:0 0 5px black;
   max-width:70%;
 }
 
-/* Action */
+/* Action buttons */
 .actions{
   position:absolute;
   right:10px;
@@ -59,55 +57,59 @@ iframe{
   cursor:pointer;
 }
 
-/* MENU BUTTON */
+/* ☰ MENU BUTTON (POJOK KIRI) */
 .menu-btn{
   position:fixed;
   top:15px;
-  right:15px;
-  font-size:26px;
+  left:15px;
+  font-size:28px;
   color:white;
   cursor:pointer;
-  z-index:1000;
+  z-index:1001;
 }
 
-/* DROPDOWN */
-.dropdown{
+/* PANEL MENU */
+.menu-panel{
   position:fixed;
-  top:55px;
-  right:15px;
-  background:white;
-  border-radius:10px;
-  display:none;
-  flex-direction:column;
-  min-width:220px;
+  top:0;
+  left:-260px;
+  width:250px;
+  height:100%;
+  background:#111;
+  padding-top:60px;
+  transition:0.3s;
   z-index:1000;
-  box-shadow:0 10px 25px rgba(0,0,0,0.4);
+  display:flex;
+  flex-direction:column;
 }
 
-.dropdown a{
-  padding:12px;
+.menu-panel a{
+  padding:15px 20px;
+  color:white;
   text-decoration:none;
-  color:black;
-  border-bottom:1px solid #eee;
+  border-bottom:1px solid #222;
   font-size:14px;
 }
 
-.dropdown a:hover{
-  background:#f2f2f2;
+.menu-panel a:hover{
+  background:#222;
 }
 
-.show{
-  display:flex;
+/* ACTIVE MENU */
+.menu-open{
+  left:0;
 }
 </style>
 </head>
 
 <body>
 
-<!-- ☰ MENU POJOK KANAN -->
+<!-- ☰ BARIS TIGA POJOK KIRI -->
 <div class="menu-btn" onclick="toggleMenu()">☰</div>
 
-<div class="dropdown" id="menu">
+<!-- PANEL MENU -->
+<div class="menu-panel" id="menu">
+
 <a href="blog.html">📰 Blog</a>
 <a href="about.html">👤 About</a>
 <a href="streaming.html">🎬 Streaming</a>
@@ -118,6 +120,7 @@ iframe{
 <a href="disclaimer.html">⚠ Disclaimer</a>
 <a href="privacy.html">🔒 Privacy</a>
 <a href="terms.html">📄 Terms</a>
+
 </div>
 
 <!-- VIDEO FEED -->
@@ -125,20 +128,11 @@ iframe{
 
 <script>
 function toggleMenu(){
-  document.getElementById("menu").classList.toggle("show");
+  document.getElementById("menu").classList.toggle("menu-open");
 }
-
-/* Tutup menu kalau klik luar */
-document.addEventListener("click", function(e){
-  const menu = document.getElementById("menu");
-  const btn = document.querySelector(".menu-btn");
-  if(!menu.contains(e.target) && !btn.contains(e.target)){
-    menu.classList.remove("show");
-  }
-});
 </script>
 
-<!-- APP.JS UNTUK VIDEO -->
+<!-- FILE VIDEO -->
 <script src="app.js"></script>
 
 </body>
