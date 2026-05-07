@@ -56,7 +56,7 @@ function likeRedirect(){
 }
 
 function shareSite(){
-  window.open("https://copilot.microsoft.com/");
+  window.open("https://minitok.fun/");
 }
 
 function openCart(){
