@@ -100,3 +100,43 @@ iframe{
 .show{
   display:block;
 }
+
+/* MENU BARIS */
+.menu-btn{
+  position:fixed;
+  top:10px;
+  right:12px;
+  color:white;
+  font-size:28px;
+  cursor:pointer;
+  z-index:999;
+  background:rgba(0,0,0,0.5);
+  padding:5px 10px;
+  border-radius:8px;
+}
+
+.dropdown{
+  display:none;
+  position:fixed;
+  top:50px;
+  right:10px;
+  background:#111;
+  border-radius:12px;
+  overflow:hidden;
+  z-index:999;
+  min-width:200px;
+  box-shadow:0 4px 20px rgba(0,0,0,0.5);
+}
+
+.dropdown a{
+  display:block;
+  padding:12px;
+  color:white;
+  text-decoration:none;
+  border-bottom:1px solid rgba(255,255,255,0.05);
+  font-size:14px;
+}
+
+.dropdown a:hover{
+  background:#222;
+}
