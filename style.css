@@ -1,131 +1,29 @@
-body{
-  margin:0;
-  background:black;
-  font-family:sans-serif;
-  overflow:hidden;
-  color:white;
-}
+/* ===== MENU BARIS TITIK TIGA ===== */
 
-.container{
-  height:100vh;
-  overflow-y:scroll;
-  scroll-snap-type:y mandatory;
-}
-
-.video-box{
-  height:100vh;
-  position:relative;
-  scroll-snap-align:start;
-}
-
-iframe{
-  width:100%;
-  height:100%;
-  border:none;
-}
-
-.overlay{
-  position:absolute;
-  bottom:80px;
-  left:10px;
-}
-
-.actions{
-  position:absolute;
-  right:10px;
-  bottom:100px;
-  text-align:center;
-}
-
-.actions div{
-  margin:15px 0;
-  font-size:22px;
-  cursor:pointer;
-}
-
-.actions div:last-child{
-  color:yellow;
-}
-
-.topbar{
+.menu-btn{
   position:fixed;
-  top:0;
-  width:100%;
-  display:flex;
-  overflow-x:auto;
+  top:12px;
+  right:15px;
+  color:white;
+  font-size:28px;
+  cursor:pointer;
+  z-index:9999;
   background:rgba(0,0,0,0.6);
-  z-index:10;
-}
-
-.topbar button{
-  color:white;
-  background:none;
-  border:none;
-  padding:10px;
-  cursor:pointer;
-}
-
-/* MENU */
-.menu-btn{
-  position:fixed;
-  top:10px;
-  right:10px;
-  font-size:28px;
-  z-index:20;
-  cursor:pointer;
+  padding:6px 12px;
+  border-radius:10px;
 }
 
 .dropdown{
   display:none;
   position:fixed;
-  top:40px;
-  right:10px;
-  background:#111;
-  padding:10px;
-  border-radius:8px;
-  z-index:20;
-}
-
-.dropdown a{
-  display:block;
-  padding:8px;
-  color:white;
-  text-decoration:none;
-}
-
-.dropdown a:hover{
-  background:#222;
-}
-
-.show{
-  display:block;
-}
-
-/* MENU BARIS */
-.menu-btn{
-  position:fixed;
-  top:10px;
-  right:12px;
-  color:white;
-  font-size:28px;
-  cursor:pointer;
-  z-index:999;
-  background:rgba(0,0,0,0.5);
-  padding:5px 10px;
-  border-radius:8px;
-}
-
-.dropdown{
-  display:none;
-  position:fixed;
-  top:50px;
-  right:10px;
+  top:55px;
+  right:15px;
   background:#111;
   border-radius:12px;
   overflow:hidden;
-  z-index:999;
+  z-index:9999;
   min-width:200px;
-  box-shadow:0 4px 20px rgba(0,0,0,0.5);
+  box-shadow:0 6px 25px rgba(0,0,0,0.6);
 }
 
 .dropdown a{
@@ -133,10 +31,14 @@ iframe{
   padding:12px;
   color:white;
   text-decoration:none;
-  border-bottom:1px solid rgba(255,255,255,0.05);
   font-size:14px;
+  border-bottom:1px solid rgba(255,255,255,0.05);
 }
 
 .dropdown a:hover{
   background:#222;
+}
+
+.dropdown.show{
+  display:block;
 }
