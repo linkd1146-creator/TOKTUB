@@ -56,7 +56,7 @@ function likeRedirect(){
 }
 
 function shareSite(){
-  window.open("https://www.blogger.com/blog/page/edit/preview/8837861336550992748/3180160908801028979");
+  window.open(wa);
 }
 
 function openCart(){
