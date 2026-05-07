@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Donasi Sosial - MiniTok</title>
+
+<style>
+body{
+  font-family:Arial;
+  margin:0;
+  background:#0f172a;
+  color:white;
+}
+
+header{
+  background:#111827;
+  padding:16px;
+  text-align:center;
+  font-size:22px;
+  font-weight:bold;
+  position:sticky;
+  top:0;
+  z-index:99;
+}
+
+.section{
+  max-width:1100px;
+  margin:50px auto;
+  padding:20px;
+}
+
+h2{
+  text-align:center;
+  margin-bottom:30px;
+}
+
+.filter-btn{
+  padding:10px 20px;
+  border-radius:20px;
+  border:none;
+  margin:5px;
+  cursor:pointer;
+  background:#1e293b;
+  color:white;
+  transition:.3s;
+}
+
+.filter-btn:hover{
+  background:#00ffcc;
+  color:#000;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:20px;
+}
+
+.card{
+  background:#1e293b;
+  padding:20px;
+  border-radius:15px;
+  transition:.3s;
+}
+
+.card:hover{
+  transform:translateY(-8px);
+  box-shadow:0 10px 25px rgba(0,0,0,.5);
+}
+
+.progress{
+  background:#0f172a;
+  border-radius:10px;
+  overflow:hidden;
+  height:12px;
+  margin:10px 0;
+}
+
+.progress-bar{
+  height:100%;
+  background:#00ffcc;
+}
+
+.nominal button{
+  margin:5px;
+  padding:6px 12px;
+  border:none;
+  border-radius:15px;
+  cursor:pointer;
+  background:#334155;
+  color:white;
+}
+
+.nominal button:hover{
+  background:#00ffcc;
+  color:black;
+}
+
+.report{
+  font-size:13px;
+  margin-top:10px;
+  opacity:.8;
+}
+
+.category-section{
+  margin-top:60px;
+  text-align:center;
+}
+
+.category-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+  gap:25px;
+  margin-top:35px;
+}
+
+.category-card{
+  background:rgba(255,255,255,0.05);
+  padding:25px;
+  border-radius:18px;
+  transition:all 0.4s ease;
+  border:1px solid rgba(255,255,255,0.1);
+  backdrop-filter:blur(8px);
+}
+
+.category-card:hover{
+  transform:translateY(-10px);
+  box-shadow:0 15px 35px rgba(0,255,204,0.3);
+}
+
+.category-card h3{
+  color:#00ffcc;
+}
+
+.category-card a{
+  display:inline-block;
+  margin-top:18px;
+  padding:10px 22px;
+  background:#00ffcc;
+  color:#000;
+  border-radius:25px;
+  text-decoration:none;
+  font-weight:bold;
+}
+
+.category-card a:hover{
+  background:#00ccaa;
+}
+
+html{
+  scroll-behavior:smooth;
+}
+
+.qris-img{
+  width:220px;
+  border-radius:15px;
+  margin-top:20px;
+}
+
+.back-home{
+  text-align:center;
+  margin-top:40px;
+}
+
+.back-home a{
+  color:#00ffcc;
+  text-decoration:none;
+  font-weight:bold;
+}
+</style>
+</head>
+
+<body>
+
+<header>❤️ Donasi Sosial MiniTok</header>
+
+<div class="section">
+
+<h2>💖 Program Donasi Yayasan</h2>
+
+<div style="text-align:center;">
+<button class="filter-btn" onclick="filterCategory('all')">Semua</button>
+<button class="filter-btn" onclick="filterCategory('anak')">Anak</button>
+<button class="filter-btn" onclick="filterCategory('lansia')">Lansia</button>
+<button class="filter-btn" onclick="filterCategory('keluarga')">Keluarga</button>
+<button class="filter-btn" onclick="filterCategory('disabilitas')">Disabilitas</button>
+</div>
+
+<div class="grid">
+
+<div class="card anak">
+<h3>👶 Anak-Anak</h3>
+<p>Target: Rp 10.000.000</p>
+<div class="progress">
+<div class="progress-bar" style="width:45%;"></div>
+</div>
+<small>Terkumpul: Rp 4.500.000</small>
+
+<div class="nominal">
+<button>Rp10k</button>
+<button>Rp25k</button>
+<button>Rp50k</button>
+<button>Rp100k</button>
+</div>
+
+<div class="report">
+📌 Digunakan untuk: Seragam sekolah, buku, makanan bergizi
+</div>
+</div>
+
+<div class="card lansia">
+<h3>👵 Lansia</h3>
+<p>Target: Rp 8.000.000</p>
+<div class="progress">
+<div class="progress-bar" style="width:60%;"></div>
+</div>
+<small>Terkumpul: Rp 4.800.000</small>
+
+<div class="nominal">
+<button>Rp10k</button>
+<button>Rp25k</button>
+<button>Rp50k</button>
+<button>Rp100k</button>
+</div>
+
+<div class="report">
+📌 Digunakan untuk: Sembako & bantuan kesehatan
+</div>
+</div>
+
+<div class="card keluarga">
+<h3>🤝 Keluarga Tidak Mampu</h3>
+<p>Target: Rp 12.000.000</p>
+
+<div class="progress">
+<div class="progress-bar" style="width:35%;"></div>
+</div>
+
+<small>Terkumpul: Rp 4.200.000</small>
+
+<div class="nominal">
+<button>Rp10k</button>
+<button>Rp25k</button>
+<button>Rp50k</button>
+<button>Rp100k</button>
+</div>
+
+<div class="report">
+📌 Digunakan untuk: Paket sembako & biaya sekolah
+</div>
+</div>
+
+<div class="card disabilitas">
+<h3>♿ Kebutuhan Khusus</h3>
+
+<p>Target: Rp 7.000.000</p>
+
+<div class="progress">
+<div class="progress-bar" style="width:50%;"></div>
+</div>
+
+<small>Terkumpul: Rp 3.500.000</small>
+
+<div class="nominal">
+<button>Rp10k</button>
+<button>Rp25k</button>
+<button>Rp50k</button>
+<button>Rp100k</button>
+</div>
+
+<div class="report">
+📌 Digunakan untuk: Alat bantu & terapi
+</div>
+</div>
+
+</div>
+
+<div class="category-section">
+
+<p>
+🤲 DONASI SOSIAL 🤲
+</p>
+
+<p>
+Mari bersama kita berbagi dan membantu sesama.
+Setiap donasi yang Anda berikan sangat berarti dan akan disalurkan untuk kegiatan sosial dan bantuan kemanusiaan.
+</p>
+
+<h2>📂 Kategori Donasi</h2>
+
+<div class="category-grid">
+
+<div class="category-card">
+<h3>👶 Anak-Anak</h3>
+<p>Mendukung pendidikan dan kebutuhan dasar anak-anak kurang mampu.</p>
+<a href="#qris">Donasi Sekarang</a>
+</div>
+
+<div class="category-card">
+<h3>👵 Orang Tua / Lansia</h3>
+<p>Membantu kebutuhan kesehatan dan sembako lansia.</p>
+<a href="#qris">Donasi Sekarang</a>
+</div>
+
+<div class="category-card">
+<h3>🤝 Keluarga Tidak Mampu</h3>
+<p>Bantuan sembako dan biaya pendidikan keluarga prasejahtera.</p>
+<a href="#qris">Donasi Sekarang</a>
+</div>
+
+<div class="category-card">
+<h3>♿ Kebutuhan Khusus</h3>
+<p>Dukungan terapi dan alat bantu penyandang disabilitas.</p>
+<a href="#qris">Donasi Sekarang</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- QRIS -->
+<div id="qris" style="margin-top:80px;text-align:center;">
+
+<h2>💳 Scan QRIS Untuk Donasi</h2>
+
+<p>Gunakan aplikasi e-wallet / mobile banking untuk melakukan pembayaran.</p>
+
+<img src="https://blogger.googleusercontent.com/img/a/AVvXsEijXUbk_XUaTAAeGWRNml1jhdAA5IS9xxmxnYfqkqjSFwufnDEm97t6hq3B1rrfYGPwory30S1qM4Z47JexrjR3j9K9sbmsaVWorCbdimuAQByqlT16s8ZBDuRpjo_kt0VyrmjR_q5Cb4DetF400mtySq7MM-EpZOmbp0RpeQFWSipoV7jZUZMC21Rh6M0"
+class="qris-img">
+
+<p style="margin-top:20px;opacity:0.8;">
+Terima kasih atas kepedulian Anda 🙏
+</p>
+
+<h2>🤲 Mengapa Kami Menggalang Donasi Ini?</h2>
+
+<p>
+Di pelosok desa, masih banyak saudara kita hidup dalam keterbatasan.
+Anak-anak kesulitan sekolah, lansia kekurangan bantuan kesehatan,
+dan keluarga harus bertahan dalam kondisi ekonomi sulit.
+</p>
+
+<h2>🎯 Tujuan Donasi</h2>
+
+<p>
+❤️ Bantuan sembako<br>
+📚 Pendidikan anak-anak<br>
+💊 Bantuan kesehatan<br>
+🤝 Program sosial kemanusiaan
+</p>
+
+<h2>🌿 Sebuah Kebaikan, Sebuah Perubahan</h2>
+
+<p>
+Setiap rupiah yang Anda berikan dapat menjadi harapan baru bagi mereka.
+Mari bersama hadirkan kebaikan hingga pelosok negeri 💛
+</p>
+
+</div>
+
+<div class="back-home">
+<a href="index.html">⬅ Kembali ke Beranda</a>
+</div>
+
+</div>
+
+<script>
+function filterCategory(cat){
+  var cards=document.querySelectorAll('.card');
+
+  cards.forEach(function(card){
+    if(cat==='all'){
+      card.style.display='block';
+    }else{
+      if(card.classList.contains(cat)){
+        card.style.display='block';
+      }else{
+        card.style.display='none';
+      }
+    }
+  });
+}
+</script>
+
+</body>
+</html>
