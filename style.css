@@ -100,3 +100,102 @@ iframe{
 .show{
   display:block;
 }
+/* ========================= */
+/*       DONASI PAGE         */
+/* ========================= */
+
+.donasi-page{
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:black;
+  padding:20px;
+  overflow:auto;
+}
+
+.donasi-box{
+  width:100%;
+  max-width:420px;
+  background:#111;
+  padding:30px 25px;
+  border-radius:20px;
+  text-align:center;
+  box-shadow:0 0 25px rgba(255,255,255,0.05);
+}
+
+.donasi-box h2{
+  margin-bottom:10px;
+  font-size:22px;
+}
+
+.donasi-box p{
+  font-size:14px;
+  color:#bbb;
+  line-height:1.6;
+  margin-bottom:20px;
+}
+
+/* QR Image */
+.qr-img{
+  width:200px;
+  margin:15px auto;
+  background:white;
+  padding:10px;
+  border-radius:15px;
+}
+
+/* Nominal Button */
+.nominal-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+  margin:20px 0;
+}
+
+.nominal-grid button{
+  padding:10px;
+  background:#222;
+  border:none;
+  color:white;
+  border-radius:10px;
+  cursor:pointer;
+  transition:0.3s;
+}
+
+.nominal-grid button:hover{
+  background:yellow;
+  color:black;
+  font-weight:bold;
+}
+
+/* Tombol Donasi */
+.donasi-btn{
+  width:100%;
+  padding:14px;
+  background:yellow;
+  color:black;
+  border:none;
+  border-radius:12px;
+  font-weight:bold;
+  cursor:pointer;
+  transition:0.3s;
+}
+
+.donasi-btn:hover{
+  background:#ffd000;
+  transform:scale(1.03);
+}
+
+/* Link kembali */
+.back-home{
+  display:block;
+  margin-top:20px;
+  font-size:13px;
+  color:#888;
+  text-decoration:none;
+}
+
+.back-home:hover{
+  color:white;
+}
