@@ -1,148 +1,148 @@
-/* RESET */
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
+/* ===== BODY & RESET ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-body{
-  background:black;
-  font-family:Arial, sans-serif;
-  color:white;
-  overflow:hidden;
+html, body {
+  height: 100%;
 }
 
-/* CONTAINER VIDEO */
-.container{
-  height:100vh;
-  overflow-y:scroll;
-  scroll-snap-type:y mandatory;
+body {
+  background: black;
+  font-family: Arial, sans-serif;
+  color: white;
+  overflow: hidden;
 }
 
-.video-box{
-  position:relative;
-  height:100vh;
-  scroll-snap-align:start;
+/* ===== TOP CATEGORY BAR ===== */
+.topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  overflow-x: auto;
+  gap: 12px;
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 1000;
 }
 
-/* VIDEO FULL SCREEN */
-.video-box iframe{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  border:none;
+.topbar button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+  white-space: nowrap;
 }
 
-/* TEXT OVERLAY */
-.overlay{
-  position:absolute;
-  bottom:90px;
-  left:15px;
-  width:70%;
+.topbar button:hover {
+  opacity: 0.8;
 }
 
-.overlay h4{
-  font-size:14px;
-  margin-bottom:5px;
+/* ===== SCROLL CONTAINER ===== */
+.container {
+  height: 100vh;
+  background: black;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+  -webkit-overflow-scrolling: touch;
 }
 
-.overlay p{
-  font-size:12px;
-  opacity:0.8;
+.container::-webkit-scrollbar {
+  display: none;
 }
 
-/* SIDE ICONS (LIKE SHARE CART) */
-.side-icons{
-  position:absolute;
-  right:15px;
-  bottom:120px;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:18px;
-  font-size:22px;
+/* ===== VIDEO ITEM ===== */
+.video-box {
+  height: 100vh;
+  scroll-snap-align: start;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: black;
 }
 
-.side-icons div{
-  cursor:pointer;
-  transition:0.2s;
+.video-box iframe {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border: none;
 }
 
-.side-icons div:hover{
-  transform:scale(1.2);
+/* ===== TEXT OVERLAY ===== */
+.overlay {
+  position: absolute;
+  bottom: 100px;
+  left: 15px;
+  font-size: 14px;
+  text-shadow: 0px 0px 6px black;
 }
 
-.side-icons .cart{
-  color:yellow;
+/* ===== ICON SIDEBAR ===== */
+.side-icons {
+  position: absolute;
+  right: 15px;
+  bottom: 130px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  font-size: 24px;
+  z-index: 1000;
 }
 
-/* TOP CATEGORY BAR */
-.topbar{
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  display:flex;
-  overflow-x:auto;
-  background:rgba(0,0,0,0.6);
-  backdrop-filter:blur(10px);
-  z-index:1000;
+.side-icons div {
+  cursor: pointer;
 }
 
-.topbar button{
-  background:none;
-  border:none;
-  color:white;
-  padding:12px 14px;
-  font-size:13px;
-  cursor:pointer;
-  white-space:nowrap;
+/* Yellow cart */
+.side-icons .cart {
+  color: yellow;
 }
 
-.topbar button:hover{
-  color:#ff0050;
+/* ===== MENU TITIK TIGA ===== */
+.menu-btn {
+  position: fixed;
+  top: 15px;
+  right: 15px;
+  font-size: 28px;
+  cursor: pointer;
+  z-index: 2000;
+  background: rgba(0,0,0,0.6);
+  padding: 6px 10px;
+  border-radius: 8px;
 }
 
-/* MENU TITIK TIGA */
-.menu-btn{
-  position:fixed;
-  top:15px;
-  right:15px;
-  font-size:26px;
-  cursor:pointer;
-  z-index:2000;
-  background:rgba(0,0,0,0.6);
-  padding:5px 10px;
-  border-radius:8px;
+.dropdown {
+  position: fixed;
+  top: 55px;
+  right: 15px;
+  background: #111;
+  display: none;
+  flex-direction: column;
+  border-radius: 8px;
+  overflow: hidden;
+  min-width: 200px;
+  z-index: 2000;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.5);
 }
 
-/* DROPDOWN MENU */
-.dropdown{
-  position:fixed;
-  top:55px;
-  right:15px;
-  background:#111;
-  display:none;
-  flex-direction:column;
-  border-radius:10px;
-  overflow:hidden;
-  min-width:200px;
-  z-index:2000;
-  box-shadow:0 5px 20px rgba(0,0,0,0.5);
+.dropdown a {
+  padding: 12px;
+  color: white;
+  text-decoration: none;
+  border-bottom: 1px solid #222;
+  font-size: 14px;
 }
 
-.dropdown a{
-  padding:12px;
-  text-decoration:none;
-  color:white;
-  font-size:14px;
-  border-bottom:1px solid #222;
+.dropdown a:hover {
+  background: #222;
 }
 
-.dropdown a:hover{
-  background:#222;
-}
-
-.show{
-  display:flex;
+.dropdown.show {
+  display: flex;
 }
