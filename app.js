@@ -56,7 +56,7 @@ function likeRedirect(){
 }
 
 function shareSite(){
-  window.open("https://minitok.fun/");
+  window.open("https://omg10.com/4/10980966/");
 }
 
 function openCart(){
