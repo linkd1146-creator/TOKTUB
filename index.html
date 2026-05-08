@@ -1,35 +1,42 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MiniTok</title>
-
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MiniTok.fun - Video Viral</title>
+<link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-  <!-- TOP BAR -->
-  <div class="top-bar">
-    <div class="logo">MiniTok</div>
+<!-- MENU TITIK TIGA -->
+<div class="menu-btn" onclick="toggleMenu()">⋮</div>
 
-    <div class="menu-btn" onclick="toggleMenu()">☰</div>
+<div class="dropdown" id="dropdown">
+  <a href="blog.html">Blog</a>
+  <a href="about.html">About</a>
+  <a href="streaming.html">Streaming</a>
+  <a href="affiliate.html">Shopee Partner</a>
+  <a href="promo.html">Promo</a>
+  <a href="blibli.html">Blibli</a>
+  <a href="donasi.html">Blibli</a>
+  <a href="disclaimer.html">Disclaimer</a>
+  <a href="privacy.html">Privacy</a>
+  <a href="terms.html">Terms</a>
+</div>
 
-    <div class="dropdown" id="dropdown">
-      <div onclick="setCategory('trending')">🔥 Trending</div>
-      <div onclick="setCategory('comedy')">😂 Comedy</div>
-      <div onclick="setCategory('anime')">🎌 Anime</div>
-      <div onclick="setCategory('news')">📰 News</div>
-      <div onclick="setCategory('sports')">⚽ Sports</div>
-      <div onclick="setCategory('product')">🛍 Product</div>
-    </div>
-  </div>
+<!-- CATEGORY TOPBAR -->
+<div class="topbar">
+  <button onclick="setCategory('trending')">🔥 Tren</button>
+  <button onclick="setCategory('comedy')">😂 Lucu</button>
+  <button onclick="setCategory('anime')">🎌 Anime</button>
+  <button onclick="setCategory('news')">📰 Berita</button>
+  <button onclick="setCategory('sports')">⚽ Sport</button>
+  <button onclick="setCategory('product')">🛒 Produk</button>
+</div>
 
-  <!-- VIDEO FEED -->
-  <div class="feed" id="feed"></div>
+<div class="container" id="feed"></div>
 
-  <!-- SCRIPT -->
-  <script src="app.js"></script>
-
+<script src="app.js"></script>
 </body>
 </html>
