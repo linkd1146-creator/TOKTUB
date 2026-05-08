@@ -1,168 +1,35 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MiniTok.fun - Video Viral</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MiniTok</title>
 
-<style>
-
-/* BODY */
-body{
-  margin:0;
-  background:black;
-  font-family:Arial, sans-serif;
-  overflow:hidden;
-  color:white;
-}
-
-/* MENU */
-.menu-btn{
-  position:fixed;
-  top:15px;
-  right:15px;
-  font-size:28px;
-  color:white;
-  cursor:pointer;
-  z-index:10000;
-}
-
-.dropdown{
-  position:fixed;
-  top:55px;
-  right:15px;
-  background:#111;
-  display:none;
-  flex-direction:column;
-  border-radius:10px;
-  overflow:hidden;
-  min-width:200px;
-  z-index:10000;
-}
-
-.dropdown a{
-  padding:12px;
-  text-decoration:none;
-  color:white;
-  border-bottom:1px solid #222;
-}
-
-.dropdown a:hover{
-  background:#222;
-}
-
-.show{
-  display:flex;
-}
-
-/* TOP CATEGORY */
-.topbar{
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  display:flex;
-  justify-content:center;
-  gap:15px;
-  padding:10px;
-  background:rgba(0,0,0,0.6);
-  backdrop-filter:blur(5px);
-  z-index:9999;
-}
-
-.topbar button{
-  background:none;
-  border:none;
-  color:white;
-  font-size:14px;
-  cursor:pointer;
-}
-
-/* FEED */
-.container{
-  height:100vh;
-  overflow-y:scroll;
-  scroll-snap-type:y mandatory;
-}
-
-.video-box{
-  height:100vh;
-  width:100%;
-  position:relative;
-  scroll-snap-align:start;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  background:black;
-}
-
-video{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-}
-
-/* RIGHT ICONS */
-.side-icons{
-  position:absolute;
-  right:10px;
-  bottom:120px;
-  display:flex;
-  flex-direction:column;
-  gap:20px;
-  font-size:22px;
-}
-
-.side-icons div{
-  text-align:center;
-  cursor:pointer;
-}
-
-.cart{
-  color:yellow;
-}
-
-</style>
+  <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
-<!-- MENU -->
-<div class="menu-btn" onclick="toggleMenu()">⋮</div>
+  <!-- TOP BAR -->
+  <div class="top-bar">
+    <div class="logo">MiniTok</div>
 
-<div class="dropdown" id="dropdown">
-  <a href="blog.html">Blog</a>
-  <a href="about.html">About</a>
-  <a href="streaming.html">Streaming</a>
-  <a href="affiliate.html">Shopee Partner</a>
-  <a href="promo.html">Promo</a>
-  <a href="blibli.html">Blibli</a>
-  <a href="donasi.html">Donasi</a>
-  <a href="disclaimer.html">Disclaimer</a>
-  <a href="privacy.html">Privacy</a>
-  <a href="terms.html">Terms</a>
-</div>
+    <div class="menu-btn" onclick="toggleMenu()">☰</div>
 
-<!-- CATEGORY TOPBAR -->
-<div class="topbar">
-  <button onclick="setCategory('trending')">🔥 Tren</button>
-  <button onclick="setCategory('comedy')">😂 Lucu</button>
-  <button onclick="setCategory('anime')">🎌 Anime</button>
-  <button onclick="setCategory('news')">📰 Berita</button>
-  <button onclick="setCategory('sports')">⚽ Sport</button>
-  <button onclick="setCategory('product')">🛒 Produk</button>
-</div>
+    <div class="dropdown" id="dropdown">
+      <div onclick="setCategory('trending')">🔥 Trending</div>
+      <div onclick="setCategory('comedy')">😂 Comedy</div>
+      <div onclick="setCategory('anime')">🎌 Anime</div>
+      <div onclick="setCategory('news')">📰 News</div>
+      <div onclick="setCategory('sports')">⚽ Sports</div>
+      <div onclick="setCategory('product')">🛍 Product</div>
+    </div>
+  </div>
 
-<!-- VIDEO FEED -->
-<div class="container" id="feed"></div>
+  <!-- VIDEO FEED -->
+  <div class="feed" id="feed"></div>
 
-<script>
-function toggleMenu(){
-  document.getElementById("dropdown").classList.toggle("show");
-}
-</script>
-
-<script src="app.js"></script>
+  <!-- SCRIPT -->
+  <script src="app.js"></script>
 
 </body>
 </html>
