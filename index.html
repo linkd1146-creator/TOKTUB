@@ -16,7 +16,7 @@ body{
   color:white;
 }
 
-/* MENU TITIK TIGA */
+/* MENU */
 .menu-btn{
   position:fixed;
   top:15px;
@@ -24,10 +24,9 @@ body{
   font-size:28px;
   color:white;
   cursor:pointer;
-  z-index:9999;
+  z-index:10000;
 }
 
-/* DROPDOWN */
 .dropdown{
   position:fixed;
   top:55px;
@@ -38,7 +37,7 @@ body{
   border-radius:10px;
   overflow:hidden;
   min-width:200px;
-  z-index:9999;
+  z-index:10000;
 }
 
 .dropdown a{
@@ -56,14 +55,36 @@ body{
   display:flex;
 }
 
-/* CONTAINER FEED */
+/* TOP CATEGORY */
+.topbar{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  display:flex;
+  justify-content:center;
+  gap:15px;
+  padding:10px;
+  background:rgba(0,0,0,0.6);
+  backdrop-filter:blur(5px);
+  z-index:9999;
+}
+
+.topbar button{
+  background:none;
+  border:none;
+  color:white;
+  font-size:14px;
+  cursor:pointer;
+}
+
+/* FEED */
 .container{
   height:100vh;
   overflow-y:scroll;
   scroll-snap-type:y mandatory;
 }
 
-/* VIDEO BOX */
 .video-box{
   height:100vh;
   width:100%;
@@ -75,11 +96,30 @@ body{
   background:black;
 }
 
-/* VIDEO STYLE */
-video, iframe{
+video{
   width:100%;
   height:100%;
   object-fit:cover;
+}
+
+/* RIGHT ICONS */
+.side-icons{
+  position:absolute;
+  right:10px;
+  bottom:120px;
+  display:flex;
+  flex-direction:column;
+  gap:20px;
+  font-size:22px;
+}
+
+.side-icons div{
+  text-align:center;
+  cursor:pointer;
+}
+
+.cart{
+  color:yellow;
 }
 
 </style>
@@ -103,7 +143,17 @@ video, iframe{
   <a href="terms.html">Terms</a>
 </div>
 
-<!-- FEED VIDEO -->
+<!-- CATEGORY TOPBAR -->
+<div class="topbar">
+  <button onclick="setCategory('trending')">🔥 Tren</button>
+  <button onclick="setCategory('comedy')">😂 Lucu</button>
+  <button onclick="setCategory('anime')">🎌 Anime</button>
+  <button onclick="setCategory('news')">📰 Berita</button>
+  <button onclick="setCategory('sports')">⚽ Sport</button>
+  <button onclick="setCategory('product')">🛒 Produk</button>
+</div>
+
+<!-- VIDEO FEED -->
 <div class="container" id="feed"></div>
 
 <script>
