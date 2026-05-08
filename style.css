@@ -1,148 +1,162 @@
-/* ===== BODY & RESET ===== */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+/* RESET */
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
 }
 
-html, body {
-  height: 100%;
+html,body{
+  height:100%;
+  background:black;
+  font-family:Arial, sans-serif;
+  color:white;
+  overflow:hidden;
 }
 
-body {
-  background: black;
-  font-family: Arial, sans-serif;
-  color: white;
-  overflow: hidden;
+/* ===== CONTAINER VIDEO ===== */
+.container{
+  height:100vh;
+  overflow-y:scroll;
+  scroll-snap-type:y mandatory;
+}
+
+.container::-webkit-scrollbar{
+  display:none;
+}
+
+/* ===== VIDEO BOX ===== */
+.video-box{
+  height:100vh;
+  width:100%;
+  position:relative;
+  scroll-snap-align:start;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:black;
+}
+
+/* VIDEO FULL */
+.video-box iframe{
+  width:100%;
+  height:100%;
+  border:none;
+  object-fit:cover;
 }
 
 /* ===== TOP CATEGORY BAR ===== */
-.topbar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  display: flex;
-  overflow-x: auto;
-  gap: 12px;
-  padding: 10px;
-  background: rgba(0, 0, 0, 0.6);
-  z-index: 1000;
+.topbar{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  display:flex;
+  justify-content:flex-start;
+  gap:15px;
+  padding:12px 10px;
+  overflow-x:auto;
+  background:linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
+  z-index:1000;
 }
 
-.topbar button {
-  background: none;
-  border: none;
-  color: white;
-  font-size: 14px;
-  cursor: pointer;
-  white-space: nowrap;
+.topbar button{
+  background:none;
+  border:none;
+  color:white;
+  font-size:14px;
+  cursor:pointer;
+  white-space:nowrap;
 }
 
-.topbar button:hover {
-  opacity: 0.8;
+.topbar button:hover{
+  opacity:0.8;
 }
 
-/* ===== SCROLL CONTAINER ===== */
-.container {
-  height: 100vh;
-  background: black;
-  overflow-y: scroll;
-  scroll-snap-type: y mandatory;
-  -webkit-overflow-scrolling: touch;
+/* ===== TEXT DI DALAM VIDEO ===== */
+.overlay{
+  position:absolute;
+  bottom:110px;
+  left:15px;
+  width:70%;
+  z-index:100;
 }
 
-.container::-webkit-scrollbar {
-  display: none;
+.overlay h3{
+  font-size:14px;
+  margin-bottom:5px;
 }
 
-/* ===== VIDEO ITEM ===== */
-.video-box {
-  height: 100vh;
-  scroll-snap-align: start;
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: black;
+.overlay p{
+  font-size:13px;
+  opacity:0.9;
 }
 
-.video-box iframe {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border: none;
+/* ===== ICON ACTIONS ===== */
+.actions{
+  position:absolute;
+  right:15px;
+  bottom:120px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:20px;
+  z-index:100;
 }
 
-/* ===== TEXT OVERLAY ===== */
-.overlay {
-  position: absolute;
-  bottom: 100px;
-  left: 15px;
-  font-size: 14px;
-  text-shadow: 0px 0px 6px black;
+.actions div{
+  font-size:26px;
+  cursor:pointer;
+  transition:0.2s;
 }
 
-/* ===== ICON SIDEBAR ===== */
-.side-icons {
-  position: absolute;
-  right: 15px;
-  bottom: 130px;
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-  font-size: 24px;
-  z-index: 1000;
+.actions div:hover{
+  transform:scale(1.1);
 }
 
-.side-icons div {
-  cursor: pointer;
-}
-
-/* Yellow cart */
-.side-icons .cart {
-  color: yellow;
+/* KERANJANG KUNING */
+.actions div:last-child{
+  color:yellow;
 }
 
 /* ===== MENU TITIK TIGA ===== */
-.menu-btn {
-  position: fixed;
-  top: 15px;
-  right: 15px;
-  font-size: 28px;
-  cursor: pointer;
-  z-index: 2000;
-  background: rgba(0,0,0,0.6);
-  padding: 6px 10px;
-  border-radius: 8px;
+.menu-btn{
+  position:fixed;
+  top:12px;
+  right:12px;
+  font-size:26px;
+  cursor:pointer;
+  z-index:2000;
+  background:rgba(0,0,0,0.5);
+  padding:6px 10px;
+  border-radius:8px;
 }
 
-.dropdown {
-  position: fixed;
-  top: 55px;
-  right: 15px;
-  background: #111;
-  display: none;
-  flex-direction: column;
-  border-radius: 8px;
-  overflow: hidden;
-  min-width: 200px;
-  z-index: 2000;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+.dropdown{
+  position:fixed;
+  top:50px;
+  right:12px;
+  background:#111;
+  display:none;
+  flex-direction:column;
+  border-radius:10px;
+  overflow:hidden;
+  min-width:200px;
+  z-index:2000;
+  box-shadow:0 4px 20px rgba(0,0,0,0.6);
 }
 
-.dropdown a {
-  padding: 12px;
-  color: white;
-  text-decoration: none;
-  border-bottom: 1px solid #222;
-  font-size: 14px;
+.dropdown a{
+  padding:12px;
+  color:white;
+  text-decoration:none;
+  font-size:14px;
+  border-bottom:1px solid rgba(255,255,255,0.05);
 }
 
-.dropdown a:hover {
-  background: #222;
+.dropdown a:hover{
+  background:#222;
 }
 
-.dropdown.show {
-  display: flex;
+.dropdown.show{
+  display:flex;
 }
