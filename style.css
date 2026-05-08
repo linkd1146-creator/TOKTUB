@@ -1,44 +1,148 @@
-/* ===== MENU BARIS TITIK TIGA ===== */
-
-.menu-btn{
-  position:fixed;
-  top:12px;
-  right:15px;
-  color:white;
-  font-size:28px;
-  cursor:pointer;
-  z-index:9999;
-  background:rgba(0,0,0,0.6);
-  padding:6px 12px;
-  border-radius:10px;
+/* RESET */
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
 }
 
+body{
+  background:black;
+  font-family:Arial, sans-serif;
+  color:white;
+  overflow:hidden;
+}
+
+/* CONTAINER VIDEO */
+.container{
+  height:100vh;
+  overflow-y:scroll;
+  scroll-snap-type:y mandatory;
+}
+
+.video-box{
+  position:relative;
+  height:100vh;
+  scroll-snap-align:start;
+}
+
+/* VIDEO FULL SCREEN */
+.video-box iframe{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  border:none;
+}
+
+/* TEXT OVERLAY */
+.overlay{
+  position:absolute;
+  bottom:90px;
+  left:15px;
+  width:70%;
+}
+
+.overlay h4{
+  font-size:14px;
+  margin-bottom:5px;
+}
+
+.overlay p{
+  font-size:12px;
+  opacity:0.8;
+}
+
+/* SIDE ICONS (LIKE SHARE CART) */
+.side-icons{
+  position:absolute;
+  right:15px;
+  bottom:120px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:18px;
+  font-size:22px;
+}
+
+.side-icons div{
+  cursor:pointer;
+  transition:0.2s;
+}
+
+.side-icons div:hover{
+  transform:scale(1.2);
+}
+
+.side-icons .cart{
+  color:yellow;
+}
+
+/* TOP CATEGORY BAR */
+.topbar{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  display:flex;
+  overflow-x:auto;
+  background:rgba(0,0,0,0.6);
+  backdrop-filter:blur(10px);
+  z-index:1000;
+}
+
+.topbar button{
+  background:none;
+  border:none;
+  color:white;
+  padding:12px 14px;
+  font-size:13px;
+  cursor:pointer;
+  white-space:nowrap;
+}
+
+.topbar button:hover{
+  color:#ff0050;
+}
+
+/* MENU TITIK TIGA */
+.menu-btn{
+  position:fixed;
+  top:15px;
+  right:15px;
+  font-size:26px;
+  cursor:pointer;
+  z-index:2000;
+  background:rgba(0,0,0,0.6);
+  padding:5px 10px;
+  border-radius:8px;
+}
+
+/* DROPDOWN MENU */
 .dropdown{
-  display:none;
   position:fixed;
   top:55px;
   right:15px;
   background:#111;
-  border-radius:12px;
+  display:none;
+  flex-direction:column;
+  border-radius:10px;
   overflow:hidden;
-  z-index:9999;
   min-width:200px;
-  box-shadow:0 6px 25px rgba(0,0,0,0.6);
+  z-index:2000;
+  box-shadow:0 5px 20px rgba(0,0,0,0.5);
 }
 
 .dropdown a{
-  display:block;
   padding:12px;
-  color:white;
   text-decoration:none;
+  color:white;
   font-size:14px;
-  border-bottom:1px solid rgba(255,255,255,0.05);
+  border-bottom:1px solid #222;
 }
 
 .dropdown a:hover{
   background:#222;
 }
 
-.dropdown.show{
-  display:block;
+.show{
+  display:flex;
 }
