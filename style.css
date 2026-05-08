@@ -1,154 +1,102 @@
-/* RESET */
-*{
+body{
   margin:0;
-  padding:0;
-  box-sizing:border-box;
-}
-
-html,body{
-  height:100%;
   background:black;
-  font-family:Arial, sans-serif;
-  color:white;
+  font-family:sans-serif;
   overflow:hidden;
+  color:white;
 }
 
-/* ===== CONTAINER ===== */
 .container{
   height:100vh;
   overflow-y:scroll;
   scroll-snap-type:y mandatory;
 }
 
-.container::-webkit-scrollbar{
-  display:none;
-}
-
-/* ===== VIDEO FULL ===== */
 .video-box{
-  position:relative;
   height:100vh;
-  width:100%;
+  position:relative;
   scroll-snap-align:start;
-  background:black;
 }
 
-.video-box iframe{
-  position:absolute;
-  top:0;
-  left:0;
+iframe{
   width:100%;
   height:100%;
   border:none;
 }
 
-/* ===== TOP CATEGORY BAR ===== */
-.topbar{
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  display:flex;
-  gap:15px;
-  padding:12px 10px;
-  overflow-x:auto;
-  background:linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
-  z-index:999;
-}
-
-.topbar button{
-  background:none;
-  border:none;
-  color:white;
-  font-size:14px;
-  cursor:pointer;
-  white-space:nowrap;
-}
-
-/* ===== TEXT DALAM VIDEO ===== */
 .overlay{
   position:absolute;
-  bottom:110px;
-  left:15px;
-  width:65%;
-  z-index:10;
+  bottom:80px;
+  left:10px;
 }
 
-.overlay h3{
-  font-size:14px;
-  margin-bottom:5px;
-}
-
-.overlay p{
-  font-size:13px;
-  opacity:0.9;
-}
-
-/* ===== ACTION ICONS ===== */
 .actions{
   position:absolute;
-  right:15px;
-  bottom:120px;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:22px;
-  z-index:10;
+  right:10px;
+  bottom:100px;
+  text-align:center;
 }
 
 .actions div{
-  font-size:26px;
+  margin:15px 0;
+  font-size:22px;
   cursor:pointer;
-  transition:0.2s;
-}
-
-.actions div:hover{
-  transform:scale(1.1);
 }
 
 .actions div:last-child{
   color:yellow;
 }
 
-/* ===== MENU TITIK TIGA ===== */
+.topbar{
+  position:fixed;
+  top:0;
+  width:100%;
+  display:flex;
+  overflow-x:auto;
+  background:rgba(0,0,0,0.6);
+  z-index:10;
+}
+
+.topbar button{
+  color:white;
+  background:none;
+  border:none;
+  padding:10px;
+  cursor:pointer;
+}
+
+/* MENU */
 .menu-btn{
   position:fixed;
-  top:12px;
-  right:12px;
-  font-size:26px;
+  top:10px;
+  right:10px;
+  font-size:28px;
+  z-index:20;
   cursor:pointer;
-  z-index:2000;
-  background:rgba(0,0,0,0.5);
-  padding:6px 10px;
-  border-radius:8px;
 }
 
 .dropdown{
-  position:fixed;
-  top:50px;
-  right:12px;
-  background:#111;
   display:none;
-  flex-direction:column;
-  border-radius:10px;
-  overflow:hidden;
-  min-width:200px;
-  z-index:2000;
-  box-shadow:0 4px 20px rgba(0,0,0,0.6);
+  position:fixed;
+  top:40px;
+  right:10px;
+  background:#111;
+  padding:10px;
+  border-radius:8px;
+  z-index:20;
 }
 
 .dropdown a{
-  padding:12px;
+  display:block;
+  padding:8px;
   color:white;
   text-decoration:none;
-  font-size:14px;
-  border-bottom:1px solid rgba(255,255,255,0.05);
 }
 
 .dropdown a:hover{
   background:#222;
 }
 
-.dropdown.show{
-  display:flex;
+.show{
+  display:block;
 }
