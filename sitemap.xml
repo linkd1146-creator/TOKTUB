@@ -9,16 +9,43 @@
 
   <url>
     <loc>https://minitok.fun/blog.html</loc>
-    <priority>0.80</priority>
+    <lastmod>2026-05-08</lastmod>
+    <priority>0.90</priority>
   </url>
 
   <url>
     <loc>https://minitok.fun/streaming.html</loc>
+    <lastmod>2026-05-08</lastmod>
+    <priority>0.85</priority>
+  </url>
+
+  <url>
+    <loc>https://minitok.fun/affiliate.html</loc>
+    <lastmod>2026-05-08</lastmod>
     <priority>0.80</priority>
   </url>
 
   <url>
+    <loc>https://minitok.fun/promo.html</loc>
+    <lastmod>2026-05-08</lastmod>
+    <priority>0.75</priority>
+  </url>
+
+  <url>
+    <loc>https://minitok.fun/donasi.html</loc>
+    <lastmod>2026-05-08</lastmod>
+    <priority>0.60</priority>
+  </url>
+
+  <url>
     <loc>https://minitok.fun/privacy.html</loc>
+    <lastmod>2026-05-08</lastmod>
+    <priority>0.50</priority>
+  </url>
+
+  <url>
+    <loc>https://minitok.fun/terms.html</loc>
+    <lastmod>2026-05-08</lastmod>
     <priority>0.50</priority>
   </url>
 
