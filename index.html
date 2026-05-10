@@ -12,7 +12,6 @@
 <meta name="author" content="MiniTok.fun">
 <meta name="robots" content="index, follow">
 
-<!-- Open Graph (Untuk share FB / WhatsApp) -->
 <meta property="og:title" content="MiniTok.fun - Viral Videos & AI Tools">
 <meta property="og:description" content="Discover trending videos and AI tools updated daily.">
 <meta property="og:type" content="website">
@@ -20,11 +19,10 @@
 
 <link rel="stylesheet" href="style.css">
 
-<!-- Kadam Verification -->
 <meta name="kadam-verification" content="kadam318201af7e22764d38dfca29a4400f02">
+<meta name="google-site-verification" content="hL_lpXhi9aIp0VqHd7rOXMjyJZlBVDGjZSnaIKMB-xU" />
 
 </head>
-<meta name="google-site-verification" content="hL_lpXhi9aIp0VqHd7rOXMjyJZlBVDGjZSnaIKMB-xU" />
 <body>
 
 <!-- MENU -->
@@ -55,11 +53,89 @@
 
 <div class="container" id="feed"></div>
 
-<!-- Iklan di bawah agar tidak ganggu load -->
-<script src="https://quge5.com/88/tag.min.js"
-        data-zone="237451"
-        async
-        data-cfasync="false"></script>
+<!-- ================= DISPLAY ADS (LOAD BELAKANG) ================= -->
+<script>
+window.addEventListener("load", function(){
+  let s = document.createElement("script");
+  s.src = "https://quge5.com/88/tag.min.js";
+  s.setAttribute("data-zone","237451");
+  s.async = true;
+  s.setAttribute("data-cfasync","false");
+  document.body.appendChild(s);
+});
+</script>
+
+<!-- ================= SAFE POP (1x / 24 JAM) ================= -->
+<script>
+(function(){
+  const POP_URL = "https://your-pop-link.com"; // GANTI LINK
+  const EXPIRE = 24 * 60 * 60 * 1000;
+
+  function canShow(){
+    const last = localStorage.getItem("popTime");
+    if(!last) return true;
+    return (Date.now() - parseInt(last)) > EXPIRE;
+  }
+
+  function showPop(){
+    if(!canShow()) return;
+    localStorage.setItem("popTime", Date.now());
+    window.open(POP_URL, "_blank");
+  }
+
+  let clickCount = 0;
+  document.addEventListener("click", function(){
+    clickCount++;
+    if(clickCount >= 3){
+      showPop();
+    }
+  });
+})();
+</script>
+
+<!-- ================= SAFE PUSH (SETELAH 60 DETIK) ================= -->
+<div id="pushBox" style="
+position:fixed;
+bottom:80px;
+left:50%;
+transform:translateX(-50%);
+background:#111;
+color:#fff;
+padding:15px 20px;
+border-radius:12px;
+display:none;
+z-index:9999;
+box-shadow:0 0 10px rgba(0,0,0,0.5);
+text-align:center;">
+🔥 Get daily viral videos notification  
+<br><br>
+<button onclick="enablePush()" style="
+background:#ff0050;
+color:#fff;
+border:none;
+padding:8px 15px;
+border-radius:8px;
+cursor:pointer;">Enable</button>
+</div>
+
+<script>
+setTimeout(function(){
+  if(!localStorage.getItem("pushAsked")){
+    document.getElementById("pushBox").style.display="block";
+  }
+}, 60000);
+
+function enablePush(){
+  localStorage.setItem("pushAsked","yes");
+  document.getElementById("pushBox").style.display="none";
+
+  // TEMPATKAN SCRIPT PUSH NETWORK DI SINI
+  // contoh:
+  // let s=document.createElement("script");
+  // s.src="https://push-network-script.js";
+  // document.body.appendChild(s);
+}
+</script>
 
 <script src="app.js" defer></script>
 
