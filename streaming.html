@@ -131,6 +131,360 @@ function play(src,title){
 
 loadVideos();
 </script>
+<script async="async" data-cfasync="false" src="https://pl29287856.profitablecpmratenetwork.com/68c1976a6a89247b5122edd8438c60f4/invoke.js"></script>
+<div id="container-68c1976a6a89247b5122edd8438c60f4"></div><!doctype html>
+
+
+
+MiniTok Pro
+
+<style>
+body{margin:0;background:#000;color:#fff;font-family:Arial;overflow:hidden}
+
+/* NAV */
+#nav{
+position:fixed;top:0;width:100%;
+display:flex;justify-content:space-around;
+background:#000;padding:10px;z-index:999;
+}
+#nav button{background:none;border:none;color:#fff}
+
+/* FEED */
+#feed{
+height:100vh;
+overflow-y:scroll;
+scroll-snap-type:y mandatory;
+}
+
+.video{
+height:100vh;
+scroll-snap-align:start;
+position:relative;
+}
+
+video{
+width:100%;
+height:100%;
+object-fit:cover;
+}
+
+/* UI */
+.ui{
+position:absolute;
+right:10px;
+bottom:100px;
+text-align:center;
+}
+.ui div{margin:12px 0;cursor:pointer}
+
+/* overlay */
+.overlay{
+position:absolute;
+bottom:60px;
+left:15px;
+}
+
+/* komentar */
+.commentBox{
+position:absolute;
+bottom:0;
+width:100%;
+background:#111;
+max-height:200px;
+overflow:auto;
+}
+.commentBox input{
+width:100%;
+padding:8px;
+border:none;
+}
+
+/* safelink */
+#adOverlay{
+display:none;
+position:fixed;
+top:0;left:0;
+width:100%;height:100%;
+background:#000;
+color:#fff;
+justify-content:center;
+align-items:center;
+flex-direction:column;
+z-index:9999;
+}
+</style>
+
+
+
+
+<div id="nav">
+<button onclick="login()">Login</button>
+<button onclick="showFeed()">Feed</button>
+<button onclick="showMovies()">Movies</button>
+</div>
+
+<div id="feed"></div>
+
+<!-- IKLAN OVERLAY -->
+<div id="adOverlay">
+<h2>🎯 Sponsor</h2>
+<button onclick="goLink()">Lanjut</button>
+<button onclick="closeAd()">Skip</button>
+</div>
+
+<script type="module">
+
+// ================= FIREBASE =================
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
+import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
+import { getDatabase, ref, set, get, push, onValue } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "APIKEY",
+  authDomain: "PROJECT.firebaseapp.com",
+  databaseURL: "https://PROJECT-default-rtdb.firebaseio.com",
+  projectId: "PROJECT"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getDatabase(app);
+
+let currentUser=null;
+
+// LOGIN
+window.login = async function(){
+  const res = await signInWithPopup(auth,new GoogleAuthProvider());
+  currentUser = res.user;
+  alert("Login: "+currentUser.displayName);
+}
+
+// ================= VIDEO DATA =================
+let videos=[
+"https://media.w3.org/2010/05/sintel/trailer.mp4",
+"https://media.w3.org/2010/05/bunny/trailer.mp4",
+"https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+"https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
+"https://archive.org/download/SampleVideo1280x7205mb/SampleVideo_1280x720_5mb.mp4"
+];
+
+// ================= LOAD =================
+function load(){
+let feed=document.getElementById("feed");
+feed.innerHTML="";
+
+videos.forEach((src,i)=>{
+
+let div=document.createElement("div");
+div.className="video";
+
+div.innerHTML=`
+<video src="${src}" muted loop playsinline data-id="${i}"></video>
+
+<div class="overlay">Video ${i+1}</div>
+
+<div class="ui">
+<div onclick="like(${i})">❤️ <span id="like${i}">0</span></div>
+<div>👁 <span id="view${i}">0</span></div>
+<div onclick="share('${src}')">📤</div>
+<div onclick="goLink()">💰</div>
+</div>
+
+<div class="commentBox">
+<input placeholder="Komentar..." onkeydown="sendComment(event,${i})">
+<div id="list${i}"></div>
+</div>
+`;
+
+feed.appendChild(div);
+});
+
+autoPlay();
+loadRealtime();
+attachAds();
+}
+
+window.onload=load;
+
+// ================= AUTOPLAY =================
+function autoPlay(){
+let vids=document.querySelectorAll("video");
+
+let observer=new IntersectionObserver(entries=>{
+entries.forEach(entry=>{
+let v=entry.target;
+if(entry.isIntersecting){
+v.muted=false;
+v.play();
+addView(v.dataset.id);
+}else{
+v.pause();
+}
+});
+},{threshold:0.7});
+
+vids.forEach(v=>observer.observe(v));
+}
+
+// ================= FIREBASE DATA =================
+async function addView(i){
+let snap=await get(ref(db,'views/'+i));
+let val=snap.val()||0;
+set(ref(db,'views/'+i),val+1);
+}
+
+window.like=async function(i){
+let snap=await get(ref(db,'likes/'+i));
+let val=snap.val()||0;
+set(ref(db,'likes/'+i),val+1);
+}
+
+// ================= KOMENTAR =================
+window.sendComment=function(e,i){
+if(e.key==="Enter"){
+let text=e.target.value;
+if(!text)return;
+
+push(ref(db,'comments/'+i),{
+user: currentUser?currentUser.displayName:"Anon",
+text:text
+});
+e.target.value="";
+}
+}
+
+// realtime komentar
+function loadRealtime(){
+videos.forEach((v,i)=>{
+onValue(ref(db,'comments/'+i),snap=>{
+let data=snap.val();
+let html="";
+for(let k in data){
+html+=`<p><b>${data[k].user}</b>: ${data[k].text}</p>`;
+}
+document.getElementById("list"+i).innerHTML=html;
+});
+});
+}
+
+// ================= IKLAN =================
+function attachAds(){
+document.querySelectorAll("video").forEach(v=>{
+
+// akhir video (short video)
+v.addEventListener("ended",()=>{
+showAd();
+});
+
+// interval film panjang
+setInterval(()=>{
+if(!v.paused){
+showBanner();
+}
+},600000); // 10 menit
+
+});
+}
+
+function showAd(){
+document.getElementById("adOverlay").style.display="flex";
+}
+
+window.closeAd=function(){
+document.getElementById("adOverlay").style.display="none";
+}
+
+function showBanner(){
+let b=document.createElement("div");
+b.innerHTML=`
+<div style="position:fixed;bottom:0;width:100%;background:#111;padding:10px;text-align:center">
+📢 Iklan <button onclick="goLink()">Buka</button>
+</div>`;
+document.body.appendChild(b);
+setTimeout(()=>b.remove(),10000);
+}
+
+// ================= SHARE =================
+window.share=function(url){
+if(navigator.share){
+navigator.share({url:url});
+}else{
+window.open("https://wa.me/?text="+url);
+}
+}
+
+// ================= MONET =================
+window.goLink=function(){
+window.open(https://www.profitablecpmratenetwork.com/i5gzxdgr?key=72e84d2f8c4935bbf89be21a6ea02ff1","_blank");
+}
+
+// ================= NAV =================
+window.showFeed=function(){
+document.getElementById("feed").style.display="block";
+}
+
+window.showMovies=function(){
+alert("Tambahkan halaman film panjang di sini");
+}
+
+</script>
+
+
+</!doctype>
+<script src="https://pl29287857.profitablecpmratenetwork.com/58/99/b5/5899b567ac2ea261ab67feb3818be1fa.js"></script>
+<script src="https://pl29287857.profitablecpmratenetwork.com/58/99/b5/5899b567ac2ea261ab67feb3818be1fa.js"></script>
+
+<script src="https://pl29287859.profitablecpmratenetwork.com/08/b2/1a/08b21a123bbf5ef008334a954682302e.js"></script>
+<script>
+  atOptions = {
+    'key' : '5fa98ed6689ad606e6f2b0a7e1b108ff',
+    'format' : 'iframe',
+    'height' : 250,
+    'width' : 300,
+    'params' : {}
+  };
+</script>
+<script src="https://www.highperformanceformat.com/5fa98ed6689ad606e6f2b0a7e1b108ff/invoke.js"></script>
+<script>
+  atOptions = {
+    'key' : '136f4efb78a3789f57827a8f85f5dc99',
+    'format' : 'iframe',
+    'height' : 600,
+    'width' : 160,
+    'params' : {}
+  };
+</script>
+<script src="https://www.highperformanceformat.com/136f4efb78a3789f57827a8f85f5dc99/invoke.js"></script>
+<script>
+  atOptions = {
+    'key' : '136f4efb78a3789f57827a8f85f5dc99',
+    'format' : 'iframe',
+    'height' : 600,
+    'width' : 160,
+    'params' : {}
+  };
+</script>
+<script src="https://www.highperformanceformat.com/136f4efb78a3789f57827a8f85f5dc99/invoke.js"></script>
+<script>
+  atOptions = {
+    'key' : 'cf4cbfbd805934e44200ff38c897aa17',
+    'format' : 'iframe',
+    'height' : 50,
+    'width' : 320,
+    'params' : {}
+  };
+</script>
+<script src="https://www.highperformanceformat.com/cf4cbfbd805934e44200ff38c897aa17/invoke.js"></script>
+<script>
+  atOptions = {
+    'key' : 'de43e7b7e7d9604b2f5605d045500b22',
+    'format' : 'iframe',
+    'height' : 90,
+    'width' : 728,
+    'params' : {}
+  };
+</script>
+<script src="https://www.highperformanceformat.com/de43e7b7e7d9604b2f5605d045500b22/invoke.js"></script>
 
 </body>
 </html>
