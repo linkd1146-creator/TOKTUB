@@ -52,7 +52,7 @@ function addVideo(item){
 }
 
 function likeRedirect(){
-  window.open("https://progressmagnify.com/z11qyhfr42?key=104549a6ff0bc9b735e5f1dcacc9f723");
+  window.open("https://minitok.fun/donasi.html");
 }
 
 function shareSite(){
