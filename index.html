@@ -22,9 +22,7 @@ body{
   overflow:hidden;
 }
 
-/* ===== TOP BAR LAYOUT SAFE ===== */
-
-/* GEMINITOK AI BAR */
+/* ===== GEMINITOK AI BAR ===== */
 .ai-bar{
   position:fixed;
   top:0;
@@ -52,11 +50,11 @@ body{
   border-radius:6px;
 }
 
-/* MENU 3 DOTS (SAFE RIGHT TOP) */
+/* ===== MENU (PINDAH KE KIRI) ===== */
 .menu-btn{
   position:fixed;
   top:10px;
-  right:10px;
+  left:10px;
   font-size:26px;
   z-index:200;
   cursor:pointer;
@@ -65,12 +63,13 @@ body{
 .dropdown{
   position:fixed;
   top:50px;
-  right:10px;
+  left:10px;
   background:#111;
   padding:10px;
   border-radius:10px;
   display:none;
   z-index:199;
+  width:160px;
 }
 
 .dropdown a{
@@ -78,9 +77,10 @@ body{
   color:white;
   text-decoration:none;
   margin:6px 0;
+  font-size:13px;
 }
 
-/* CATEGORY BAR (NOT OVERLAP AI + MENU) */
+/* ===== CATEGORY BAR ===== */
 .topbar{
   position:fixed;
   top:55px;
@@ -103,7 +103,7 @@ body{
   font-size:12px;
 }
 
-/* FEED FROM app.js */
+/* FEED */
 .container{
   margin-top:110px;
   height:100vh;
@@ -127,13 +127,13 @@ body{
 </head>
 <body>
 
-<!-- ===== GEMINITOK AI (NO BENTROK MENU) ===== -->
+<!-- GEMINITOK AI -->
 <div class="ai-bar">
   <input id="aiInput" placeholder="Tanya GeminiTok AI...">
   <button onclick="askAI()">AI</button>
 </div>
 
-<!-- ===== MENU 3 DOTS ===== -->
+<!-- MENU (LEFT) -->
 <div class="menu-btn" onclick="toggleMenu()">⋮</div>
 
 <div class="dropdown" id="dropdown">
@@ -149,7 +149,7 @@ body{
   <a href="terms.html">Terms</a>
 </div>
 
-<!-- CATEGORY BAR -->
+<!-- CATEGORY -->
 <div class="topbar">
   <button>🔥 Trending</button>
   <button>😂 Comedy</button>
@@ -159,26 +159,53 @@ body{
   <button>🛒 Products</button>
 </div>
 
-<!-- VOLUME CONTROL -->
+<!-- VOLUME -->
 <div class="volume">
   🔊 <button onclick="toggleMute()">Mute</button>
 </div>
 
-<!-- ===== MAIN APP FEED (FROM app.js) ===== -->
+<!-- FEED FROM app.js -->
 <div class="container" id="feed"></div>
 
-<!-- ADS SAFE -->
+<!-- ADS (LESS DISTURBING FIX) -->
 <script>
 window.addEventListener("load", function(){
-  let s=document.createElement("script");
-  s.src="https://quge5.com/88/tag.min.js";
-  s.setAttribute("data-zone","237451");
-  s.async=true;
-  document.body.appendChild(s);
+  setTimeout(()=>{
+    let s=document.createElement("script");
+    s.src="https://quge5.com/88/tag.min.js";
+    s.setAttribute("data-zone","237451");
+    s.async=true;
+    document.body.appendChild(s);
+  }, 8000); // delay agar tidak ganggu user
 });
 </script>
 
-<!-- GEMINI TOK AI SCRIPT -->
+<!-- SAFE POP CONTROL (REDUCED) -->
+<script>
+(function(){
+  const POP_URL="https://quge5.com/88/tag.min.js";
+  const EXPIRE=24*60*60*1000;
+
+  function canShow(){
+    const last=localStorage.getItem("popTime");
+    if(!last) return true;
+    return (Date.now()-parseInt(last))>EXPIRE;
+  }
+
+  let clicks=0;
+  document.addEventListener("click",function(e){
+    if(e.target.closest("iframe")||e.target.closest("button")||e.target.closest("a")) return;
+
+    clicks++;
+    if(clicks>=5 && canShow()){
+      localStorage.setItem("popTime",Date.now());
+      window.open(POP_URL,"_blank");
+    }
+  });
+})();
+</script>
+
+<!-- GEMINITOK AI FIX RESPONSE -->
 <script>
 const API_KEY="AIzaSyAyl3fLVXYtFfiUJZ-fglGKDoIpEjQFuV8";
 
@@ -186,17 +213,28 @@ async function askAI(){
   const text=document.getElementById("aiInput").value;
   if(!text) return;
 
-  const res=await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`,
-    {
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({contents:[{parts:[{text}]}]})
-    }
-  );
+  try{
+    const res=await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`,
+      {
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({contents:[{parts:[{text}]}]})
+      }
+    );
 
-  const data=await res.json();
-  alert("GeminiTok AI: "+(data.candidates?.[0]?.content?.parts?.[0]?.text||"No response"));
+    const data=await res.json();
+
+    const reply=
+      data?.candidates?.[0]?.content?.parts?.[0]?.text ||
+      data?.error?.message ||
+      "No response from GeminiTok AI";
+
+    alert("GeminiTok AI:\n"+reply);
+
+  }catch(err){
+    alert("AI error: koneksi gagal");
+  }
 }
 
 function toggleMenu(){
@@ -214,7 +252,7 @@ function toggleMute(){
 }
 </script>
 
-<!-- ===== MAIN VIDEO APP ===== -->
+<!-- MAIN APP (YOUTUBE FROM app.js) -->
 <script src="app.js" defer></script>
 
 </body>
