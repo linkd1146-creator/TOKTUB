@@ -45,6 +45,14 @@ body{margin:0;font-family:Arial;background:black;color:white;overflow:hidden;}
   z-index:199;
 }
 
+.dropdown a{
+  display:block;
+  color:white;
+  text-decoration:none;
+  margin:6px 0;
+}
+
+/* GEMINI BAR */
 .ai-gemini-bar{
   position:fixed;
   top:0;
@@ -72,6 +80,7 @@ body{margin:0;font-family:Arial;background:black;color:white;overflow:hidden;}
   border-radius:6px;
 }
 
+/* CATEGORY */
 .topbar{
   position:fixed;
   top:50px;
@@ -100,6 +109,32 @@ body{margin:0;font-family:Arial;background:black;color:white;overflow:hidden;}
   overflow-y:auto;
 }
 
+/* VIDEO ACTIONS */
+.actions{
+  position:absolute;
+  right:10px;
+  bottom:120px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.btn{
+  background:#2b6cff;
+  border:none;
+  padding:8px;
+  border-radius:8px;
+  color:white;
+  cursor:pointer;
+  font-size:12px;
+}
+
+/* COMMENT ICON BELOW LIKE */
+.comment-box{
+  font-size:18px;
+  cursor:pointer;
+}
+
 .volume-control{
   position:fixed;
   left:10px;
@@ -110,27 +145,46 @@ body{margin:0;font-family:Arial;background:black;color:white;overflow:hidden;}
   z-index:160;
   font-size:12px;
 }
+
+/* FIREBASE PANEL PLACEHOLDER */
+.firebase-panel{
+  position:fixed;
+  bottom:10px;
+  left:10px;
+  background:#111;
+  padding:8px;
+  border-radius:8px;
+  font-size:11px;
+  z-index:200;
+}
 </style>
 
 </head>
 <body>
 
-<!-- GEMINI AI BAR (REBRANDED) -->
+<!-- GEMINI AI -->
 <div class="ai-gemini-bar">
   <input id="aiInput" placeholder="Tanya GeminiTok AI...">
   <button onclick="askAI()">AI</button>
 </div>
 
+<!-- MENU -->
 <div class="menu-btn" onclick="toggleMenu()">⋮</div>
 
 <div class="dropdown" id="dropdown">
-  <a href="blog.html">Blog</a><br>
-  <a href="about.html">About</a><br>
-  <a href="streaming.html">Streaming</a><br>
-  <a href="affiliate.html">Shopee Partner</a><br>
+  <a href="blog.html">Blog</a>
+  <a href="about.html">About</a>
+  <a href="streaming.html">Streaming</a>
+  <a href="affiliate.html">Shopee Partner</a>
   <a href="promo.html">Promo</a>
+  <a href="blibli.html">Blibli</a>
+  <a href="donasi.html">Donasi</a>
+  <a href="disclaimer.html">Disclaimer</a>
+  <a href="privacy.html">Privacy</a>
+  <a href="terms.html">Terms</a>
 </div>
 
+<!-- CATEGORY -->
 <div class="topbar">
   <button>🔥 Trending</button>
   <button>😂 Comedy</button>
@@ -146,12 +200,19 @@ body{margin:0;font-family:Arial;background:black;color:white;overflow:hidden;}
 
 <div class="container" id="feed"></div>
 
+<!-- FIREBASE PLACEHOLDER -->
+<div class="firebase-panel">
+🔥 Firebase: Not Connected<br>
+(Place for Database / Auth)
+</div>
+
 <script>
 function toggleMenu(){
   let d=document.getElementById("dropdown");
-  d.style.display = d.style.display=="block"?"none":"block";
+  d.style.display=d.style.display=="block"?"none":"block";
 }
 
+// GEMINI AI
 const API_KEY = "AIzaSyAyl3fLVXYtFfiUJZ-fglGKDoIpEjQFuV8";
 
 async function askAI(){
@@ -160,17 +221,21 @@ async function askAI(){
   if(!text) return;
   input.value="";
 
-  const res = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`,
-    {
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({contents:[{parts:[{text}]}]})
-    }
-  );
+  const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`,
+  {
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({contents:[{parts:[{text}]}]})
+  });
 
   const data=await res.json();
-  alert("GeminiTok AI: " + (data.candidates?.[0]?.content?.parts?.[0]?.text || "No response"));
+  alert("GeminiTok AI: "+(data.candidates?.[0]?.content?.parts?.[0]?.text||"No response"));
+}
+
+// COMMENT SYSTEM SIMPLE
+function openComment(){
+  const msg=prompt("Tulis komentar:");
+  if(msg) alert("Komentar: "+msg);
 }
 
 let muted=true;
@@ -178,9 +243,20 @@ function toggleMute(){
   muted=!muted;
   document.querySelectorAll("iframe").forEach(f=>{
     let base=f.src.split("?")[0];
-    f.src = base + (muted?"?mute=1":"?mute=0");
+    f.src=base+(muted?"?mute=1":"?mute=0");
   });
 }
+
+// FIREBASE CONFIG PLACEHOLDER
+const firebaseConfig = {
+    apiKey: "AIzaSyBioqM7NYa4FDvQ3zUISGt_YS_b-TThUNk",
+    authDomain: "db-ai-b73e5.firebaseapp.com",
+    projectId: "db-ai-b73e5",
+    storageBucket: "db-ai-b73e5.firebasestorage.app",
+    messagingSenderId: "617783948329",
+    appId: "1:617783948329:web:18d9942e8c3b73858dd838",
+    measurementId: "G-ZZGV797JYQ"
+  };
 </script>
 
 <script src="app.js" defer></script>
