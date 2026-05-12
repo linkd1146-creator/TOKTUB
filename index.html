@@ -7,24 +7,52 @@
 
 <title>MiniTok.fun - GeminiTok AI</title>
 
-<meta name="description" content="Watch viral videos, AI tools reviews, trending content and tech updates daily. Discover the best tools and viral content in one place.">
-<meta name="keywords" content="viral videos, AI tools, trending videos, tech review, video shorts">
+<meta name="description" content="Watch viral videos, AI tools reviews, trending content and tech updates daily.">
+<meta name="keywords" content="viral videos, AI tools, trending videos, shorts">
 <meta name="author" content="MiniTok.fun">
-<meta name="robots" content="index, follow">
-
-<meta property="og:title" content="MiniTok.fun - GeminiTok AI">
-<meta property="og:description" content="Discover trending videos and AI tools updated daily.">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://minitok.fun">
 
 <link rel="stylesheet" href="style.css">
 
-<meta name="google-site-verification" content="hL_lpXhi9aIp0VqHd7rOXMjyJZlBVDGjZSnaIKMB-xU" />
-<script src="https://pl29428701.profitablecpmratenetwork.com/26/fc/a0/26fca02fb6f65fec12b18b6c08b0b264.js"></script>
-
 <style>
-body{margin:0;font-family:Arial;background:black;color:white;overflow:hidden;}
+body{
+  margin:0;
+  font-family:Arial;
+  background:black;
+  color:white;
+  overflow:hidden;
+}
 
+/* ===== TOP BAR LAYOUT SAFE ===== */
+
+/* GEMINITOK AI BAR */
+.ai-bar{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  background:#1a1a1a;
+  display:flex;
+  gap:8px;
+  padding:6px;
+  z-index:100;
+}
+
+.ai-bar input{
+  flex:1;
+  padding:8px;
+  border:none;
+  border-radius:6px;
+}
+
+.ai-bar button{
+  background:#2b6cff;
+  border:none;
+  color:white;
+  padding:8px 10px;
+  border-radius:6px;
+}
+
+/* MENU 3 DOTS (SAFE RIGHT TOP) */
 .menu-btn{
   position:fixed;
   top:10px;
@@ -52,45 +80,17 @@ body{margin:0;font-family:Arial;background:black;color:white;overflow:hidden;}
   margin:6px 0;
 }
 
-/* GEMINI BAR */
-.ai-gemini-bar{
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  background:#1a1a1a;
-  display:flex;
-  gap:8px;
-  padding:6px;
-  z-index:180;
-}
-
-.ai-gemini-bar input{
-  flex:1;
-  padding:8px;
-  border:none;
-  border-radius:6px;
-}
-
-.ai-gemini-bar button{
-  background:#2b6cff;
-  border:none;
-  color:white;
-  padding:8px 10px;
-  border-radius:6px;
-}
-
-/* CATEGORY */
+/* CATEGORY BAR (NOT OVERLAP AI + MENU) */
 .topbar{
   position:fixed;
-  top:50px;
+  top:55px;
   width:100%;
   display:flex;
   overflow-x:auto;
   gap:8px;
   background:rgba(0,0,0,0.9);
   padding:8px;
-  z-index:150;
+  z-index:90;
   white-space:nowrap;
 }
 
@@ -103,72 +103,37 @@ body{margin:0;font-family:Arial;background:black;color:white;overflow:hidden;}
   font-size:12px;
 }
 
+/* FEED FROM app.js */
 .container{
   margin-top:110px;
   height:100vh;
   overflow-y:auto;
 }
 
-/* VIDEO ACTIONS */
-.actions{
-  position:absolute;
-  right:10px;
-  bottom:120px;
-  display:flex;
-  flex-direction:column;
-  gap:10px;
-}
-
-.btn{
-  background:#2b6cff;
-  border:none;
-  padding:8px;
-  border-radius:8px;
-  color:white;
-  cursor:pointer;
-  font-size:12px;
-}
-
-/* COMMENT ICON BELOW LIKE */
-.comment-box{
-  font-size:18px;
-  cursor:pointer;
-}
-
-.volume-control{
+/* VOLUME */
+.volume{
   position:fixed;
   left:10px;
-  top:95px;
+  top:100px;
   background:#111;
   padding:6px;
   border-radius:8px;
-  z-index:160;
+  z-index:150;
   font-size:12px;
 }
 
-/* FIREBASE PANEL PLACEHOLDER */
-.firebase-panel{
-  position:fixed;
-  bottom:10px;
-  left:10px;
-  background:#111;
-  padding:8px;
-  border-radius:8px;
-  font-size:11px;
-  z-index:200;
-}
 </style>
 
 </head>
 <body>
 
-<!-- GEMINI AI -->
-<div class="ai-gemini-bar">
+<!-- ===== GEMINITOK AI (NO BENTROK MENU) ===== -->
+<div class="ai-bar">
   <input id="aiInput" placeholder="Tanya GeminiTok AI...">
   <button onclick="askAI()">AI</button>
 </div>
 
-<!-- MENU -->
+<!-- ===== MENU 3 DOTS ===== -->
 <div class="menu-btn" onclick="toggleMenu()">⋮</div>
 
 <div class="dropdown" id="dropdown">
@@ -184,7 +149,7 @@ body{margin:0;font-family:Arial;background:black;color:white;overflow:hidden;}
   <a href="terms.html">Terms</a>
 </div>
 
-<!-- CATEGORY -->
+<!-- CATEGORY BAR -->
 <div class="topbar">
   <button>🔥 Trending</button>
   <button>😂 Comedy</button>
@@ -194,48 +159,49 @@ body{margin:0;font-family:Arial;background:black;color:white;overflow:hidden;}
   <button>🛒 Products</button>
 </div>
 
-<div class="volume-control">
-  🔊 <button onclick="toggleMute()">Mute/Unmute</button>
+<!-- VOLUME CONTROL -->
+<div class="volume">
+  🔊 <button onclick="toggleMute()">Mute</button>
 </div>
 
+<!-- ===== MAIN APP FEED (FROM app.js) ===== -->
 <div class="container" id="feed"></div>
 
-<!-- FIREBASE PLACEHOLDER -->
-<div class="firebase-panel">
-🔥 Firebase: Not Connected<br>
-(Place for Database / Auth)
-</div>
-
+<!-- ADS SAFE -->
 <script>
-function toggleMenu(){
-  let d=document.getElementById("dropdown");
-  d.style.display=d.style.display=="block"?"none":"block";
-}
+window.addEventListener("load", function(){
+  let s=document.createElement("script");
+  s.src="https://quge5.com/88/tag.min.js";
+  s.setAttribute("data-zone","237451");
+  s.async=true;
+  document.body.appendChild(s);
+});
+</script>
 
-// GEMINI AI
-const API_KEY = "AIzaSyAyl3fLVXYtFfiUJZ-fglGKDoIpEjQFuV8";
+<!-- GEMINI TOK AI SCRIPT -->
+<script>
+const API_KEY="AIzaSyAyl3fLVXYtFfiUJZ-fglGKDoIpEjQFuV8";
 
 async function askAI(){
-  const input=document.getElementById("aiInput");
-  const text=input.value;
+  const text=document.getElementById("aiInput").value;
   if(!text) return;
-  input.value="";
 
-  const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`,
-  {
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({contents:[{parts:[{text}]}]})
-  });
+  const res=await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`,
+    {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({contents:[{parts:[{text}]}]})
+    }
+  );
 
   const data=await res.json();
   alert("GeminiTok AI: "+(data.candidates?.[0]?.content?.parts?.[0]?.text||"No response"));
 }
 
-// COMMENT SYSTEM SIMPLE
-function openComment(){
-  const msg=prompt("Tulis komentar:");
-  if(msg) alert("Komentar: "+msg);
+function toggleMenu(){
+  const d=document.getElementById("dropdown");
+  d.style.display=d.style.display=="block"?"none":"block";
 }
 
 let muted=true;
@@ -246,19 +212,9 @@ function toggleMute(){
     f.src=base+(muted?"?mute=1":"?mute=0");
   });
 }
-
-// FIREBASE CONFIG PLACEHOLDER
-const firebaseConfig = {
-    apiKey: "AIzaSyBioqM7NYa4FDvQ3zUISGt_YS_b-TThUNk",
-    authDomain: "db-ai-b73e5.firebaseapp.com",
-    projectId: "db-ai-b73e5",
-    storageBucket: "db-ai-b73e5.firebasestorage.app",
-    messagingSenderId: "617783948329",
-    appId: "1:617783948329:web:18d9942e8c3b73858dd838",
-    measurementId: "G-ZZGV797JYQ"
-  };
 </script>
 
+<!-- ===== MAIN VIDEO APP ===== -->
 <script src="app.js" defer></script>
 
 </body>
