@@ -1,35 +1,19 @@
-body/* ===== AI BAR FIX POSITION ===== */
+body.container{
+  margin-bottom:90px;
+}
 .ai-bar{
   position:fixed;
-  top:0;
-  left:0;
-  width:100%;
+  bottom:15px;
+  right:15px;
+  width:320px;
   background:#1a1a1a;
   display:flex;
   align-items:center;
   gap:8px;
-  padding:6px;
-  z-index:999;
-  height:56px;
-}
-
-/* ===== CATEGORY BAR DIBERI JARAK ===== */
-.topbar{
-  position:fixed;
-  top:66px;   /* ini jarak dari AI bar */
-  width:100%;
-  display:flex;
-  overflow-x:auto;
-  gap:8px;
-  background:rgba(0,0,0,0.9);
   padding:8px;
-  z-index:90;
-  white-space:nowrap;
-}
-
-/* ===== FEED DIBERI SPACE AGAR TIDAK TERTUTUP ===== */
-.container{
-  margin-top:120px;
+  z-index:999;
+  border-radius:12px;
+  box-shadow:0 0 10px rgba(0,0,0,0.5);
 }
 .container{
   height:100vh;
