@@ -5,195 +5,29 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>MiniTok.fun - Viral Videos & GeminiTok AI</title>
+<title>MiniTok.fun - Viral Videos & AI Tools 2026</title>
+
+<meta name="description" content="Watch viral videos, AI tools reviews, trending content and tech updates daily. Discover the best tools and viral content in one place.">
+<meta name="keywords" content="viral videos, AI tools, trending videos, tech review, video shorts">
+<meta name="author" content="MiniTok.fun">
+<meta name="robots" content="index, follow">
+
+<meta property="og:title" content="MiniTok.fun - Viral Videos & AI Tools">
+<meta property="og:description" content="Discover trending videos and AI tools updated daily.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://minitok.fun">
 
 <link rel="stylesheet" href="style.css">
 
-<style>
+<meta name="google-site-verification" content="hL_lpXhi9aIp0VqHd7rOXMjyJZlBVDGjZSnaIKMB-xU" />
+<script src="https://pl29428701.profitablecpmratenetwork.com/26/fc/a0/26fca02fb6f65fec12b18b6c08b0b264.js"></script>
 
-/* ================= ORIGINAL SAFE BASE ================= */
-body{
-  margin:0;
-  font-family:Arial;
-  background:black;
-  color:white;
-  overflow-y:auto;
-}
-
-/* ================= AI BAR (GEMINITOK) ================= */
-.ai-bar{
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:55px;
-  background:#1a1a1a;
-  display:flex;
-  align-items:center;
-  gap:8px;
-  padding:6px;
-  z-index:9999;
-}
-
-.menu-btn{
-  font-size:26px;
-  cursor:pointer;
-  padding:0 10px;
-  color:white;
-}
-
-.ai-bar input{
-  flex:1;
-  padding:8px;
-  border:none;
-  border-radius:6px;
-}
-
-.ai-bar button{
-  background:#2b6cff;
-  border:none;
-  color:white;
-  padding:8px 10px;
-  border-radius:6px;
-}
-
-/* ================= CATEGORY BAR (SAFE FIX) ================= */
-.topbar{
-  position:fixed;
-  top:60px;
-  left:0;
-  width:100%;
-  display:flex;
-  overflow-x:auto;
-  gap:8px;
-  background:rgba(0,0,0,0.95);
-  padding:8px;
-  z-index:9000;
-  white-space:nowrap;
-}
-
-.topbar button{
-  background:#222;
-  color:white;
-  border:none;
-  padding:6px 10px;
-  border-radius:20px;
-  font-size:12px;
-}
-
-/* ================= VIDEO FEED ================= */
-.container{
-  margin-top:120px;
-  padding-bottom:120px;
-  height:auto;
-  overflow-y:visible;
-}
-
-/* ================= DROPDOWN MENU ================= */
-.dropdown{
-  position:fixed;
-  top:60px;
-  left:10px;
-  background:#111;
-  padding:10px;
-  border-radius:10px;
-  display:none;
-  z-index:10000;
-}
-
-.dropdown a{
-  display:block;
-  color:white;
-  margin:6px 0;
-  text-decoration:none;
-}
-
-/* ================= CHAT PANEL ================= */
-.chat-panel{
-  position:fixed;
-  right:-100%;
-  top:0;
-  width:320px;
-  height:100%;
-  background:#0f0f0f;
-  z-index:99999;
-  transition:0.3s;
-  display:flex;
-  flex-direction:column;
-}
-
-.chat-box{
-  flex:1;
-  overflow-y:auto;
-  padding:10px;
-}
-
-.msg{
-  margin:5px 0;
-  padding:8px;
-  border-radius:8px;
-}
-
-.user{background:#2b6cff;}
-.ai{background:#222;}
-
-.chat-input{
-  display:flex;
-  padding:8px;
-  gap:5px;
-}
-
-.chat-input input{
-  flex:1;
-  padding:8px;
-}
-
-.chat-input button{
-  background:#2b6cff;
-  border:none;
-  color:white;
-  padding:8px;
-}
-
-/* ================= FIX CLICK ================= */
-button, .menu-btn{
-  cursor:pointer;
-}
-
-</style>
 </head>
-
 <body>
 
-<!-- ================= AI BAR (GEMINITOK) ================= -->
-<div class="ai-bar">
+<!-- MENU -->
+<div class="menu-btn" onclick="toggleMenu()">⋮</div>
 
-  <div class="menu-btn" onclick="toggleMenu()">☰</div>
-
-  <input id="aiInput" placeholder="GeminiTok AI...">
-
-  <button onclick="startVoice()">🎤</button>
-
-  <button onclick="askAI()">AI</button>
-
-  <button onclick="toggleChat()">💬</button>
-
-</div>
-
-<!-- ================= CATEGORY BAR ================= -->
-<div class="topbar">
-  <button onclick="setCategory('trending')">🔥 Trending</button>
-  <button onclick="setCategory('comedy')">😂 Comedy</button>
-  <button onclick="setCategory('anime')">🎌 Anime</button>
-  <button onclick="setCategory('news')">📰 News</button>
-  <button onclick="setCategory('sports')">⚽ Sports</button>
-  <button onclick="setCategory('product')">🛒 Products</button>
-</div>
-
-<!-- ================= VIDEO FEED (APP.JS WAJIB JALAN) ================= -->
-<div class="container" id="feed"></div>
-
-<!-- ================= MENU ================= -->
 <div class="dropdown" id="dropdown">
   <a href="blog.html">Blog</a>
   <a href="about.html">About</a>
@@ -207,110 +41,143 @@ button, .menu-btn{
   <a href="terms.html">Terms</a>
 </div>
 
-<!-- ================= CHAT PANEL ================= -->
-<div class="chat-panel" id="chatPanel">
-
-  <div class="chat-box" id="chatBox"></div>
-
-  <div class="chat-input">
-    <input id="chatInput" placeholder="Tulis pesan...">
-    <button onclick="sendChat()">Send</button>
-  </div>
-
+<!-- CATEGORY -->
+<div class="topbar">
+  <button onclick="setCategory('trending')">🔥 Trending</button>
+  <button onclick="setCategory('comedy')">😂 Comedy</button>
+  <button onclick="setCategory('anime')">🎌 Anime</button>
+  <button onclick="setCategory('news')">📰 News</button>
+  <button onclick="setCategory('sports')">⚽ Sports</button>
+  <button onclick="setCategory('product')">🛒 Products</button>
 </div>
 
-<!-- ================= SCRIPT GEMINITOK ================= -->
+<div class="container" id="feed"></div>
+
+<!-- ================= DISPLAY ADS (LOAD BELAKANG) ================= -->
 <script>
-
-let API_KEY = "AIzaSyAyl3fLVXYtFfiUJZ-fglGKDoIpEjQFuV8"; // WAJIB DIISI
-
-function toggleMenu(){
-  const d=document.getElementById("dropdown");
-  d.style.display = (d.style.display==="block")?"none":"block";
-}
-
-/* ===== CHAT PANEL TOGGLE ===== */
-function toggleChat(){
-  const panel=document.getElementById("chatPanel");
-
-  if(panel.style.right==="0px"){
-    panel.style.right="-100%";
-  }else{
-    panel.style.right="0px";
-  }
-}
-
-/* ===== ADD MESSAGE ===== */
-function addMsg(text,type){
-  const box=document.getElementById("chatBox");
-  const div=document.createElement("div");
-  div.className="msg "+type;
-  div.innerText=text;
-  box.appendChild(div);
-  box.scrollTop=box.scrollHeight;
-}
-
-/* ===== GEMINI AI ===== */
-async function sendChat(){
-  const input=document.getElementById("chatInput");
-  const text=input.value;
-  if(!text) return;
-
-  addMsg(text,"user");
-  input.value="";
-
-  try{
-    const res=await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`,
-      {
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({contents:[{parts:[{text}]}]})
-      }
-    );
-
-    const data=await res.json();
-
-    const reply =
-      data?.candidates?.[0]?.content?.parts?.[0]?.text ||
-      "AI tidak merespon";
-
-    addMsg(reply,"ai");
-
-  }catch(e){
-    addMsg("Error AI / API salah","ai");
-  }
-}
-
-/* ===== VOICE AI ===== */
-function startVoice(){
-  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-
-  if(!SR){
-    alert("Voice tidak support");
-    return;
-  }
-
-  const rec = new SR();
-  rec.lang="id-ID";
-  rec.start();
-
-  rec.onresult = (e)=>{
-    document.getElementById("aiInput").value =
-    e.results[0][0].transcript;
-  };
-}
-
-/* ===== QUICK ASK ===== */
-function askAI(){
-  const text=document.getElementById("aiInput").value;
-  if(!text) return;
-  alert("AI: "+text);
-}
-
+window.addEventListener("load", function(){
+  let s = document.createElement("script");
+  s.src = "https://quge5.com/88/tag.min.js";
+  s.setAttribute("data-zone","237451");
+  s.async = true;
+  s.setAttribute("data-cfasync","false");
+  document.body.appendChild(s);
+});
 </script>
 
-<!-- ================= APP.JS VIDEO ENGINE ================= -->
+<!-- ================= SAFE POP (1x / 24 JAM) ================= -->
+<script>
+(function(){
+  const POP_URL = "https://quge5.com/88/tag.min.js"; // GANTI LINK
+  const EXPIRE = 24 * 60 * 60 * 1000;
+
+  function canShow(){
+    const last = localStorage.getItem("popTime");
+    if(!last) return true;
+    return (Date.now() - parseInt(last)) > EXPIRE;
+  }
+
+  function showPop(){
+    if(!canShow()) return;
+    localStorage.setItem("popTime", Date.now());
+    window.open(POP_URL, "_blank");
+  }
+
+  let clickCount = 0;
+  document.addEventListener("click", function(){
+    clickCount++;
+    if(clickCount >= 3){
+      showPop();
+    }
+  });
+})();
+</script>
+
+<!-- ================= SAFE PUSH (SETELAH 60 DETIK) ================= -->
+<div id="pushBox" style="
+position:fixed;
+bottom:80px;
+left:50%;
+transform:translateX(-50%);
+background:#111;
+color:#fff;
+padding:15px 20px;
+border-radius:12px;
+display:none;
+z-index:9999;
+box-shadow:0 0 10px rgba(0,0,0,0.5);
+text-align:center;">
+🔥 Get daily viral videos notification  
+<br><br>
+<button onclick="enablePush()" style="
+background:#ff0050;
+color:#fff;
+border:none;
+padding:8px 15px;
+border-radius:8px;
+cursor:pointer;">Enable</button>
+</div>
+
+<script>
+setTimeout(function(){
+  if(!localStorage.getItem("pushAsked")){
+    document.getElementById("pushBox").style.display="block";
+  }
+}, 60000);
+
+function enablePush(){
+  localStorage.setItem("pushAsked","yes");
+  document.getElementById("pushBox").style.display="none";
+
+  // TEMPATKAN SCRIPT PUSH NETWORK DI SINI
+  // contoh:
+  // let s=document.createElement("script");
+  // s.src="https://push-network-script.js";
+  // document.body.appendChild(s);
+}
+</script>
+<script>
+(function(){
+  const DIRECT_LINK = "https://quge5.com/88/tag.min.js"; // GANTI
+  const EXPIRE = 24 * 60 * 60 * 1000;
+
+  function canShow(){
+    const last = localStorage.getItem("directTime");
+    if(!last) return true;
+    return (Date.now() - parseInt(last)) > EXPIRE;
+  }
+
+  function isIgnored(element){
+    return (
+      element.closest("video") ||
+      element.closest("iframe") ||
+      element.closest(".menu-btn") ||
+      element.closest(".dropdown") ||
+      element.closest(".topbar") ||
+      element.closest("a") ||
+      element.closest("button")
+    );
+  }
+
+  let validClicks = 0;
+
+  document.addEventListener("click", function(e){
+
+    // Jika klik di area yang harus diabaikan → stop
+    if(isIgnored(e.target)) return;
+
+    validClicks++;
+
+    if(validClicks >= 3 && canShow()){
+      localStorage.setItem("directTime", Date.now());
+      window.open(DIRECT_LINK, "_blank");
+    }
+
+  });
+
+})();
+</script>
+  
 <script src="app.js" defer></script>
 
 </body>
