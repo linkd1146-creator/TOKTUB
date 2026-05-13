@@ -1,233 +1,168 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GeminiTok AI</title>
-
-<style>
-body{
-  margin:0;
-  background:black;
-  font-family:Arial;
-  color:white;
-}
-
-/* BOT ICON */
-.bot-icon{
-  position:fixed;
-  bottom:20px;
-  left:20px;
-  width:60px;
-  height:60px;
-  background:#2b6cff;
-  border-radius:50%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:28px;
-  cursor:pointer;
-  z-index:9999;
-}
-
-/* AI PANEL */
-.ai-panel{
-  position:fixed;
-  bottom:90px;
-  left:20px;
-  width:320px;
-  height:450px;
-  background:#111;
-  border-radius:15px;
-  display:none;
-  flex-direction:column;
-  overflow:hidden;
-  z-index:9999;
-}
-
-/* HEADER */
-.ai-header{
-  display:flex;
-  justify-content:space-between;
-  padding:10px;
-  background:#1a1a1a;
-  font-weight:bold;
-}
-
-/* MODE */
-.ai-mode{
-  display:flex;
-  gap:5px;
-  padding:8px;
-}
-
-.ai-mode button{
-  flex:1;
-  padding:8px;
-  border:none;
-  border-radius:8px;
-  background:#222;
-  color:white;
-  cursor:pointer;
-}
-
-.ai-mode button.active{
-  background:#2b6cff;
-}
-
-/* CHAT */
-.ai-chat{
-  flex:1;
-  overflow-y:auto;
-  padding:10px;
-}
-
-.msg{
-  padding:8px;
-  margin:6px 0;
-  border-radius:8px;
-}
-
-.user{background:#2b6cff;}
-.ai{background:#222;}
-
-/* INPUT */
-.ai-input{
-  display:flex;
-  gap:5px;
-  padding:8px;
-  background:#1a1a1a;
-}
-
-.ai-input input{
-  flex:1;
-  padding:8px;
-  border:none;
-  border-radius:6px;
-}
-
-.ai-input button{
-  padding:8px 10px;
-  background:#2b6cff;
-  border:none;
-  border-radius:6px;
-  color:white;
-  cursor:pointer;
-}
-</style>
-</head>
-
-<body>
-
-<div class="bot-icon" onclick="toggleAI()">🤖</div>
-
-<div class="ai-panel" id="aiPanel">
-
-  <div class="ai-header">
-    GeminiTok AI
-    <span onclick="toggleAI()" style="cursor:pointer;">✖</span>
-  </div>
-
-  <div class="ai-mode">
-    <button onclick="setMode('chat')" id="chatBtn">💬</button>
-    <button onclick="setMode('voice')" id="voiceBtn">🎤</button>
-  </div>
-
-  <div class="ai-chat" id="chat"></div>
-
-  <div class="ai-input">
-    <input id="text" placeholder="Tulis pesan...">
-    <button onclick="send()">Send</button>
-  </div>
-
-</div>
-
 <script>
 
-const API_KEY = "AIzaSyAyl3fLVXYtFfiUJZ-fglGKDoIpEjQFuV8";
+const API_KEY = "AIzaSyAhjmf6rNQ-xWBurQelQkMzN8kQvvgDfLw";
+<div class="ai-header">
+  <div style="display:flex; gap:10px; align-items:center;">
+    <span onclick="resetChat()" style="cursor:pointer;">🔄</span>
+    GeminiTok AI
+  </div>
 
-function toggleAI(){
-  const panel=document.getElementById("aiPanel");
-  panel.style.display =
-    panel.style.display==="flex"?"none":"flex";
+  <span class="close-btn" onclick="toggleAI()">✖</span>
+</div>
+/* ============================= */
+/*         MEMORY SYSTEM         */
+/* ============================= */
+
+let chatHistory = JSON.parse(localStorage.getItem("geminiHistory")) || [];
+
+/* SAVE HISTORY */
+function saveHistory(){
+  localStorage.setItem("geminiHistory", JSON.stringify(chatHistory));
 }
 
-function add(text,type){
-  const div=document.createElement("div");
-  div.className="msg "+type;
-  div.innerText=text;
-  const chat=document.getElementById("chat");
+/* RESET CHAT */
+function resetChat(){
+  chatHistory = [];
+  localStorage.removeItem("geminiHistory");
+  document.getElementById("aiChat").innerHTML = "";
+}
+
+/* ============================= */
+/*         ADD MESSAGE           */
+/* ============================= */
+
+function addMessage(text, type){
+  const div = document.createElement("div");
+  div.className = "msg " + type;
+  div.innerHTML = formatMarkdown(text);
+
+  const chat = document.getElementById("aiChat");
   chat.appendChild(div);
-  chat.scrollTop=chat.scrollHeight;
+  chat.scrollTop = chat.scrollHeight;
 }
 
-async function send(){
-  const input=document.getElementById("text");
-  const text=input.value;
+/* ============================= */
+/*      MARKDOWN FORMATTER       */
+/* ============================= */
+
+function formatMarkdown(text){
+  return text
+    .replace(/\*\*(.*?)\*\*/g, "<b>$1</b>")
+    .replace(/\n/g, "<br>")
+    .replace(/```(.*?)```/gs, "<pre>$1</pre>");
+}
+
+/* ============================= */
+/*      STREAMING EFFECT         */
+/* ============================= */
+
+function streamText(text){
+  const div = document.createElement("div");
+  div.className = "msg ai";
+  document.getElementById("aiChat").appendChild(div);
+
+  let i = 0;
+  function typing(){
+    if(i < text.length){
+      div.innerHTML = formatMarkdown(text.substring(0,i));
+      i++;
+      setTimeout(typing, 8);
+    }
+  }
+  typing();
+}
+
+/* ============================= */
+/*          SEND CHAT            */
+/* ============================= */
+
+async function sendAI(){
+
+  const input = document.getElementById("aiText");
+  const text = input.value.trim();
   if(!text) return;
 
-  add(text,"user");
-  input.value="";
+  addMessage(text, "user");
+  input.value = "";
+
+  chatHistory.push({
+    role:"user",
+    parts:[{
+      text:"Jawab seperti asisten AI profesional seperti ChatGPT. Gunakan bahasa natural dan jelas. "+text
+    }]
+  });
+
+  saveHistory();
+
+  addMessage("...", "ai");
 
   try{
-    const res=await fetch(
+    const res = await fetch(
       "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key="+API_KEY,
       {
         method:"POST",
         headers:{"Content-Type":"application/json"},
         body:JSON.stringify({
-          contents:[{
-            role:"user",
-            parts:[{text:text}]
-          }]
+          contents: chatHistory
         })
       }
     );
 
-    const data=await res.json();
+    const data = await res.json();
 
     const reply =
       data?.candidates?.[0]?.content?.parts?.[0]?.text
-      || "No response";
+      || "Maaf, saya tidak bisa menjawab.";
 
-    add(reply,"ai");
+    /* hapus loading */
+    document.getElementById("aiChat").lastChild.remove();
+
+    streamText(reply);
+
+    chatHistory.push({
+      role:"model",
+      parts:[{text:reply}]
+    });
+
+    saveHistory();
 
   }catch(e){
-    add("Error koneksi AI","ai");
+    document.getElementById("aiChat").lastChild.remove();
+    addMessage("Error koneksi AI.", "ai");
   }
 }
 
-function setMode(mode){
-  document.getElementById("chatBtn").classList.remove("active");
-  document.getElementById("voiceBtn").classList.remove("active");
-
-  if(mode==="chat"){
-    document.getElementById("chatBtn").classList.add("active");
-  }else{
-    document.getElementById("voiceBtn").classList.add("active");
-    startVoice();
-  }
-}
+/* ============================= */
+/*           VOICE AI            */
+/* ============================= */
 
 function startVoice(){
-  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   if(!SR){
-    alert("Voice tidak support browser ini");
+    alert("Voice tidak support di browser ini");
     return;
   }
 
-  const rec=new SR();
+  const rec = new SR();
   rec.lang="id-ID";
   rec.start();
 
   rec.onresult=(e)=>{
-    document.getElementById("text").value=
+    document.getElementById("aiText").value =
       e.results[0][0].transcript;
+    sendAI();
   };
 }
 
-setMode("chat");
+/* ============================= */
+/*       LOAD OLD CHAT           */
+/* ============================= */
+
+window.onload = function(){
+  chatHistory.forEach(msg=>{
+    const role = msg.role === "user" ? "user" : "ai";
+    addMessage(msg.parts[0].text, role);
+  });
+};
 
 </script>
-</body>
-</html>
