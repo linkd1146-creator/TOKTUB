@@ -4,7 +4,13 @@
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<div class="ai-bar">
+  <div class="menu-btn" onclick="toggleMenu()">☰</div>
 
+  <input id="aiInput" placeholder="GeminiTok AI..." />
+
+  <button onclick="askAI()">AI</button>
+</div>
 <title>MiniTok.fun - GeminiTok AI</title>
 
 <meta name="description" content="Watch viral videos, AI tools reviews, trending content and tech updates daily.">
@@ -23,7 +29,7 @@ body{
 }
 
 /* ===== AI + MENU BAR ===== */
-.ai-bar{
+..ai-bar{
   position:fixed;
   top:0;
   left:0;
@@ -33,19 +39,15 @@ body{
   align-items:center;
   gap:8px;
   padding:6px;
-  z-index:120;
-}
-
-.left-area{
-  display:flex;
-  align-items:center;
+  z-index:999;
 }
 
 .menu-btn{
   font-size:26px;
   cursor:pointer;
   padding:0 10px;
-  user-select:none;
+  color:white;
+  flex-shrink:0;
 }
 
 .ai-bar input{
@@ -53,6 +55,7 @@ body{
   padding:8px;
   border:none;
   border-radius:6px;
+  outline:none;
 }
 
 .ai-bar button{
@@ -61,6 +64,7 @@ body{
   color:white;
   padding:8px 10px;
   border-radius:6px;
+  flex-shrink:0;
 }
 
 /* DROPDOWN MENU */
