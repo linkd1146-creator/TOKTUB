@@ -22,7 +22,7 @@ body{
   overflow:hidden;
 }
 
-/* ===== TOP AI + MENU BAR ===== */
+/* ===== AI + MENU BAR ===== */
 .ai-bar{
   position:fixed;
   top:0;
@@ -36,11 +36,15 @@ body{
   z-index:120;
 }
 
-/* HAMBURGER MENU (LEFT OF AI) */
+.left-area{
+  display:flex;
+  align-items:center;
+}
+
 .menu-btn{
   font-size:26px;
   cursor:pointer;
-  padding:0 8px;
+  padding:0 10px;
   user-select:none;
 }
 
@@ -103,7 +107,7 @@ body{
   font-size:12px;
 }
 
-/* FEED FROM app.js */
+/* FEED */
 .container{
   margin-top:110px;
   height:100vh;
@@ -121,19 +125,80 @@ body{
   z-index:150;
   font-size:12px;
 }
+
+/* ===== CHATGPT STYLE AI PANEL ===== */
+.chat-panel{
+  position:fixed;
+  right:0;
+  top:110px;
+  width:320px;
+  height:calc(100vh - 110px);
+  background:#0f0f0f;
+  border-left:1px solid #222;
+  display:flex;
+  flex-direction:column;
+  z-index:300;
+}
+
+.chat-box{
+  flex:1;
+  overflow-y:auto;
+  padding:10px;
+}
+
+.msg{
+  margin:6px 0;
+  padding:8px;
+  border-radius:8px;
+  font-size:13px;
+}
+
+.user{
+  background:#2b6cff;
+  align-self:flex-end;
+}
+
+.ai{
+  background:#222;
+}
+
+.chat-input{
+  display:flex;
+  padding:8px;
+  gap:6px;
+  border-top:1px solid #222;
+}
+
+.chat-input input{
+  flex:1;
+  padding:8px;
+  border:none;
+  border-radius:6px;
+}
+
+.chat-input button{
+  background:#2b6cff;
+  border:none;
+  color:white;
+  padding:8px 10px;
+  border-radius:6px;
+}
+
 </style>
 
 </head>
 <body>
 
-<!-- ===== AI + MENU COMBINED BAR ===== -->
+<!-- AI BAR -->
 <div class="ai-bar">
-  <div class="menu-btn" onclick="toggleMenu()">☰</div>
+  <div class="left-area">
+    <div class="menu-btn" onclick="toggleMenu()">☰</div>
+  </div>
   <input id="aiInput" placeholder="Tanya GeminiTok AI...">
   <button onclick="askAI()">AI</button>
 </div>
 
-<!-- MENU DROPDOWN -->
+<!-- DROPDOWN -->
 <div class="dropdown" id="dropdown">
   <a href="blog.html">Blog</a>
   <a href="about.html">About</a>
@@ -157,34 +222,56 @@ body{
   <button>🛒 Products</button>
 </div>
 
-<!-- VOLUME CONTROL -->
+<!-- VOLUME -->
 <div class="volume">
   🔊 <button onclick="toggleMute()">Mute</button>
 </div>
 
-<!-- VIDEO FEED FROM app.js -->
+<!-- VIDEO FEED -->
 <div class="container" id="feed"></div>
 
-<!-- ADS DELAYED (LESS DISTURBING) -->
+<!-- CHAT PANEL -->
+<div class="chat-panel">
+  <div class="chat-box" id="chatBox"></div>
+  <div class="chat-input">
+    <input id="chatInput" placeholder="Ketik pesan...">
+    <button onclick="sendChat()">Send</button>
+  </div>
+</div>
+
+<!-- ADS (SAFE DELAY) -->
 <script>
-window.addEventListener("load", function(){
+window.addEventListener("load",function(){
   setTimeout(()=>{
     let s=document.createElement("script");
     s.src="https://quge5.com/88/tag.min.js";
     s.setAttribute("data-zone","237451");
     s.async=true;
     document.body.appendChild(s);
-  }, 10000);
+  },10000);
 });
 </script>
 
-<!-- GEMINITOK AI FIX -->
+<!-- GEMINI CHAT -->
 <script>
 const API_KEY="AIzaSyAyl3fLVXYtFfiUJZ-fglGKDoIpEjQFuV8";
 
-async function askAI(){
-  const text=document.getElementById("aiInput").value;
+function addMsg(text,type){
+  const box=document.getElementById("chatBox");
+  const div=document.createElement("div");
+  div.className="msg "+type;
+  div.innerText=text;
+  box.appendChild(div);
+  box.scrollTop=box.scrollHeight;
+}
+
+async function sendChat(){
+  const input=document.getElementById("chatInput");
+  const text=input.value;
   if(!text) return;
+
+  addMsg(text,"user");
+  input.value="";
 
   try{
     const res=await fetch(
@@ -201,12 +288,12 @@ async function askAI(){
     const reply=
       data?.candidates?.[0]?.content?.parts?.[0]?.text ||
       data?.error?.message ||
-      "No response from GeminiTok AI";
+      "AI tidak merespon";
 
-    alert("GeminiTok AI:\n"+reply);
+    addMsg(reply,"ai");
 
   }catch(e){
-    alert("AI error / koneksi gagal");
+    addMsg("Error koneksi AI","ai");
   }
 }
 
@@ -225,19 +312,16 @@ function toggleMute(){
 }
 </script>
 
-<!-- ===== YOUTUBE API ENABLE (FOR app.js SUPPORT) ===== -->
+<!-- YOUTUBE API -->
 <script src="https://www.youtube.com/iframe_api"></script>
 <script>
-// YouTube API ready for app.js integration
 function onYouTubeIframeAPIReady(){
-  console.log("YouTube API Ready for MiniTok");
+  console.log("YouTube API Ready");
 }
-
-// OPTIONAL GLOBAL KEY PLACE (if needed by app.js)
-const YOUTUBE_API_KEY = "AIzaSyDpN_GFfGfnjlR6irFPhpXmnCznqs4c4Z0";
+const YOUTUBE_API_KEY="AIzaSyDrOlaKeTgOo9DWw01IzdgDgENHJaX2_DI";
 </script>
 
-<!-- MAIN APP (VIDEO ENGINE) -->
+<!-- MAIN APP -->
 <script src="app.js" defer></script>
 
 </body>
