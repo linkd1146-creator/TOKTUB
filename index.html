@@ -32,7 +32,32 @@
 
   <button onclick="askAI()">AI</button>
 </div>
-  .ai-bar{
+ 
+<div class="dropdown" id="dropdown">
+  <a href="blog.html">Blog</a>
+  <a href="about.html">About</a>
+  <a href="streaming.html">Streaming</a>
+  <a href="affiliate.html">Shopee Partner</a>
+  <a href="promo.html">Promo</a>
+  <a href="blibli.html">Blibli</a>
+  <a href="donasi.html">Donasi</a>
+  <a href="disclaimer.html">Disclaimer</a>
+  <a href="privacy.html">Privacy</a>
+  <a href="terms.html">Terms</a>
+</div>
+
+<!-- CATEGORY -->
+<div class="topbar">
+  <button onclick="setCategory('trending')">🔥 Trending</button>
+  <button onclick="setCategory('comedy')">😂 Comedy</button>
+  <button onclick="setCategory('anime')">🎌 Anime</button>
+  <button onclick="setCategory('news')">📰 News</button>
+  <button onclick="setCategory('sports')">⚽ Sports</button>
+  <button onclick="setCategory('product')">🛒 Products</button>
+</div>
+
+<div class="container" id="feed"></div>
+ .ai-bar{
   position:fixed;
   top:0;
   left:0;
@@ -69,31 +94,6 @@
   border-radius:6px;
   flex-shrink:0;
 }
-<div class="dropdown" id="dropdown">
-  <a href="blog.html">Blog</a>
-  <a href="about.html">About</a>
-  <a href="streaming.html">Streaming</a>
-  <a href="affiliate.html">Shopee Partner</a>
-  <a href="promo.html">Promo</a>
-  <a href="blibli.html">Blibli</a>
-  <a href="donasi.html">Donasi</a>
-  <a href="disclaimer.html">Disclaimer</a>
-  <a href="privacy.html">Privacy</a>
-  <a href="terms.html">Terms</a>
-</div>
-
-<!-- CATEGORY -->
-<div class="topbar">
-  <button onclick="setCategory('trending')">🔥 Trending</button>
-  <button onclick="setCategory('comedy')">😂 Comedy</button>
-  <button onclick="setCategory('anime')">🎌 Anime</button>
-  <button onclick="setCategory('news')">📰 News</button>
-  <button onclick="setCategory('sports')">⚽ Sports</button>
-  <button onclick="setCategory('product')">🛒 Products</button>
-</div>
-
-<div class="container" id="feed"></div>
-
 <!-- ================= DISPLAY ADS (LOAD BELAKANG) ================= -->
 <script>
 window.addEventListener("load", function(){
