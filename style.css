@@ -1,16 +1,5 @@
-body.ai-bar{
-  position:fixed;
-  bottom:0;
-  left:0;
-  width:100%;
-  background:#1a1a1a;
-  display:flex;
-  align-items:center;
-  gap:8px;
-  padding:6px;
-  z-index:999;
-}
-  marg.ai-bar{
+body/* ===== AI BAR FIX POSITION ===== */
+.ai-bar{
   position:fixed;
   top:0;
   left:0;
@@ -21,40 +10,27 @@ body.ai-bar{
   gap:8px;
   padding:6px;
   z-index:999;
+  height:56px;
 }
 
-.menu-btn{
-  font-size:26px;
-  cursor:pointer;
-  padding:0 10px;
-  color:white;
-  flex-shrink:0;
-}
-
-.ai-bar input{
-  flex:1;
+/* ===== CATEGORY BAR DIBERI JARAK ===== */
+.topbar{
+  position:fixed;
+  top:66px;   /* ini jarak dari AI bar */
+  width:100%;
+  display:flex;
+  overflow-x:auto;
+  gap:8px;
+  background:rgba(0,0,0,0.9);
   padding:8px;
-  border:none;
-  border-radius:6px;
-  outline:none;
+  z-index:90;
+  white-space:nowrap;
 }
 
-.ai-bar button{
-  background:#2b6cff;
-  border:none;
-  color:white;
-  padding:8px 10px;
-  border-radius:6px;
-  flex-shrink:0;
+/* ===== FEED DIBERI SPACE AGAR TIDAK TERTUTUP ===== */
+.container{
+  margin-top:120px;
 }
-  
-  in:0;
-  background:black;
-  font-family:sans-serif;
-  overflow:hidden;
-  color:white;
-}
-
 .container{
   height:100vh;
   overflow-y:scroll;
