@@ -193,24 +193,23 @@ iframe{
   color:white;
 }
 .ai-float{
-  position:fixed;
-  right:18px;
-  bottom:18px;
-  width:55px;
-  height:55px;
+  position:fixed !important;
+
+  left:15px !important;
+  right:auto !important;
+
+  bottom:90px !important;
+  top:auto !important;
+
+  width:60px;
+  height:60px;
   background:#2b6cff;
   color:white;
-  border-radius:50%;
   display:flex;
   align-items:center;
   justify-content:center;
-  font-size:24px;
+  font-size:26px;
+  border-radius:50%;
   text-decoration:none;
-  z-index:9999;
-  box-shadow:0 5px 15px rgba(0,0,0,0.4);
-}
-.ai-float{
-  position:
-.ai-float:active{
-  transform:scale(0.95);
+  z-index:9999999;
 }
