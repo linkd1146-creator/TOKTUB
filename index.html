@@ -175,7 +175,15 @@ button, .menu-btn{
   <button onclick="askAI()">AI</button>
 
   <button onclick="toggleChat()">💬</button>
-
+<button onclick="backToVideo()" style="
+width:100%;
+padding:10px;
+background:red;
+color:white;
+border:none;
+">
+⬅ Kembali Nonton Video
+</button>
 </div>
 
 <!-- CATEGORY BAR (NOW FIXED) -->
@@ -301,7 +309,17 @@ function askAI(){
   if(!text) return;
   alert("AI: "+text);
 }
+function toggleChat(){
+  const panel=document.getElementById("chatPanel");
 
+  if(panel.style.right==="0px"){
+    panel.style.right="-100%";
+    document.getElementById("videoOverlay").style.display="none";
+  }else{
+    panel.style.right="0px";
+    document.getElementById("videoOverlay").style.display="block";
+  }
+}
 </script>
 
 <!-- APP.JS -->
