@@ -1,20 +1,4 @@
-body.container{
-  margin-bottom:90px;
-}
-.ai-bar{
-  position:fixed;
-  bottom:15px;
-  right:15px;
-  width:320px;
-  background:#1a1a1a;
-  display:flex;
-  align-items:center;
-  gap:8px;
-  padding:8px;
-  z-index:999;
-  border-radius:12px;
-  box-shadow:0 0 10px rgba(0,0,0,0.5);
-}
+body
 .container{
   height:100vh;
   overflow-y:scroll;
