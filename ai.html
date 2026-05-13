@@ -1,52 +1,67 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>GeminiTok AI</title>
-<a href="ai.html" class="ai-float">🤖</a>
+
 <style>
 body{
   margin:0;
+  background:black;
   font-family:Arial;
-  background:#000;
   color:white;
 }
 
-/* FLOATING PANEL */
-.ai-panel{
+/* BOT ICON */
+.bot-icon{
   position:fixed;
   bottom:20px;
+  left:20px;
+  width:60px;
+  height:60px;
+  background:#2b6cff;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:28px;
+  cursor:pointer;
+  z-index:9999;
+}
+
+/* AI PANEL */
+.ai-panel{
+  position:fixed;
+  bottom:90px;
   left:20px;
   width:320px;
   height:450px;
   background:#111;
   border-radius:15px;
-  box-shadow:0 0 15px rgba(0,0,0,0.6);
-  display:flex;
+  display:none;
   flex-direction:column;
   overflow:hidden;
   z-index:9999;
 }
 
 /* HEADER */
-.header{
+.ai-header{
   display:flex;
-  align-items:center;
+  justify-content:space-between;
   padding:10px;
   background:#1a1a1a;
-  gap:10px;
   font-weight:bold;
 }
 
 /* MODE */
-.mode{
+.ai-mode{
   display:flex;
   gap:5px;
   padding:8px;
 }
 
-.mode button{
+.ai-mode button{
   flex:1;
   padding:8px;
   border:none;
@@ -56,16 +71,15 @@ body{
   cursor:pointer;
 }
 
-.mode button.active{
+.ai-mode button.active{
   background:#2b6cff;
 }
 
-/* CHAT AREA */
-.chat{
+/* CHAT */
+.ai-chat{
   flex:1;
   overflow-y:auto;
   padding:10px;
-  font-size:14px;
 }
 
 .msg{
@@ -78,21 +92,21 @@ body{
 .ai{background:#222;}
 
 /* INPUT */
-.input{
+.ai-input{
   display:flex;
   gap:5px;
   padding:8px;
   background:#1a1a1a;
 }
 
-.input input{
+.ai-input input{
   flex:1;
   padding:8px;
   border:none;
   border-radius:6px;
 }
 
-.input button{
+.ai-input button{
   padding:8px 10px;
   background:#2b6cff;
   border:none;
@@ -105,20 +119,23 @@ body{
 
 <body>
 
-<div class="ai-panel">
+<div class="bot-icon" onclick="toggleAI()">🤖</div>
 
-  <div class="header">
-    🤖 GeminiTok AI
+<div class="ai-panel" id="aiPanel">
+
+  <div class="ai-header">
+    GeminiTok AI
+    <span onclick="toggleAI()" style="cursor:pointer;">✖</span>
   </div>
 
-  <div class="mode">
-    <button onclick="setMode('chat')" id="chatBtn">💬 Chat</button>
-    <button onclick="setMode('voice')" id="voiceBtn">🎤 Voice</button>
+  <div class="ai-mode">
+    <button onclick="setMode('chat')" id="chatBtn">💬</button>
+    <button onclick="setMode('voice')" id="voiceBtn">🎤</button>
   </div>
 
-  <div class="chat" id="chat"></div>
+  <div class="ai-chat" id="chat"></div>
 
-  <div class="input">
+  <div class="ai-input">
     <input id="text" placeholder="Tulis pesan...">
     <button onclick="send()">Send</button>
   </div>
@@ -129,17 +146,21 @@ body{
 
 const API_KEY = "AIzaSyAyl3fLVXYtFfiUJZ-fglGKDoIpEjQFuV8";
 
-/* ADD MESSAGE */
+function toggleAI(){
+  const panel=document.getElementById("aiPanel");
+  panel.style.display =
+    panel.style.display==="flex"?"none":"flex";
+}
+
 function add(text,type){
   const div=document.createElement("div");
   div.className="msg "+type;
   div.innerText=text;
-  document.getElementById("chat").appendChild(div);
-  document.getElementById("chat").scrollTop=
-  document.getElementById("chat").scrollHeight;
+  const chat=document.getElementById("chat");
+  chat.appendChild(div);
+  chat.scrollTop=chat.scrollHeight;
 }
 
-/* SEND CHAT */
 async function send(){
   const input=document.getElementById("text");
   const text=input.value;
@@ -157,10 +178,56 @@ async function send(){
         body:JSON.stringify({
           contents:[{
             role:"user",
-            parts:[{text:"Jawab seperti ChatGPT. "+text}]
+            parts:[{text:text}]
           }]
         })
       }
     );
 
-    
+    const data=await res.json();
+
+    const reply =
+      data?.candidates?.[0]?.content?.parts?.[0]?.text
+      || "No response";
+
+    add(reply,"ai");
+
+  }catch(e){
+    add("Error koneksi AI","ai");
+  }
+}
+
+function setMode(mode){
+  document.getElementById("chatBtn").classList.remove("active");
+  document.getElementById("voiceBtn").classList.remove("active");
+
+  if(mode==="chat"){
+    document.getElementById("chatBtn").classList.add("active");
+  }else{
+    document.getElementById("voiceBtn").classList.add("active");
+    startVoice();
+  }
+}
+
+function startVoice(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){
+    alert("Voice tidak support browser ini");
+    return;
+  }
+
+  const rec=new SR();
+  rec.lang="id-ID";
+  rec.start();
+
+  rec.onresult=(e)=>{
+    document.getElementById("text").value=
+      e.results[0][0].transcript;
+  };
+}
+
+setMode("chat");
+
+</script>
+</body>
+</html>
