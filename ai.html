@@ -13,34 +13,47 @@ body{
   color:white;
 }
 
+/* FLOATING PANEL */
+.ai-panel{
+  position:fixed;
+  bottom:20px;
+  left:20px;
+  width:320px;
+  height:450px;
+  background:#111;
+  border-radius:15px;
+  box-shadow:0 0 15px rgba(0,0,0,0.6);
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+  z-index:9999;
+}
+
 /* HEADER */
 .header{
   display:flex;
   align-items:center;
   padding:10px;
-  background:#111;
+  background:#1a1a1a;
   gap:10px;
+  font-weight:bold;
 }
 
-.back{
-  cursor:pointer;
-  font-size:20px;
-}
-
-/* MODE BUTTON */
+/* MODE */
 .mode{
   display:flex;
-  gap:10px;
-  padding:10px;
+  gap:5px;
+  padding:8px;
 }
 
 .mode button{
   flex:1;
-  padding:10px;
+  padding:8px;
   border:none;
   border-radius:8px;
   background:#222;
   color:white;
+  cursor:pointer;
 }
 
 .mode button.active{
@@ -49,9 +62,10 @@ body{
 
 /* CHAT AREA */
 .chat{
-  height:70vh;
+  flex:1;
   overflow-y:auto;
   padding:10px;
+  font-size:14px;
 }
 
 .msg{
@@ -67,82 +81,65 @@ body{
 .input{
   display:flex;
   gap:5px;
-  padding:10px;
-  background:#111;
+  padding:8px;
+  background:#1a1a1a;
 }
 
-input{
+.input input{
   flex:1;
-  padding:10px;
+  padding:8px;
   border:none;
+  border-radius:6px;
 }
 
-button{
-  padding:10px;
+.input button{
+  padding:8px 10px;
   background:#2b6cff;
   border:none;
+  border-radius:6px;
   color:white;
+  cursor:pointer;
 }
 </style>
 </head>
 
 <body>
 
-<!-- HEADER -->
-<div class="header">
-  <div class="back" onclick="history.back()">⬅</div>
-  🤖 GeminiTok AI
-</div>
+<div class="ai-panel">
 
-<!-- MODE: CHAT / VOICE -->
-<div class="mode">
-  <button onclick="setMode('chat')" id="chatBtn">💬 Chat</button>
-  <button onclick="startVoice()" id="voiceBtn">🎤 Voice</button>
-</div>
+  <div class="header">
+    🤖 GeminiTok AI
+  </div>
 
-<!-- CHAT -->
-<div class="chat" id="chat"></div>
+  <div class="mode">
+    <button onclick="setMode('chat')" id="chatBtn">💬 Chat</button>
+    <button onclick="setMode('voice')" id="voiceBtn">🎤 Voice</button>
+  </div>
 
-<!-- INPUT -->
-<div class="input">
-  <input id="text" placeholder="Tulis pesan...">
-  <button onclick="send()">Send</button>
+  <div class="chat" id="chat"></div>
+
+  <div class="input">
+    <input id="text" placeholder="Tulis pesan...">
+    <button onclick="send()">Send</button>
+  </div>
+
 </div>
 
 <script>
 
-curl "https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent" \
-  -H 'Content-Type: application/json' \
-  -H 'X-goog-api-key: AIzaSyAnuLh5nX-4avexa0fm8klmhEEljw1y4gg' \
-  -X POST \
-  -d '{
-    "contents": [
-      {
-        "parts": [
-          {
-            "text": "Explain how AI works in a few words"
-          }
-        ]
-      }
-    ]
-  }'
-body: JSON.stringify({
-  contents: [{
-    role: "user",
-    parts: [{
-      text: "Jawab seperti asisten ChatGPT. " + text
-    }]
-  }]
-})
+const API_KEY = "AIzaSyAyl3fLVXYtFfiUJZ-fglGKDoIpEjQFuV8";
+
 /* ADD MESSAGE */
 function add(text,type){
   const div=document.createElement("div");
   div.className="msg "+type;
   div.innerText=text;
   document.getElementById("chat").appendChild(div);
+  document.getElementById("chat").scrollTop=
+  document.getElementById("chat").scrollHeight;
 }
 
-/* CHAT */
+/* SEND CHAT */
 async function send(){
   const input=document.getElementById("text");
   const text=input.value;
@@ -151,42 +148,54 @@ async function send(){
   add(text,"user");
   input.value="";
 
-  const res=await fetch(
-    "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key="+API_KEY,
-    {
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({contents:[{parts:[{text}]}]})
-    }
-  );
+  try{
+    const res=await fetch(
+      "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key="+API_KEY,
+      {
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({
+          contents:[{
+            role:"user",
+            parts:[{text:"Jawab seperti ChatGPT. "+text}]
+          }]
+        })
+      }
+    );
 
-  const data=await res.json();
+    const data=await res.json();
 
-  const reply=
-    data?.candidates?.[0]?.content?.parts?.[0]?.text ||
-    "No response";
+    const reply=
+      data?.candidates?.[0]?.content?.parts?.[0]?.text
+      || "No response";
 
-  add(reply,"ai");
+    add(reply,"ai");
+
+  }catch(e){
+    add("Error koneksi ke AI","ai");
+  }
 }
 
-/* VOICE AI */
+/* VOICE */
 function startVoice(){
   const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(!SR) return alert("Voice tidak support");
+  if(!SR){
+    alert("Voice tidak support di browser ini");
+    return;
+  }
 
   const rec=new SR();
   rec.lang="id-ID";
   rec.start();
 
   rec.onresult=(e)=>{
-    const text=e.results[0][0].transcript;
-    document.getElementById("text").value=text;
+    document.getElementById("text").value=
+    e.results[0][0].transcript;
   };
 }
 
-/* MODE UI */
+/* MODE SWITCH */
 function setMode(m){
-  mode=m;
   document.getElementById("chatBtn").classList.remove("active");
   document.getElementById("voiceBtn").classList.remove("active");
 
