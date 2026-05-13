@@ -1,4 +1,15 @@
-body{
+body.ai-bar{
+  position:fixed;
+  bottom:0;
+  left:0;
+  width:100%;
+  background:#1a1a1a;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:6px;
+  z-index:999;
+}
   marg.ai-bar{
   position:fixed;
   top:0;
