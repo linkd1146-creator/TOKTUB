@@ -1,16 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>MiniTok.fun - GeminiTok AI</title>
+<title>MiniTok.fun - Viral Videos & GeminiTok AI</title>
 
 <link rel="stylesheet" href="style.css">
 
 <style>
 
-/* RESET BIAR TIDAK ERROR */
+/* ================= ORIGINAL SAFE BASE ================= */
 body{
   margin:0;
   font-family:Arial;
@@ -19,7 +20,7 @@ body{
   overflow-y:auto;
 }
 
-/* ===== AI BAR ===== */
+/* ================= AI BAR (GEMINITOK) ================= */
 .ai-bar{
   position:fixed;
   top:0;
@@ -56,7 +57,7 @@ body{
   border-radius:6px;
 }
 
-/* ===== CATEGORY BAR (FIXED) ===== */
+/* ================= CATEGORY BAR (SAFE FIX) ================= */
 .topbar{
   position:fixed;
   top:60px;
@@ -80,7 +81,7 @@ body{
   font-size:12px;
 }
 
-/* ===== VIDEO CONTAINER (IMPORTANT FIX) ===== */
+/* ================= VIDEO FEED ================= */
 .container{
   margin-top:120px;
   padding-bottom:120px;
@@ -88,7 +89,7 @@ body{
   overflow-y:visible;
 }
 
-/* ===== DROPDOWN ===== */
+/* ================= DROPDOWN MENU ================= */
 .dropdown{
   position:fixed;
   top:60px;
@@ -107,7 +108,7 @@ body{
   text-decoration:none;
 }
 
-/* ===== CHAT PANEL ===== */
+/* ================= CHAT PANEL ================= */
 .chat-panel{
   position:fixed;
   right:-100%;
@@ -151,9 +152,10 @@ body{
   background:#2b6cff;
   border:none;
   color:white;
+  padding:8px;
 }
 
-/* ===== FIX OVERLAY SAFETY ===== */
+/* ================= FIX CLICK ================= */
 button, .menu-btn{
   cursor:pointer;
 }
@@ -163,7 +165,7 @@ button, .menu-btn{
 
 <body>
 
-<!-- AI BAR -->
+<!-- ================= AI BAR (GEMINITOK) ================= -->
 <div class="ai-bar">
 
   <div class="menu-btn" onclick="toggleMenu()">☰</div>
@@ -175,31 +177,23 @@ button, .menu-btn{
   <button onclick="askAI()">AI</button>
 
   <button onclick="toggleChat()">💬</button>
-<button onclick="backToVideo()" style="
-width:100%;
-padding:10px;
-background:red;
-color:white;
-border:none;
-">
-⬅ Kembali Nonton Video
-</button>
+
 </div>
 
-<!-- CATEGORY BAR (NOW FIXED) -->
+<!-- ================= CATEGORY BAR ================= -->
 <div class="topbar">
-  <button>🔥 Trending</button>
-  <button>😂 Comedy</button>
-  <button>🎌 Anime</button>
-  <button>📰 News</button>
-  <button>⚽ Sports</button>
-  <button>🛒 Products</button>
+  <button onclick="setCategory('trending')">🔥 Trending</button>
+  <button onclick="setCategory('comedy')">😂 Comedy</button>
+  <button onclick="setCategory('anime')">🎌 Anime</button>
+  <button onclick="setCategory('news')">📰 News</button>
+  <button onclick="setCategory('sports')">⚽ Sports</button>
+  <button onclick="setCategory('product')">🛒 Products</button>
 </div>
 
-<!-- VIDEO APP.JS -->
+<!-- ================= VIDEO FEED (APP.JS WAJIB JALAN) ================= -->
 <div class="container" id="feed"></div>
 
-<!-- MENU -->
+<!-- ================= MENU ================= -->
 <div class="dropdown" id="dropdown">
   <a href="blog.html">Blog</a>
   <a href="about.html">About</a>
@@ -213,7 +207,7 @@ border:none;
   <a href="terms.html">Terms</a>
 </div>
 
-<!-- CHAT PANEL -->
+<!-- ================= CHAT PANEL ================= -->
 <div class="chat-panel" id="chatPanel">
 
   <div class="chat-box" id="chatBox"></div>
@@ -225,24 +219,28 @@ border:none;
 
 </div>
 
-<!-- SCRIPT -->
+<!-- ================= SCRIPT GEMINITOK ================= -->
 <script>
 
 let API_KEY = "AIzaSyAyl3fLVXYtFfiUJZ-fglGKDoIpEjQFuV8"; // WAJIB DIISI
 
-/* ===== MENU ===== */
 function toggleMenu(){
   const d=document.getElementById("dropdown");
   d.style.display = (d.style.display==="block")?"none":"block";
 }
 
-/* ===== CHAT PANEL ===== */
+/* ===== CHAT PANEL TOGGLE ===== */
 function toggleChat(){
-  const p=document.getElementById("chatPanel");
-  p.style.right = (p.style.right==="0px")?"-100%":"0px";
+  const panel=document.getElementById("chatPanel");
+
+  if(panel.style.right==="0px"){
+    panel.style.right="-100%";
+  }else{
+    panel.style.right="0px";
+  }
 }
 
-/* ===== ADD CHAT ===== */
+/* ===== ADD MESSAGE ===== */
 function addMsg(text,type){
   const box=document.getElementById("chatBox");
   const div=document.createElement("div");
@@ -252,7 +250,7 @@ function addMsg(text,type){
   box.scrollTop=box.scrollHeight;
 }
 
-/* ===== GEMINI CHAT ===== */
+/* ===== GEMINI AI ===== */
 async function sendChat(){
   const input=document.getElementById("chatInput");
   const text=input.value;
@@ -275,7 +273,7 @@ async function sendChat(){
 
     const reply =
       data?.candidates?.[0]?.content?.parts?.[0]?.text ||
-      "No response";
+      "AI tidak merespon";
 
     addMsg(reply,"ai");
 
@@ -284,7 +282,7 @@ async function sendChat(){
   }
 }
 
-/* ===== VOICE ===== */
+/* ===== VOICE AI ===== */
 function startVoice(){
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
 
@@ -303,26 +301,16 @@ function startVoice(){
   };
 }
 
-/* ===== SIMPLE AI BUTTON ===== */
+/* ===== QUICK ASK ===== */
 function askAI(){
   const text=document.getElementById("aiInput").value;
   if(!text) return;
   alert("AI: "+text);
 }
-function toggleChat(){
-  const panel=document.getElementById("chatPanel");
 
-  if(panel.style.right==="0px"){
-    panel.style.right="-100%";
-    document.getElementById("videoOverlay").style.display="none";
-  }else{
-    panel.style.right="0px";
-    document.getElementById("videoOverlay").style.display="block";
-  }
-}
 </script>
 
-<!-- APP.JS -->
+<!-- ================= APP.JS VIDEO ENGINE ================= -->
 <script src="app.js" defer></script>
 
 </body>
