@@ -32,7 +32,43 @@
 
   <button onclick="askAI()">AI</button>
 </div>
-  
+  .ai-bar{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  background:#1a1a1a;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:6px;
+  z-index:999;
+}
+
+.menu-btn{
+  font-size:26px;
+  cursor:pointer;
+  padding:0 10px;
+  color:white;
+  flex-shrink:0;
+}
+
+.ai-bar input{
+  flex:1;
+  padding:8px;
+  border:none;
+  border-radius:6px;
+  outline:none;
+}
+
+.ai-bar button{
+  background:#2b6cff;
+  border:none;
+  color:white;
+  padding:8px 10px;
+  border-radius:6px;
+  flex-shrink:0;
+}
 <div class="dropdown" id="dropdown">
   <a href="blog.html">Blog</a>
   <a href="about.html">About</a>
