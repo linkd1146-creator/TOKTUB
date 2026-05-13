@@ -111,9 +111,29 @@ button{
 
 <script>
 
-let API_KEY="AIzaSyAyl3fLVXYtFfiUJZ-fglGKDoIpEjQFuV8";
-let mode="chat";
-
+curl "https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent" \
+  -H 'Content-Type: application/json' \
+  -H 'X-goog-api-key: AIzaSyAnuLh5nX-4avexa0fm8klmhEEljw1y4gg' \
+  -X POST \
+  -d '{
+    "contents": [
+      {
+        "parts": [
+          {
+            "text": "Explain how AI works in a few words"
+          }
+        ]
+      }
+    ]
+  }'
+body: JSON.stringify({
+  contents: [{
+    role: "user",
+    parts: [{
+      text: "Jawab seperti asisten ChatGPT. " + text
+    }]
+  }]
+})
 /* ADD MESSAGE */
 function add(text,type){
   const div=document.createElement("div");
