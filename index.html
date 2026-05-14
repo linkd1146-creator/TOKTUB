@@ -27,27 +27,6 @@
 </head>
 <body>
   
-<!-- TOP BAR -->
-<div class="topbar">
-  <button>For You</button>
-  <button>Trending</button>
-</div>
-
-<!-- VOLUME CONTROL -->
-<div class="volume-control">
-  🔊 <input type="range" id="volumeSlider" min="0" max="100" value="100">
-</div>
-
-<!-- FEED -->
-<div class="container">
-  <div class="video-box"><div id="player1"></div></div>
-  <div class="video-box"><div id="player2"></div></div>
-  <div class="video-box"><div id="player3"></div></div>
-</div>
-
-<script src="https://www.youtube.com/iframe_api"></script>
-<script src="script.js"></script>
-  
 <!-- MENU -->
 <div class="menu-btn" onclick="toggleMenu()">⋮</div>
 
@@ -193,20 +172,6 @@ function enablePush(){
 })();
 </script>
   
-<script src="app.js" defer></script>
-<!-- Volume Control -->
-<div class="volume-control">
-  🔊 <input type="range" id="volumeSlider" min="0" max="1" step="0.1" value="1">
-</div>
-  <script>
-const volumeSlider = document.getElementById("volumeSlider");
-
-document.querySelector(".volume-control").addEventListener("click", function(){
-    const videos = document.querySelectorAll("video");
-    videos.forEach(video => {
-        video.muted = !video.muted;
-    });
-});
   <script src="https://www.youtube.com/iframe_api"></script>
 <script src="script.js"></script>
 
