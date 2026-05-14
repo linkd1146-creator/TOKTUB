@@ -1,8 +1,22 @@
-body
+/* ===================== BODY ===================== */
+
+body{
+  margin:0;
+  background:black;
+  font-family:Arial, sans-serif;
+  overflow:hidden;
+  color:white;
+}
+
+/* ===================== CONTAINER ===================== */
+
 .container{
   height:100vh;
   overflow-y:scroll;
   scroll-snap-type:y mandatory;
+  margin-top:50px; /* supaya tidak ketutup topbar */
+  position:relative;
+  z-index:1;
 }
 
 .video-box{
@@ -18,10 +32,13 @@ iframe{
   pointer-events:auto;
 }
 
+/* ===================== OVERLAY ===================== */
+
 .overlay{
   position:absolute;
   bottom:80px;
   left:10px;
+  z-index:5;
 }
 
 .actions{
@@ -29,6 +46,7 @@ iframe{
   right:10px;
   bottom:100px;
   text-align:center;
+  z-index:5;
 }
 
 .actions div{
@@ -41,6 +59,8 @@ iframe{
   color:yellow;
 }
 
+/* ===================== TOPBAR ===================== */
+
 .topbar{
   position:fixed;
   top:0;
@@ -48,37 +68,39 @@ iframe{
   width:100%;
   display:flex;
   overflow-x:auto;
-  background:rgba(0,0,0,0.7);
-  z-index:9999;   /* PENTING */
+  background:rgba(0,0,0,0.85);
+  z-index:999999; /* sangat tinggi supaya bisa diklik */
 }
 
 .topbar button{
   color:white;
   background:none;
   border:none;
-  padding:10px;
+  padding:12px;
   cursor:pointer;
+  font-size:14px;
 }
 
-/* MENU */
+/* ===================== MENU ===================== */
+
 .menu-btn{
   position:fixed;
   top:10px;
   right:10px;
   font-size:28px;
-  z-index:20;
+  z-index:999999;
   cursor:pointer;
 }
 
 .dropdown{
   display:none;
   position:fixed;
-  top:40px;
+  top:50px;
   right:10px;
   background:#111;
   padding:10px;
-  border-radius:8px;
-  z-index:20;
+  border-radius:10px;
+  z-index:999999;
 }
 
 .dropdown a{
@@ -95,9 +117,20 @@ iframe{
 .show{
   display:block;
 }
-/* ========================= */
-/*       DONASI PAGE         */
-/* ========================= */
+
+/* ===================== VOLUME ===================== */
+
+.volume-control{
+  position:fixed;
+  top:60px;
+  right:10px;
+  z-index:999999;
+  background:rgba(0,0,0,0.6);
+  padding:6px 10px;
+  border-radius:10px;
+}
+
+/* ===================== DONASI PAGE ===================== */
 
 .donasi-page{
   min-height:100vh;
@@ -131,7 +164,6 @@ iframe{
   margin-bottom:20px;
 }
 
-/* QR Image */
 .qr-img{
   width:200px;
   margin:15px auto;
@@ -140,7 +172,6 @@ iframe{
   border-radius:15px;
 }
 
-/* Nominal Button */
 .nominal-grid{
   display:grid;
   grid-template-columns:repeat(3,1fr);
@@ -164,7 +195,6 @@ iframe{
   font-weight:bold;
 }
 
-/* Tombol Donasi */
 .donasi-btn{
   width:100%;
   padding:14px;
@@ -182,7 +212,6 @@ iframe{
   transform:scale(1.03);
 }
 
-/* Link kembali */
 .back-home{
   display:block;
   margin-top:20px;
@@ -194,15 +223,13 @@ iframe{
 .back-home:hover{
   color:white;
 }
+
+/* ===================== AI FLOAT ===================== */
+
 .ai-float{
-  position:fixed !important;
-
-  left:15px !important;
-  right:auto !important;
-
-  bottom:90px !important;
-  top:auto !important;
-
+  position:fixed;
+  left:15px;
+  bottom:90px;
   width:60px;
   height:60px;
   background:#2b6cff;
@@ -213,12 +240,5 @@ iframe{
   font-size:26px;
   border-radius:50%;
   text-decoration:none;
-  z-index:9999999;
-}
-.volume-control{
-  position:fixed;
-  top:50px;
-  right:10px;
-  z-index:10;
-  color:white;
+  z-index:999999;
 }
