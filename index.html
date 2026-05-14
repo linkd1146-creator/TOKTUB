@@ -12,20 +12,125 @@
 <meta name="author" content="MiniTok.fun">
 <meta name="robots" content="index, follow">
 
-<meta property="og:title" content="MiniTok.fun - Viral Videos & AI Tools">
-<meta property="og:description" content="Discover trending videos and AI tools updated daily.">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://minitok.fun">
-
 <link rel="stylesheet" href="style.css">
-<meta name="google-site-verification" content="hL_lpXhi9aIp0VqHd7rOXMjyJZlBVDGjZSnaIKMB-xU" />
+
+<style>
+body{
+  margin:0;
+  background:black;
+  font-family:sans-serif;
+  overflow:hidden;
+}
+
+/* CONTAINER */
+.container{
+  height:100vh;
+  overflow-y:scroll;
+  scroll-snap-type:y mandatory;
+}
+
+.video-box{
+  height:100vh;
+  scroll-snap-align:start;
+}
+
+iframe{
+  width:100%;
+  height:100%;
+  border:none;
+}
+
+/* TOPBAR */
+.topbar{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  display:flex;
+  overflow-x:auto;
+  background:rgba(0,0,0,0.7);
+  z-index:9999;
+}
+
+.topbar button{
+  color:white;
+  background:none;
+  border:none;
+  padding:12px;
+  cursor:pointer;
+}
+
+/* MENU */
+.menu-btn{
+  position:fixed;
+  top:10px;
+  right:10px;
+  font-size:28px;
+  z-index:10000;
+  cursor:pointer;
+  color:white;
+}
+
+.dropdown{
+  display:none;
+  position:fixed;
+  top:50px;
+  right:10px;
+  background:#111;
+  padding:10px;
+  border-radius:8px;
+  z-index:10000;
+}
+
+.dropdown a{
+  display:block;
+  padding:8px;
+  color:white;
+  text-decoration:none;
+}
+
+.dropdown a:hover{
+  background:#222;
+}
+
+.show{
+  display:block;
+}
+
+/* AI FLOAT */
+.ai-float{
+  position:fixed;
+  left:15px;
+  bottom:90px;
+  width:60px;
+  height:60px;
+  background:#2b6cff;
+  color:white;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:26px;
+  border-radius:50%;
+  text-decoration:none;
+  z-index:9999;
+}
+
+/* VOLUME */
+.volume-control{
+  position:fixed;
+  top:60px;
+  right:10px;
+  z-index:9999;
+  color:white;
+}
+</style>
 
 </head>
 
 <body>
 
-<!-- FLOAT AI (PINDAH KE BODY) -->
-<a href="ai.html" class="ai-float" title="GeminiTok AI">🤖</a>
+<!-- AI FLOAT -->
+<a href="ai.html" class="ai-float">🤖</a>
 
 <!-- MENU -->
 <div class="menu-btn" onclick="toggleMenu()">⋮</div>
@@ -33,32 +138,104 @@
 <div class="dropdown" id="dropdown">
   <a href="blog.html">Blog</a>
   <a href="about.html">About</a>
-  <a href="streaming.html">Streaming</a>
-  <a href="affiliate.html">Shopee Partner</a>
-  <a href="promo.html">Promo</a>
-  <a href="blibli.html">Blibli</a>
   <a href="donasi.html">Donasi</a>
-  <a href="disclaimer.html">Disclaimer</a>
-  <a href="privacy.html">Privacy</a>
-  <a href="terms.html">Terms</a>
 </div>
 
-<!-- CATEGORY -->
+<!-- TOPBAR -->
 <div class="topbar">
-  <button onclick="setCategory('trending')">🔥 Trending</button>
-  <button onclick="setCategory('comedy')">😂 Comedy</button>
-  <button onclick="setCategory('anime')">🎌 Anime</button>
-  <button onclick="setCategory('news')">📰 News</button>
-  <button onclick="setCategory('sports')">⚽ Sports</button>
-  <button onclick="setCategory('product')">🛒 Products</button>
+  <button>🔥 Trending</button>
+  <button>😂 Comedy</button>
+  <button>🎌 Anime</button>
+  <button>📰 News</button>
+  <button>⚽ Sports</button>
 </div>
 
-<!-- FEED -->
-<div class="container" id="feed"></div>
+<!-- VOLUME -->
+<div class="volume-control">
+  🔊 <input type="range" id="volumeSlider" min="0" max="100" value="50">
+</div>
+
+<!-- VIDEO FEED -->
+<div class="container">
+
+  <div class="video-box">
+    <div id="player1"></div>
+  </div>
+
+  <div class="video-box">
+    <div id="player2"></div>
+  </div>
+
+  <div class="video-box">
+    <div id="player3"></div>
+  </div>
+
+</div>
 
 <!-- YOUTUBE API -->
 <script src="https://www.youtube.com/iframe_api"></script>
-<script src="script.js"></script>
+
+<script>
+let players = [];
+
+function onYouTubeIframeAPIReady() {
+
+  players[0] = new YT.Player('player1', {
+    videoId: 'dQw4w9WgXcQ',
+    playerVars:{ autoplay:0, controls:0 }
+  });
+
+  players[1] = new YT.Player('player2', {
+    videoId: '9bZkp7q19f0',
+    playerVars:{ autoplay:0, controls:0 }
+  });
+
+  players[2] = new YT.Player('player3', {
+    videoId: '3tmd-ClpJxA',
+    playerVars:{ autoplay:0, controls:0 }
+  });
+}
+
+/* MENU */
+function toggleMenu(){
+  document.getElementById("dropdown").classList.toggle("show");
+}
+
+/* VOLUME */
+document.addEventListener("DOMContentLoaded", function(){
+
+  const slider = document.getElementById("volumeSlider");
+
+  slider.addEventListener("input", function(){
+    players.forEach(player=>{
+      if(player && player.setVolume){
+        player.setVolume(this.value);
+      }
+    });
+  });
+
+});
+
+/* AUTO PLAY SCROLL */
+const container = document.querySelector(".container");
+
+container.addEventListener("scroll", function(){
+
+  const boxes = document.querySelectorAll(".video-box");
+
+  boxes.forEach((box,index)=>{
+    const rect = box.getBoundingClientRect();
+    const center = window.innerHeight / 2;
+
+    if(rect.top <= center && rect.bottom >= center){
+      players[index]?.playVideo();
+    } else {
+      players[index]?.pauseVideo();
+    }
+  });
+
+});
+</script>
 
 </body>
 </html>
