@@ -1,145 +1,216 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GeminiTok AI PRO</title>
+
+<style>
+body{
+  margin:0;
+  font-family:Arial;
+  background:#0f0f0f;
+  color:white;
+  display:flex;
+  flex-direction:column;
+  height:100vh;
+}
+
+.header{
+  padding:15px;
+  background:#111;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-weight:bold;
+}
+
+.reset{
+  cursor:pointer;
+}
+
+.chat-box{
+  flex:1;
+  padding:15px;
+  overflow-y:auto;
+  display:flex;
+  flex-direction:column;
+}
+
+.message{
+  margin:8px 0;
+  max-width:80%;
+  padding:12px 15px;
+  border-radius:18px;
+  line-height:1.4;
+  font-size:14px;
+  white-space:pre-line;
+}
+
+.user{
+  background:#2b6cff;
+  align-self:flex-end;
+}
+
+.bot{
+  background:#222;
+  align-self:flex-start;
+}
+
+.input-area{
+  display:flex;
+  padding:10px;
+  background:#111;
+}
+
+input{
+  flex:1;
+  padding:10px;
+  border:none;
+  border-radius:10px;
+  font-size:14px;
+}
+
+button{
+  margin-left:8px;
+  padding:10px 12px;
+  border:none;
+  border-radius:10px;
+  cursor:pointer;
+  font-weight:bold;
+}
+
+.send-btn{ background:#2b6cff; color:white; }
+.voice-btn{ background:#444; color:white; }
+
+.typing{
+  font-style:italic;
+  color:#aaa;
+  font-size:13px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+  🤖 GeminiTok AI PRO
+  <span class="reset" onclick="resetChat()">🔄</span>
+</div>
+
+<div class="chat-box" id="chat"></div>
+
+<div class="input-area">
+  <input type="text" id="input" placeholder="Tulis pesan..." />
+  <button class="voice-btn" onclick="startVoice()">🎤</button>
+  <button class="send-btn" onclick="kirim()">Kirim</button>
+</div>
+
 <script>
 
-const API_KEY = "AIzaSyAhjmf6rNQ-xWBurQelQkMzN8kQvvgDfLw";
-<div class="ai-header">
-  <div style="display:flex; gap:10px; align-items:center;">
-    <span onclick="resetChat()" style="cursor:pointer;">🔄</span>
-    GeminiTok AI
-  </div>
+const chat = document.getElementById("chat");
+let userName = localStorage.getItem("geminitokUser");
+let history = JSON.parse(localStorage.getItem("geminitokHistory")) || [];
 
-  <span class="close-btn" onclick="toggleAI()">✖</span>
-</div>
-/* ============================= */
-/*         MEMORY SYSTEM         */
-/* ============================= */
-
-let chatHistory = JSON.parse(localStorage.getItem("geminiHistory")) || [];
-
-/* SAVE HISTORY */
 function saveHistory(){
-  localStorage.setItem("geminiHistory", JSON.stringify(chatHistory));
+  localStorage.setItem("geminitokHistory", JSON.stringify(history));
 }
 
-/* RESET CHAT */
-function resetChat(){
-  chatHistory = [];
-  localStorage.removeItem("geminiHistory");
-  document.getElementById("aiChat").innerHTML = "";
-}
-
-/* ============================= */
-/*         ADD MESSAGE           */
-/* ============================= */
-
-function addMessage(text, type){
+function tambahPesan(teks, kelas){
   const div = document.createElement("div");
-  div.className = "msg " + type;
-  div.innerHTML = formatMarkdown(text);
-
-  const chat = document.getElementById("aiChat");
+  div.className = "message " + kelas;
+  div.innerText = teks;
   chat.appendChild(div);
   chat.scrollTop = chat.scrollHeight;
+  history.push({text:teks,type:kelas});
+  saveHistory();
 }
 
-/* ============================= */
-/*      MARKDOWN FORMATTER       */
-/* ============================= */
+function typingEffect(callback){
+  const typing = document.createElement("div");
+  typing.className = "typing";
+  typing.innerText = "GeminiTok AI sedang mengetik...";
+  chat.appendChild(typing);
+  chat.scrollTop = chat.scrollHeight;
 
-function formatMarkdown(text){
-  return text
-    .replace(/\*\*(.*?)\*\*/g, "<b>$1</b>")
-    .replace(/\n/g, "<br>")
-    .replace(/```(.*?)```/gs, "<pre>$1</pre>");
+  setTimeout(()=>{
+    chat.removeChild(typing);
+    callback();
+  }, 800);
 }
 
-/* ============================= */
-/*      STREAMING EFFECT         */
-/* ============================= */
+function kirim(){
+  const input = document.getElementById("input");
+  const teks = input.value.trim();
+  if(!teks) return;
 
-function streamText(text){
-  const div = document.createElement("div");
-  div.className = "msg ai";
-  document.getElementById("aiChat").appendChild(div);
-
-  let i = 0;
-  function typing(){
-    if(i < text.length){
-      div.innerHTML = formatMarkdown(text.substring(0,i));
-      i++;
-      setTimeout(typing, 8);
-    }
-  }
-  typing();
-}
-
-/* ============================= */
-/*          SEND CHAT            */
-/* ============================= */
-
-async function sendAI(){
-
-  const input = document.getElementById("aiText");
-  const text = input.value.trim();
-  if(!text) return;
-
-  addMessage(text, "user");
+  tambahPesan(teks, "user");
   input.value = "";
 
-  chatHistory.push({
-    role:"user",
-    parts:[{
-      text:"Jawab seperti asisten AI profesional seperti ChatGPT. Gunakan bahasa natural dan jelas. "+text
-    }]
+  typingEffect(()=>{
+    const jawaban = fakeAI(teks);
+    tambahPesan(jawaban, "bot");
   });
-
-  saveHistory();
-
-  addMessage("...", "ai");
-
-  try{
-    const res = await fetch(
-      "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key="+API_KEY,
-      {
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({
-          contents: chatHistory
-        })
-      }
-    );
-
-    const data = await res.json();
-
-    const reply =
-      data?.candidates?.[0]?.content?.parts?.[0]?.text
-      || "Maaf, saya tidak bisa menjawab.";
-
-    /* hapus loading */
-    document.getElementById("aiChat").lastChild.remove();
-
-    streamText(reply);
-
-    chatHistory.push({
-      role:"model",
-      parts:[{text:reply}]
-    });
-
-    saveHistory();
-
-  }catch(e){
-    document.getElementById("aiChat").lastChild.remove();
-    addMessage("Error koneksi AI.", "ai");
-  }
 }
 
-/* ============================= */
-/*           VOICE AI            */
-/* ============================= */
+function fakeAI(pesan){
+  pesan = pesan.toLowerCase();
+
+  if(pesan.startsWith("nama saya")){
+    userName = pesan.replace("nama saya","").trim();
+    localStorage.setItem("geminitokUser", userName);
+    return "Senang berkenalan dengan kamu, " + userName + " 😊";
+  }
+
+  if(pesan.includes("halo") || pesan.includes("hai")){
+    return userName 
+      ? "Halo " + userName + " 👋 Selamat datang kembali di MiniTok!"
+      : "Halo 👋 Selamat datang di MiniTok!\nSiapa nama kamu?";
+  }
+
+  if(pesan.includes("kamu siapa")){
+    return "Saya GeminiTok AI PRO 🤖\nAsisten MiniTok yang siap membantu kamu kapan saja.";
+  }
+
+  if(pesan.includes("minitok")){
+    return "MiniTok adalah platform video vertikal 🎬\nScroll layar untuk ganti video.\nGunakan icon kanan untuk Like, Komentar, dan Share.";
+  }
+
+  if(pesan.includes("top bar")){
+    return "Top bar adalah menu kategori di bagian atas 📂\nKamu bisa pilih kategori seperti Viral, Musik, Gaming, dll.";
+  }
+
+  if(pesan.includes("menu")){
+    return "Menu ☰ biasanya berisi:\n• Beranda\n• Donasi\n• Login\n• GeminiTok AI";
+  }
+
+  if(pesan.includes("donasi")){
+    return "Halaman Donasi 💛 digunakan untuk mendukung pengembangan MiniTok.";
+  }
+
+  if(pesan.includes("freelance")){
+    return "Untuk freelance coba:\n• Fiverr\n• Upwork\n• Projects.co.id";
+  }
+
+  if(pesan.includes("cara pakai")){
+    return "Cara pakai MiniTok:\n1️⃣ Scroll untuk ganti video\n2️⃣ Klik icon kanan\n3️⃣ Gunakan kategori atas\n4️⃣ Klik 🤖 untuk AI";
+  }
+
+  return random([
+    "Menarik 🤔 Bisa jelaskan lebih detail?",
+    "Saya siap membantu 🙂 Coba tanya lagi ya.",
+    "Pertanyaan bagus 👍 Bisa dijelaskan lebih rinci?"
+  ]);
+}
+
+function random(arr){
+  return arr[Math.floor(Math.random() * arr.length)];
+}
 
 function startVoice(){
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   if(!SR){
-    alert("Voice tidak support di browser ini");
+    alert("Browser tidak mendukung Voice AI");
     return;
   }
 
@@ -147,22 +218,34 @@ function startVoice(){
   rec.lang="id-ID";
   rec.start();
 
-  rec.onresult=(e)=>{
-    document.getElementById("aiText").value =
-      e.results[0][0].transcript;
-    sendAI();
+  rec.onresult = (e)=>{
+    document.getElementById("input").value = e.results[0][0].transcript;
   };
 }
 
-/* ============================= */
-/*       LOAD OLD CHAT           */
-/* ============================= */
+function resetChat(){
+  localStorage.removeItem("geminitokHistory");
+  localStorage.removeItem("geminitokUser");
+  location.reload();
+}
 
 window.onload = function(){
-  chatHistory.forEach(msg=>{
-    const role = msg.role === "user" ? "user" : "ai";
-    addMessage(msg.parts[0].text, role);
-  });
+  if(history.length > 0){
+    history.forEach(m=>{
+      const div = document.createElement("div");
+      div.className = "message " + m.type;
+      div.innerText = m.text;
+      chat.appendChild(div);
+    });
+    chat.scrollTop = chat.scrollHeight;
+  } else {
+    setTimeout(()=>{
+      tambahPesan("Halo 👋 Selamat datang di MiniTok!\nSaya GeminiTok AI PRO 🤖\nSiapa nama kamu?", "bot");
+    }, 600);
+  }
 };
 
 </script>
+
+</body>
+</html>
