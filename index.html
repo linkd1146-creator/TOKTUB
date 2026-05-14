@@ -27,16 +27,26 @@
 </head>
 <body>
   
-<script>
-const volumeSlider = document.getElementById("volumeSlider");
+<!-- TOP BAR -->
+<div class="topbar">
+  <button>For You</button>
+  <button>Trending</button>
+</div>
 
-volumeSlider.addEventListener("input", function(){
-    const videos = document.querySelectorAll("video");
-    videos.forEach(video => {
-        video.volume = this.value;
-    });
-});
-</script>
+<!-- VOLUME CONTROL -->
+<div class="volume-control">
+  🔊 <input type="range" id="volumeSlider" min="0" max="100" value="100">
+</div>
+
+<!-- FEED -->
+<div class="container">
+  <div class="video-box"><div id="player1"></div></div>
+  <div class="video-box"><div id="player2"></div></div>
+  <div class="video-box"><div id="player3"></div></div>
+</div>
+
+<script src="https://www.youtube.com/iframe_api"></script>
+<script src="script.js"></script>
   
 <!-- MENU -->
 <div class="menu-btn" onclick="toggleMenu()">⋮</div>
