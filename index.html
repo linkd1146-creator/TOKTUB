@@ -7,7 +7,7 @@
 
 <title>MiniTok.fun - Viral Videos & AI Tools 2026</title>
 
-<meta name="description" content="Watch viral videos, AI tools reviews, trending content and tech updates daily. Discover the best tools and viral content in one place.">
+<meta name="description" content="Watch viral videos, AI tools reviews, trending content and tech updates daily.">
 <meta name="keywords" content="viral videos, AI tools, trending videos, tech review, video shorts">
 <meta name="author" content="MiniTok.fun">
 <meta name="robots" content="index, follow">
@@ -17,15 +17,14 @@
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://minitok.fun">
 
-<meta name="google-site-verification" content="hL_lpXhi9aIp0VqHd7rOXMjyJZlBVDGjZSnaIKMB-xU" />
-
 <link rel="stylesheet" href="style.css">
+<meta name="google-site-verification" content="hL_lpXhi9aIp0VqHd7rOXMjyJZlBVDGjZSnaIKMB-xU" />
 
 </head>
 
 <body>
 
-<!-- FLOAT AI BUTTON (PINDAH KE BODY) -->
+<!-- FLOAT AI (PINDAH KE BODY) -->
 <a href="ai.html" class="ai-float" title="GeminiTok AI">🤖</a>
 
 <!-- MENU -->
@@ -44,7 +43,7 @@
   <a href="terms.html">Terms</a>
 </div>
 
-<!-- CATEGORY TOPBAR -->
+<!-- CATEGORY -->
 <div class="topbar">
   <button onclick="setCategory('trending')">🔥 Trending</button>
   <button onclick="setCategory('comedy')">😂 Comedy</button>
@@ -57,76 +56,8 @@
 <!-- FEED -->
 <div class="container" id="feed"></div>
 
-<!-- SAFE POP -->
-<script>
-(function(){
-  const POP_URL = "https://n6wxm.com/vignette.min.js";
-  const EXPIRE = 24 * 60 * 60 * 1000;
-
-  function canShow(){
-    const last = localStorage.getItem("popTime");
-    if(!last) return true;
-    return (Date.now() - parseInt(last)) > EXPIRE;
-  }
-
-  function showPop(){
-    if(!canShow()) return;
-    localStorage.setItem("popTime", Date.now());
-    window.open(POP_URL, "_blank");
-  }
-
-  let clickCount = 0;
-  document.addEventListener("click", function(){
-    clickCount++;
-    if(clickCount >= 3){
-      showPop();
-    }
-  });
-})();
-</script>
-
-<!-- SAFE PUSH -->
-<div id="pushBox" style="
-position:fixed;
-bottom:80px;
-left:50%;
-transform:translateX(-50%);
-background:#111;
-color:#fff;
-padding:15px 20px;
-border-radius:12px;
-display:none;
-z-index:9999;
-box-shadow:0 0 10px rgba(0,0,0,0.5);
-text-align:center;">
-🔥 Get daily viral videos notification  
-<br><br>
-<button onclick="enablePush()" style="
-background:#ff0050;
-color:#fff;
-border:none;
-padding:8px 15px;
-border-radius:8px;
-cursor:pointer;">Enable</button>
-</div>
-
-<script>
-setTimeout(function(){
-  if(!localStorage.getItem("pushAsked")){
-    document.getElementById("pushBox").style.display="block";
-  }
-}, 60000);
-
-function enablePush(){
-  localStorage.setItem("pushAsked","yes");
-  document.getElementById("pushBox").style.display="none";
-}
-</script>
-
 <!-- YOUTUBE API -->
 <script src="https://www.youtube.com/iframe_api"></script>
-
-<!-- SCRIPT UTAMA -->
 <script src="script.js"></script>
 
 </body>
