@@ -22,7 +22,8 @@ body{
   overflow:hidden;
 }
 
-/* CONTAINER */
+/* ================= VIDEO ================= */
+
 .container{
   height:100vh;
   overflow-y:scroll;
@@ -40,7 +41,8 @@ iframe{
   border:none;
 }
 
-/* TOPBAR */
+/* ================= TOPBAR ================= */
+
 .topbar{
   position:fixed;
   top:0;
@@ -58,28 +60,32 @@ iframe{
   border:none;
   padding:12px;
   cursor:pointer;
+  font-size:14px;
 }
 
-/* MENU */
+/* ================= MENU ================= */
+
 .menu-btn{
   position:fixed;
   top:10px;
-  right:10px;
+  right:15px;
   font-size:28px;
   z-index:10000;
   cursor:pointer;
-  color:white;
+  color:#2b6cff;   /* BIRU */
+  font-weight:bold;
 }
 
 .dropdown{
   display:none;
   position:fixed;
   top:50px;
-  right:10px;
+  right:15px;
   background:#111;
   padding:10px;
   border-radius:8px;
   z-index:10000;
+  min-width:180px;
 }
 
 .dropdown a{
@@ -87,6 +93,7 @@ iframe{
   padding:8px;
   color:white;
   text-decoration:none;
+  font-size:14px;
 }
 
 .dropdown a:hover{
@@ -97,7 +104,8 @@ iframe{
   display:block;
 }
 
-/* AI FLOAT */
+/* ================= AI FLOAT ================= */
+
 .ai-float{
   position:fixed;
   left:15px;
@@ -115,11 +123,12 @@ iframe{
   z-index:9999;
 }
 
-/* VOLUME */
+/* ================= VOLUME ================= */
+
 .volume-control{
   position:fixed;
   top:60px;
-  right:10px;
+  right:15px;
   z-index:9999;
   color:white;
 }
@@ -132,22 +141,30 @@ iframe{
 <!-- AI FLOAT -->
 <a href="ai.html" class="ai-float">🤖</a>
 
-<!-- MENU -->
+<!-- MENU TITIK TIGA -->
 <div class="menu-btn" onclick="toggleMenu()">⋮</div>
 
 <div class="dropdown" id="dropdown">
   <a href="blog.html">Blog</a>
   <a href="about.html">About</a>
+  <a href="streaming.html">Streaming</a>
+  <a href="affiliate.html">Shopee Partner</a>
+  <a href="promo.html">Promo</a>
+  <a href="blibli.html">Blibli</a>
   <a href="donasi.html">Donasi</a>
+  <a href="disclaimer.html">Disclaimer</a>
+  <a href="privacy.html">Privacy</a>
+  <a href="terms.html">Terms</a>
 </div>
 
-<!-- TOPBAR -->
+<!-- CATEGORY TOPBAR -->
 <div class="topbar">
   <button>🔥 Trending</button>
   <button>😂 Comedy</button>
   <button>🎌 Anime</button>
   <button>📰 News</button>
   <button>⚽ Sports</button>
+  <button>🛒 Products</button>
 </div>
 
 <!-- VOLUME -->
@@ -178,21 +195,22 @@ iframe{
 <script>
 let players = [];
 
-function onYouTubeIframeAPIReady() {
+/* YOUTUBE READY */
+function onYouTubeIframeAPIReady(){
 
-  players[0] = new YT.Player('player1', {
-    videoId: 'dQw4w9WgXcQ',
-    playerVars:{ autoplay:0, controls:0 }
+  players[0] = new YT.Player('player1',{
+    videoId:'dQw4w9WgXcQ',
+    playerVars:{autoplay:0,controls:0}
   });
 
-  players[1] = new YT.Player('player2', {
-    videoId: '9bZkp7q19f0',
-    playerVars:{ autoplay:0, controls:0 }
+  players[1] = new YT.Player('player2',{
+    videoId:'9bZkp7q19f0',
+    playerVars:{autoplay:0,controls:0}
   });
 
-  players[2] = new YT.Player('player3', {
-    videoId: '3tmd-ClpJxA',
-    playerVars:{ autoplay:0, controls:0 }
+  players[2] = new YT.Player('player3',{
+    videoId:'3tmd-ClpJxA',
+    playerVars:{autoplay:0,controls:0}
   });
 }
 
@@ -202,14 +220,14 @@ function toggleMenu(){
 }
 
 /* VOLUME */
-document.addEventListener("DOMContentLoaded", function(){
+document.addEventListener("DOMContentLoaded",function(){
 
-  const slider = document.getElementById("volumeSlider");
+  const slider=document.getElementById("volumeSlider");
 
-  slider.addEventListener("input", function(){
-    players.forEach(player=>{
-      if(player && player.setVolume){
-        player.setVolume(this.value);
+  slider.addEventListener("input",function(){
+    players.forEach(p=>{
+      if(p && p.setVolume){
+        p.setVolume(this.value);
       }
     });
   });
@@ -217,19 +235,19 @@ document.addEventListener("DOMContentLoaded", function(){
 });
 
 /* AUTO PLAY SCROLL */
-const container = document.querySelector(".container");
+const container=document.querySelector(".container");
 
-container.addEventListener("scroll", function(){
+container.addEventListener("scroll",function(){
 
-  const boxes = document.querySelectorAll(".video-box");
+  const boxes=document.querySelectorAll(".video-box");
 
   boxes.forEach((box,index)=>{
-    const rect = box.getBoundingClientRect();
-    const center = window.innerHeight / 2;
+    const rect=box.getBoundingClientRect();
+    const center=window.innerHeight/2;
 
-    if(rect.top <= center && rect.bottom >= center){
+    if(rect.top<=center && rect.bottom>=center){
       players[index]?.playVideo();
-    } else {
+    }else{
       players[index]?.pauseVideo();
     }
   });
