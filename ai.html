@@ -1,6 +1,13 @@
 <script>
 
+window.onload = function(){
+
 const chat = document.getElementById("chat");
+if(!chat){
+  console.error("Element #chat tidak ditemukan!");
+  return;
+}
+
 let history = JSON.parse(localStorage.getItem("geminitokHistory")) || [];
 let userName = localStorage.getItem("geminitokUser") || null;
 let voiceEnabled = true;
