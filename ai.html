@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GeminiTok AI PRO MAX</title>
+<title>GeminiTok AI PRO</title>
 
 <style>
 body{
@@ -110,15 +110,45 @@ button:hover{
   to{opacity:1;transform:translateY(0);}
 }
 </style>
+  
+<body>
+  
+<div class="header">
+  <div>🤖 GeminiTok AI PRO</div>
+  <div>
+    <span onclick="startVoice()">🎤</span>
+    <span onclick="toggleVoice()">🔊</span>
+    <span onclick="resetChat()">🔄</span>
+  </div>
+</div>
+
+<div class="chat" id="chat"></div>
+
+<div class="input-area">
+  <input type="text" id="input" placeholder="Ketik pesan..." onkeydown="if(event.key==='Enter') kirim()">
+  <button onclick="kirim()">Kirim</button>
+</div>
 
 <script>
 
 const chat = document.getElementById("chat");
-
 let userName = localStorage.getItem("geminitokUser");
 let history = JSON.parse(localStorage.getItem("geminitokHistory")) || [];
 let currentLang = localStorage.getItem("geminitokLang") || "id";
-let voiceEnabled = localStorage.getItem("voiceEnabled") !== "false";
+let voiceEnabled = true;
+
+/* ================= LANGUAGE ================= */
+
+function detectLanguage(text){
+  const englishWords = ["hello","hi","what","how","why","where","who","menu","donate","help","name"];
+  const lower = text.toLowerCase();
+  return englishWords.some(w=>lower.includes(w)) ? "en" : "id";
+}
+
+function setLanguage(lang){
+  currentLang = lang;
+  localStorage.setItem("geminitokLang", lang);
+}
 
 /* ================= MESSAGE ================= */
 
@@ -135,12 +165,6 @@ function tambahPesan(text,type){
   }
 
   let i=0;
-
-  const typing=document.createElement("div");
-  typing.className="typing";
-  typing.innerText="GeminiTok sedang mengetik...";
-  chat.appendChild(typing);
-
   const interval=setInterval(()=>{
     div.innerText+=text.charAt(i);
     i++;
@@ -148,7 +172,6 @@ function tambahPesan(text,type){
 
     if(i>=text.length){
       clearInterval(interval);
-      typing.remove();
       speak(text);
       history.push({text:text,type:"bot"});
       localStorage.setItem("geminitokHistory",JSON.stringify(history));
@@ -163,6 +186,8 @@ function kirim(){
   const teks=input.value.trim();
   if(!teks) return;
 
+  setLanguage(detectLanguage(teks));
+
   tambahPesan(teks,"user");
   history.push({text:teks,type:"user"});
   localStorage.setItem("geminitokHistory",JSON.stringify(history));
@@ -175,12 +200,13 @@ function kirim(){
   },600);
 }
 
-/* ================= FAKE AI ================= */
+/* ================= FAKE AI MASTER BRAIN ================= */
 
 function fakeAI(text){
 
   const msg=text.toLowerCase();
 
+  /* ===== IDENTITAS ===== */
   if(msg.startsWith("nama saya")||msg.startsWith("my name is")){
     userName=msg.replace("nama saya","").replace("my name is","").trim();
     localStorage.setItem("geminitokUser",userName);
@@ -192,8 +218,8 @@ function fakeAI(text){
   if(msg.includes("halo")||msg.includes("hello")||msg.includes("hi")){
     if(userName){
       return currentLang==="id"
-        ? "Halo "+userName+" 👋 Ada yang bisa saya bantu?"
-        : "Hello "+userName+" 👋 How can I help?";
+        ? "Halo "+userName+" 👋 Ada yang bisa saya bantu hari ini?"
+        : "Hello "+userName+" 👋 How can I help you today?";
     }
     return currentLang==="id"
       ? "Halo 👋 Siapa nama kamu?"
@@ -201,36 +227,48 @@ function fakeAI(text){
   }
 
   if(msg.includes("kamu siapa")||msg.includes("who are you")){
-    return "Saya GeminiTok AI PRO 🤖 Asisten pintar untuk berbagai topik.";
+    return currentLang==="id"
+      ? "Saya GeminiTok AI PRO 🤖 Asisten pintar untuk semua topik kehidupan."
+      : "I am GeminiTok AI PRO 🤖 Smart assistant for all life topics.";
   }
 
-  const topics={
-    kehidupan:"Kehidupan tentang keseimbangan, tujuan, dan pertumbuhan.",
-    cinta:"Cinta membutuhkan komunikasi dan empati.",
-    bisnis:"Bisnis butuh strategi dan konsistensi.",
-    ai:"AI membantu otomatisasi dan kreativitas.",
-    sejarah:"Sejarah memberi pelajaran berharga.",
-    kesehatan:"Jaga tidur dan pola makan sehat.",
-    teknologi:"Teknologi berkembang sangat cepat.",
-    olahraga:"Olahraga meningkatkan energi dan mood."
+  /* ===== TOPIK MASTER ===== */
+
+  const categories={
+    kehidupan:"Kita bisa bahas rutinitas, kebiasaan produktif, atau refleksi hidup.",
+    cinta:"Hubungan sehat butuh komunikasi, kepercayaan, dan empati.",
+    psikologi:"Kesehatan mental penting. Overthinking bisa dikurangi dengan journaling dan mindfulness.",
+    bisnis:"Bisnis butuh validasi ide, branding, dan strategi pemasaran.",
+    uang:"Kelola uang dengan budgeting dan dana darurat.",
+    investasi:"Diversifikasi penting untuk mengurangi risiko.",
+    ai:"AI membantu menulis, coding, desain, bahkan bisnis.",
+    sejarah:"Sejarah memberi pelajaran agar tidak mengulang kesalahan.",
+    kesehatan:"Tidur cukup dan nutrisi seimbang sangat penting.",
+    teknologi:"Teknologi berkembang cepat, penting untuk adaptif.",
+    traveling:"Traveling membuka wawasan dan pengalaman baru.",
+    olahraga:"Olahraga rutin meningkatkan energi dan mood.",
+    kuliner:"Makanan tradisional punya cerita budaya unik.",
+    agama:"Spiritualitas membantu ketenangan batin.",
+    filsafat:"Makna hidup sering ditemukan melalui refleksi.",
+    random:"Itu topik menarik 😄 Bisa kita bahas lebih dalam."
   };
 
-  for(let key in topics){
+  for(let key in categories){
     if(msg.includes(key)){
-      return topics[key];
+      return categories[key];
     }
   }
 
   return currentLang==="id"
-    ? "Topik menarik 🤔 Mau bahas lebih dalam?"
-    : "Interesting topic 🤔 Want to explore more?";
+    ? "Topik itu menarik 🤔 Mau bahas lebih dalam?"
+    : "That topic is interesting 🤔 Want to explore it deeper?";
 }
 
 /* ================= VOICE ================= */
 
 function toggleVoice(){
   voiceEnabled=!voiceEnabled;
-  localStorage.setItem("voiceEnabled",voiceEnabled);
+  alert("Voice "+(voiceEnabled?"ON 🔊":"OFF 🔇"));
 }
 
 function speak(text){
@@ -245,7 +283,7 @@ function speak(text){
 
 function startVoice(){
   const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(!SR){ return; }
+  if(!SR){ alert("Voice not supported"); return; }
 
   const rec=new SR();
   rec.lang=currentLang==="id"?"id-ID":"en-US";
@@ -258,7 +296,7 @@ function startVoice(){
 /* ================= RESET ================= */
 
 function resetChat(){
-  localStorage.removeItem("geminitokHistory");
+  localStorage.clear();
   location.reload();
 }
 
@@ -276,7 +314,9 @@ window.onload=function(){
   }else{
     setTimeout(()=>{
       tambahPesan(
-        "Halo 👋 Saya GeminiTok AI PRO.\nKita bisa bahas topik apa saja seperti kehidupan, bisnis, AI, sejarah, teknologi, kesehatan 🌍",
+        currentLang==="id"
+        ? "Halo 👋 Saya GeminiTok AI PRO.\nKita bisa bahas topik apa saja — kehidupan, cinta, bisnis, AI, sejarah, kesehatan, hingga fakta unik dunia 🌍"
+        : "Hello 👋 I am GeminiTok AI PRO.\nWe can talk about anything — life, love, business, AI, history, health, and world facts 🌍",
         "bot"
       );
     },600);
@@ -284,55 +324,5 @@ window.onload=function(){
 };
 
 </script>
-
-async function smartReply(text){
-
-  if(learnedData[text]) return learnedData[text];
-
-  if(!userName){
-    if(text.toLowerCase().includes("nama saya")){
-      userName = text.replace("nama saya","").trim();
-      localStorage.setItem("userName", userName);
-      return "Senang kenal " + userName + " 😎";
-    }
-    return "Halo 👋 Siapa nama kamu?";
-  }
-
-  if(text.toLowerCase().includes("minitok")){
-    return "MiniTok.fun adalah platform video pendek & AI modern 🚀";
-  }
-
-  if(text.toLowerCase().includes("ajar")){
-    return "Oke 😎 ajarkan saya jawabannya dengan format: belajar: pertanyaan = jawaban";
-  }
-
-  if(text.toLowerCase().startsWith("belajar:")){
-    let data = text.replace("belajar:","").split("=");
-    if(data.length===2){
-      learn(data[0].trim(), data[1].trim());
-      return "Saya sudah belajar sesuatu yang baru 🧠🔥";
-    }
-  }
-
-  let translated = await autoTranslate(text);
-  return "Menarik 🤔 Dalam bahasa lain: " + translated;
-}
-
-async function sendMessage(){
-  let input = document.getElementById("userInput");
-  let text = input.value;
-  if(!text) return;
-
-  addMessage(text,"user");
-  input.value="";
-
-  let reply = await smartReply(text);
-  addMessage(reply,"bot");
-}
-
-loadHistory();
-
-</script>
-
 </body>
 </html>
