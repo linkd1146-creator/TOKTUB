@@ -12,56 +12,41 @@ let history = JSON.parse(localStorage.getItem("geminitokHistory")) || [];
 let userName = localStorage.getItem("geminitokUser") || null;
 let voiceEnabled = true;
 
+<script>
+
+window.onload = function(){
+
+const chat = document.getElementById("chat");
+let voiceEnabled = true;
+
 /* ================== DATABASE MASTER TOPIK ================== */
 
 const masterTopics = {
-
 kehidupan: "Kehidupan adalah proses perjalanan manusia dalam berkembang secara fisik, mental, sosial, dan spiritual.",
-
 mindset: "Mindset adalah pola pikir yang mempengaruhi keputusan dan tindakan seseorang.",
-
 psikologi: "Psikologi adalah ilmu yang mempelajari perilaku dan proses mental manusia.",
-
 uang: "Uang adalah alat tukar yang digunakan untuk memenuhi kebutuhan hidup.",
-
 investasi: "Investasi adalah penempatan dana untuk mendapatkan keuntungan di masa depan.",
-
 bisnis: "Bisnis adalah aktivitas menjual produk atau jasa untuk menghasilkan keuntungan.",
-
 digital: "Aset digital adalah properti berbasis internet yang memiliki nilai ekonomi.",
-
 ai: "Artificial Intelligence adalah teknologi yang memungkinkan mesin meniru kecerdasan manusia.",
-
 marketing: "Digital marketing adalah strategi pemasaran menggunakan internet dan teknologi digital.",
-
 geografi: "Geografi adalah ilmu tentang bumi dan fenomena di dalamnya.",
-
 luarangkasa: "Luar angkasa adalah ruang di luar atmosfer bumi yang berisi planet, bintang, dan galaksi.",
-
 cinta: "Cinta adalah perasaan kasih sayang mendalam terhadap seseorang.",
-
 keluarga: "Keluarga adalah unit sosial terkecil yang membentuk karakter manusia.",
-
 skill: "Skill adalah kemampuan yang dimiliki seseorang untuk menyelesaikan tugas tertentu.",
-
 hiburan: "Hiburan adalah aktivitas yang memberikan kesenangan dan relaksasi.",
-
 kesehatan: "Kesehatan adalah kondisi fisik dan mental yang seimbang.",
-
 filsafat: "Filsafat adalah ilmu yang membahas makna hidup, moralitas, dan realitas.",
-
 globalisasi: "Globalisasi adalah proses integrasi dunia melalui ekonomi, teknologi, dan budaya.",
-
 ekonomi: "Ekonomi adalah ilmu tentang produksi, distribusi, dan konsumsi sumber daya.",
-
 sejarah: "Sejarah adalah catatan peristiwa masa lalu yang membentuk peradaban.",
-
 politik: "Politik adalah proses pengambilan keputusan dalam suatu negara.",
-
 agama: "Agama adalah sistem kepercayaan dan praktik spiritual yang dianut manusia."
 };
 
-/* ================== STRUKTUR JAWABAN ================== */
+/* ================== STRUKTUR ================== */
 
 function generateStructuredAnswer(topic){
 
@@ -72,62 +57,34 @@ DEFINISI:
 ${base}
 
 PENJELASAN:
-Topik ini memiliki peran besar dalam kehidupan manusia modern dan mempengaruhi berbagai aspek sosial, ekonomi, dan pribadi.
+Topik ini memiliki peran besar dalam kehidupan manusia modern.
 
 CONTOH:
-Contoh nyata penerapannya dapat dilihat dalam kehidupan sehari-hari, baik dalam keluarga, pekerjaan, maupun masyarakat luas.
+Contoh penerapannya dapat dilihat dalam kehidupan sehari-hari.
 
 MANFAAT:
-Memberikan pemahaman lebih luas, meningkatkan kualitas hidup, dan membantu pengambilan keputusan yang lebih baik.
+Memberikan pemahaman dan meningkatkan kualitas hidup.
 
 TANTANGAN:
-Perubahan zaman, kurangnya edukasi, serta perbedaan pandangan sering menjadi hambatan.
-
-DAMPAK POSITIF:
-Mendorong kemajuan, inovasi, dan peningkatan kualitas kehidupan.
-
-DAMPAK NEGATIF:
-Jika disalahgunakan dapat menyebabkan konflik, kesenjangan, atau kerugian sosial.
-
-KELEBIHAN:
-Membantu perkembangan individu dan masyarakat.
-
-KEKURANGAN:
-Tidak semua orang memiliki akses atau pemahaman yang cukup.
-
-KRITIK:
-Sebagian pihak menilai implementasinya belum merata atau kurang adil.
-
-SARAN:
-Perlu edukasi, kolaborasi, dan pengembangan berkelanjutan.
-
-MASUKAN:
-Masyarakat perlu terbuka terhadap pembelajaran dan perubahan.
-
-TURUNAN TOPIK:
-- Analisis mendalam
-- Studi kasus
-- Strategi penerapan
-- Dampak jangka panjang
-- Perbandingan global
+Perubahan zaman dan perbedaan pandangan.
 
 KESIMPULAN:
-Topik ini sangat penting dalam membentuk masa depan individu dan peradaban dunia.
+Topik ini penting dalam membentuk masa depan individu dan masyarakat.
 `;
 }
 
-/* ================== AI ENGINE ================== */
+/* ================== AI ================== */
 
 function fakeAI(text){
 
 const msg = text.toLowerCase();
 
-if(msg.includes("halo") || msg.includes("hello")){
-return "Halo 👋 Saya GeminiTok AI PRO.\nTanyakan topik apa saja: kehidupan, bisnis, AI, ekonomi, politik, agama, globalisasi, dan lainnya.";
+if(msg.includes("halo")){
+return "Halo 👋 Saya GeminiTok AI PRO.";
 }
 
 if(msg.includes("kamu siapa")){
-return "Saya GeminiTok AI PRO 🤖 Asisten pintar berbasis sistem pengetahuan terstruktur.";
+return "Saya GeminiTok AI PRO 🤖 Asisten pintar.";
 }
 
 for(let key in masterTopics){
@@ -136,20 +93,12 @@ return generateStructuredAnswer(key);
 }
 }
 
-return "Topik belum spesifik.\nSilakan sebutkan kata kunci seperti: kehidupan, bisnis, AI, ekonomi, sejarah, politik, agama, kesehatan, dan lainnya.";
+return "Silakan sebutkan topik seperti: kehidupan, bisnis, AI, ekonomi, politik, agama.";
 }
 
-/* ================== CHAT SYSTEM ================== */
+/* ================== CHAT ================== */
 
-function tambahPesan(text,type){
-const div=document.createElement("div");
-div.className="message "+type;
-div.innerText=text;
-chat.appendChild(div);
-chat.scrollTop=chat.scrollHeight;
-}
-
-function kirim(){
+window.kirim = function(){
 const input=document.getElementById("input");
 const teks=input.value.trim();
 if(!teks) return;
@@ -163,28 +112,14 @@ tambahPesan(reply,"bot");
 },600);
 }
 
-/* ================== VOICE ================== */
-
-function toggleVoice(){
-voiceEnabled=!voiceEnabled;
-alert("Voice "+(voiceEnabled?"ON 🔊":"OFF 🔇"));
+function tambahPesan(text,type){
+const div=document.createElement("div");
+div.className="message "+type;
+div.innerText=text;
+chat.appendChild(div);
+chat.scrollTop=chat.scrollHeight;
 }
 
-function startVoice(){
-const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-if(!SR){ alert("Voice not supported"); return; }
-
-const rec=new SR();
-rec.lang="id-ID";
-rec.start();
-rec.onresult=(e)=>{
-document.getElementById("input").value=e.results[0][0].transcript;
 };
-}
-
-function resetChat(){
-localStorage.clear();
-location.reload();
-}
 
 </script>
