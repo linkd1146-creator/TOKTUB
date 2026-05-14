@@ -15,6 +15,7 @@ iframe{
   width:100%;
   height:100%;
   border:none;
+  pointer-events:auto;
 }
 
 .overlay{
@@ -43,11 +44,12 @@ iframe{
 .topbar{
   position:fixed;
   top:0;
+  left:0;
   width:100%;
   display:flex;
   overflow-x:auto;
-  background:rgba(0,0,0,0.6);
-  z-index:10;
+  background:rgba(0,0,0,0.7);
+  z-index:9999;   /* PENTING */
 }
 
 .topbar button{
