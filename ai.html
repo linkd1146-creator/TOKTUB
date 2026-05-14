@@ -1,305 +1,183 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GeminiTok AI PRO</title>
-
-<style>
-body{
-  margin:0;
-  font-family:Arial, sans-serif;
-  background:#0f0f0f;
-  color:white;
-  display:flex;
-  flex-direction:column;
-  height:100vh;
-}
-
-.header{
-  background:#111;
-  padding:12px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  border-bottom:1px solid #222;
-}
-
-.header span{
-  cursor:pointer;
-  font-size:18px;
-}
-
-.chat{
-  flex:1;
-  overflow-y:auto;
-  padding:15px;
-  display:flex;
-  flex-direction:column;
-  gap:10px;
-}
-
-.message{
-  padding:10px 14px;
-  border-radius:12px;
-  max-width:75%;
-  white-space:pre-line;
-}
-
-.user{
-  background:#2b6cff;
-  align-self:flex-end;
-}
-
-.bot{
-  background:#1e1e1e;
-  align-self:flex-start;
-}
-
-.typing{
-  font-size:12px;
-  opacity:0.6;
-}
-
-.input-area{
-  display:flex;
-  padding:10px;
-  background:#111;
-  border-top:1px solid #222;
-}
-
-input{
-  flex:1;
-  padding:10px;
-  border:none;
-  border-radius:8px;
-  outline:none;
-}
-
-button{
-  margin-left:5px;
-  padding:10px 14px;
-  border:none;
-  border-radius:8px;
-  background:#2b6cff;
-  color:white;
-  cursor:pointer;
-}
-</style>
-</head>
-
-<body>
-
-<div class="header">
-  <div>🤖 GeminiTok AI PRO</div>
-  <div>
-    <span onclick="startVoice()">🎤</span>
-    <span onclick="toggleVoice()">🔊</span>
-    <span onclick="resetChat()">🔄</span>
-  </div>
-</div>
-
-<div class="chat" id="chat"></div>
-
-<div class="input-area">
-  <input type="text" id="input" placeholder="Ketik pesan..." onkeydown="if(event.key==='Enter') kirim()">
-  <button onclick="kirim()">Kirim</button>
-</div>
-
 <script>
 
 const chat = document.getElementById("chat");
-let userName = localStorage.getItem("geminitokUser");
 let history = JSON.parse(localStorage.getItem("geminitokHistory")) || [];
-let currentLang = localStorage.getItem("geminitokLang") || "id";
+let userName = localStorage.getItem("geminitokUser") || null;
 let voiceEnabled = true;
 
-/* ================= LANGUAGE ================= */
+/* ================== DATABASE MASTER TOPIK ================== */
 
-function detectLanguage(text){
-  const englishWords = ["hello","hi","what","how","why","where","who","menu","donate","help","name"];
-  const lower = text.toLowerCase();
-  return englishWords.some(w=>lower.includes(w)) ? "en" : "id";
+const masterTopics = {
+
+kehidupan: "Kehidupan adalah proses perjalanan manusia dalam berkembang secara fisik, mental, sosial, dan spiritual.",
+
+mindset: "Mindset adalah pola pikir yang mempengaruhi keputusan dan tindakan seseorang.",
+
+psikologi: "Psikologi adalah ilmu yang mempelajari perilaku dan proses mental manusia.",
+
+uang: "Uang adalah alat tukar yang digunakan untuk memenuhi kebutuhan hidup.",
+
+investasi: "Investasi adalah penempatan dana untuk mendapatkan keuntungan di masa depan.",
+
+bisnis: "Bisnis adalah aktivitas menjual produk atau jasa untuk menghasilkan keuntungan.",
+
+digital: "Aset digital adalah properti berbasis internet yang memiliki nilai ekonomi.",
+
+ai: "Artificial Intelligence adalah teknologi yang memungkinkan mesin meniru kecerdasan manusia.",
+
+marketing: "Digital marketing adalah strategi pemasaran menggunakan internet dan teknologi digital.",
+
+geografi: "Geografi adalah ilmu tentang bumi dan fenomena di dalamnya.",
+
+luarangkasa: "Luar angkasa adalah ruang di luar atmosfer bumi yang berisi planet, bintang, dan galaksi.",
+
+cinta: "Cinta adalah perasaan kasih sayang mendalam terhadap seseorang.",
+
+keluarga: "Keluarga adalah unit sosial terkecil yang membentuk karakter manusia.",
+
+skill: "Skill adalah kemampuan yang dimiliki seseorang untuk menyelesaikan tugas tertentu.",
+
+hiburan: "Hiburan adalah aktivitas yang memberikan kesenangan dan relaksasi.",
+
+kesehatan: "Kesehatan adalah kondisi fisik dan mental yang seimbang.",
+
+filsafat: "Filsafat adalah ilmu yang membahas makna hidup, moralitas, dan realitas.",
+
+globalisasi: "Globalisasi adalah proses integrasi dunia melalui ekonomi, teknologi, dan budaya.",
+
+ekonomi: "Ekonomi adalah ilmu tentang produksi, distribusi, dan konsumsi sumber daya.",
+
+sejarah: "Sejarah adalah catatan peristiwa masa lalu yang membentuk peradaban.",
+
+politik: "Politik adalah proses pengambilan keputusan dalam suatu negara.",
+
+agama: "Agama adalah sistem kepercayaan dan praktik spiritual yang dianut manusia."
+};
+
+/* ================== STRUKTUR JAWABAN ================== */
+
+function generateStructuredAnswer(topic){
+
+const base = masterTopics[topic];
+
+return `
+DEFINISI:
+${base}
+
+PENJELASAN:
+Topik ini memiliki peran besar dalam kehidupan manusia modern dan mempengaruhi berbagai aspek sosial, ekonomi, dan pribadi.
+
+CONTOH:
+Contoh nyata penerapannya dapat dilihat dalam kehidupan sehari-hari, baik dalam keluarga, pekerjaan, maupun masyarakat luas.
+
+MANFAAT:
+Memberikan pemahaman lebih luas, meningkatkan kualitas hidup, dan membantu pengambilan keputusan yang lebih baik.
+
+TANTANGAN:
+Perubahan zaman, kurangnya edukasi, serta perbedaan pandangan sering menjadi hambatan.
+
+DAMPAK POSITIF:
+Mendorong kemajuan, inovasi, dan peningkatan kualitas kehidupan.
+
+DAMPAK NEGATIF:
+Jika disalahgunakan dapat menyebabkan konflik, kesenjangan, atau kerugian sosial.
+
+KELEBIHAN:
+Membantu perkembangan individu dan masyarakat.
+
+KEKURANGAN:
+Tidak semua orang memiliki akses atau pemahaman yang cukup.
+
+KRITIK:
+Sebagian pihak menilai implementasinya belum merata atau kurang adil.
+
+SARAN:
+Perlu edukasi, kolaborasi, dan pengembangan berkelanjutan.
+
+MASUKAN:
+Masyarakat perlu terbuka terhadap pembelajaran dan perubahan.
+
+TURUNAN TOPIK:
+- Analisis mendalam
+- Studi kasus
+- Strategi penerapan
+- Dampak jangka panjang
+- Perbandingan global
+
+KESIMPULAN:
+Topik ini sangat penting dalam membentuk masa depan individu dan peradaban dunia.
+`;
 }
 
-function setLanguage(lang){
-  currentLang = lang;
-  localStorage.setItem("geminitokLang", lang);
-}
-
-/* ================= MESSAGE ================= */
-
-function tambahPesan(text,type){
-
-  const div=document.createElement("div");
-  div.className="message "+type;
-  chat.appendChild(div);
-
-  if(type==="user"){
-    div.innerText=text;
-    chat.scrollTop=chat.scrollHeight;
-    return;
-  }
-
-  let i=0;
-  const interval=setInterval(()=>{
-    div.innerText+=text.charAt(i);
-    i++;
-    chat.scrollTop=chat.scrollHeight;
-
-    if(i>=text.length){
-      clearInterval(interval);
-      speak(text);
-      history.push({text:text,type:"bot"});
-      localStorage.setItem("geminitokHistory",JSON.stringify(history));
-    }
-  },15);
-}
-
-/* ================= SEND ================= */
-
-function kirim(){
-  const input=document.getElementById("input");
-  const teks=input.value.trim();
-  if(!teks) return;
-
-  setLanguage(detectLanguage(teks));
-
-  tambahPesan(teks,"user");
-  history.push({text:teks,type:"user"});
-  localStorage.setItem("geminitokHistory",JSON.stringify(history));
-
-  input.value="";
-
-  setTimeout(()=>{
-    const reply=fakeAI(teks);
-    tambahPesan(reply,"bot");
-  },600);
-}
-
-/* ================= FAKE AI MASTER BRAIN ================= */
+/* ================== AI ENGINE ================== */
 
 function fakeAI(text){
 
-  const msg=text.toLowerCase();
+const msg = text.toLowerCase();
 
-  /* ===== IDENTITAS ===== */
-  if(msg.startsWith("nama saya")||msg.startsWith("my name is")){
-    userName=msg.replace("nama saya","").replace("my name is","").trim();
-    localStorage.setItem("geminitokUser",userName);
-    return currentLang==="id"
-      ? "Senang berkenalan dengan kamu, "+userName+" 😊"
-      : "Nice to meet you, "+userName+" 😊";
-  }
-
-  if(msg.includes("halo")||msg.includes("hello")||msg.includes("hi")){
-    if(userName){
-      return currentLang==="id"
-        ? "Halo "+userName+" 👋 Ada yang bisa saya bantu hari ini?"
-        : "Hello "+userName+" 👋 How can I help you today?";
-    }
-    return currentLang==="id"
-      ? "Halo 👋 Siapa nama kamu?"
-      : "Hello 👋 What's your name?";
-  }
-
-  if(msg.includes("kamu siapa")||msg.includes("who are you")){
-    return currentLang==="id"
-      ? "Saya GeminiTok AI PRO 🤖 Asisten pintar untuk semua topik kehidupan."
-      : "I am GeminiTok AI PRO 🤖 Smart assistant for all life topics.";
-  }
-
-  /* ===== TOPIK MASTER ===== */
-
-  const categories={
-    kehidupan:"Kita bisa bahas rutinitas, kebiasaan produktif, atau refleksi hidup.",
-    cinta:"Hubungan sehat butuh komunikasi, kepercayaan, dan empati.",
-    psikologi:"Kesehatan mental penting. Overthinking bisa dikurangi dengan journaling dan mindfulness.",
-    bisnis:"Bisnis butuh validasi ide, branding, dan strategi pemasaran.",
-    uang:"Kelola uang dengan budgeting dan dana darurat.",
-    investasi:"Diversifikasi penting untuk mengurangi risiko.",
-    ai:"AI membantu menulis, coding, desain, bahkan bisnis.",
-    sejarah:"Sejarah memberi pelajaran agar tidak mengulang kesalahan.",
-    kesehatan:"Tidur cukup dan nutrisi seimbang sangat penting.",
-    teknologi:"Teknologi berkembang cepat, penting untuk adaptif.",
-    traveling:"Traveling membuka wawasan dan pengalaman baru.",
-    olahraga:"Olahraga rutin meningkatkan energi dan mood.",
-    kuliner:"Makanan tradisional punya cerita budaya unik.",
-    agama:"Spiritualitas membantu ketenangan batin.",
-    filsafat:"Makna hidup sering ditemukan melalui refleksi.",
-    random:"Itu topik menarik 😄 Bisa kita bahas lebih dalam."
-  };
-
-  for(let key in categories){
-    if(msg.includes(key)){
-      return categories[key];
-    }
-  }
-
-  return currentLang==="id"
-    ? "Topik itu menarik 🤔 Mau bahas lebih dalam?"
-    : "That topic is interesting 🤔 Want to explore it deeper?";
+if(msg.includes("halo") || msg.includes("hello")){
+return "Halo 👋 Saya GeminiTok AI PRO.\nTanyakan topik apa saja: kehidupan, bisnis, AI, ekonomi, politik, agama, globalisasi, dan lainnya.";
 }
 
-/* ================= VOICE ================= */
+if(msg.includes("kamu siapa")){
+return "Saya GeminiTok AI PRO 🤖 Asisten pintar berbasis sistem pengetahuan terstruktur.";
+}
+
+for(let key in masterTopics){
+if(msg.includes(key)){
+return generateStructuredAnswer(key);
+}
+}
+
+return "Topik belum spesifik.\nSilakan sebutkan kata kunci seperti: kehidupan, bisnis, AI, ekonomi, sejarah, politik, agama, kesehatan, dan lainnya.";
+}
+
+/* ================== CHAT SYSTEM ================== */
+
+function tambahPesan(text,type){
+const div=document.createElement("div");
+div.className="message "+type;
+div.innerText=text;
+chat.appendChild(div);
+chat.scrollTop=chat.scrollHeight;
+}
+
+function kirim(){
+const input=document.getElementById("input");
+const teks=input.value.trim();
+if(!teks) return;
+
+tambahPesan(teks,"user");
+input.value="";
+
+setTimeout(()=>{
+const reply=fakeAI(teks);
+tambahPesan(reply,"bot");
+},600);
+}
+
+/* ================== VOICE ================== */
 
 function toggleVoice(){
-  voiceEnabled=!voiceEnabled;
-  alert("Voice "+(voiceEnabled?"ON 🔊":"OFF 🔇"));
-}
-
-function speak(text){
-  if(!voiceEnabled) return;
-  if(!window.speechSynthesis) return;
-
-  speechSynthesis.cancel();
-  const utter=new SpeechSynthesisUtterance(text);
-  utter.lang=currentLang==="id"?"id-ID":"en-US";
-  speechSynthesis.speak(utter);
+voiceEnabled=!voiceEnabled;
+alert("Voice "+(voiceEnabled?"ON 🔊":"OFF 🔇"));
 }
 
 function startVoice(){
-  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(!SR){ alert("Voice not supported"); return; }
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+if(!SR){ alert("Voice not supported"); return; }
 
-  const rec=new SR();
-  rec.lang=currentLang==="id"?"id-ID":"en-US";
-  rec.start();
-  rec.onresult=(e)=>{
-    document.getElementById("input").value=e.results[0][0].transcript;
-  };
+const rec=new SR();
+rec.lang="id-ID";
+rec.start();
+rec.onresult=(e)=>{
+document.getElementById("input").value=e.results[0][0].transcript;
+};
 }
-
-/* ================= RESET ================= */
 
 function resetChat(){
-  localStorage.clear();
-  location.reload();
+localStorage.clear();
+location.reload();
 }
 
-/* ================= LOAD ================= */
-
-window.onload=function(){
-
-  if(history.length>0){
-    history.forEach(m=>{
-      const div=document.createElement("div");
-      div.className="message "+m.type;
-      div.innerText=m.text;
-      chat.appendChild(div);
-    });
-  }else{
-    setTimeout(()=>{
-      tambahPesan(
-        currentLang==="id"
-        ? "Halo 👋 Saya GeminiTok AI PRO.\nKita bisa bahas topik apa saja — kehidupan, cinta, bisnis, AI, sejarah, kesehatan, hingga fakta unik dunia 🌍"
-        : "Hello 👋 I am GeminiTok AI PRO.\nWe can talk about anything — life, love, business, AI, history, health, and world facts 🌍",
-        "bot"
-      );
-    },600);
-  }
-};
-
 </script>
-</body>
-</html>
