@@ -111,7 +111,16 @@ padding:8px 15px;
 border-radius:8px;
 cursor:pointer;">Enable</button>
 </div>
+<script>
+const volumeSlider = document.getElementById("volumeSlider");
 
+volumeSlider.addEventListener("input", function(){
+    const videos = document.querySelectorAll("video");
+    videos.forEach(video => {
+        video.volume = this.value;
+    });
+});
+</script>
 <script>
 setTimeout(function(){
   if(!localStorage.getItem("pushAsked")){
