@@ -83,24 +83,13 @@ iframe{
 
 /* ===================== MENU ===================== */
 
-.menu-btn{
-  position:fixed;
-  top:10px;
-  right:10px;
-  font-size:28px;
-  z-index:999999;
-  cursor:pointer;
+.topbar, .menu-btn {
+  position: relative;
+  z-index: 10000;
 }
 
-.dropdown{
-  display:none;
-  position:fixed;
-  top:50px;
-  right:10px;
-  background:#111;
-  padding:10px;
-  border-radius:10px;
-  z-index:999999;
+.dropdown {
+  z-index: 10001;
 }
 
 .dropdown a{
