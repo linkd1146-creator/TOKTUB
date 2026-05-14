@@ -22,10 +22,14 @@
   🤖
 </a>
 <meta name="google-site-verification" content="hL_lpXhi9aIp0VqHd7rOXMjyJZlBVDGjZSnaIKMB-xU" />
+<script>
 
 </head>
 <body>
-
+<!-- Volume Control -->
+<div class="volume-control">
+  🔊 <input type="range" id="volumeSlider" min="0" max="1" step="0.1" value="1">
+</div>
 <!-- MENU -->
 <div class="menu-btn" onclick="toggleMenu()">⋮</div>
 
@@ -172,6 +176,15 @@ function enablePush(){
 </script>
   
 <script src="app.js" defer></script>
+<script>
+const volumeSlider = document.getElementById("volumeSlider");
 
+document.querySelector(".volume-control").addEventListener("click", function(){
+    const videos = document.querySelectorAll("video");
+    videos.forEach(video => {
+        video.muted = !video.muted;
+    });
+});
+  
 </body>
 </html>
