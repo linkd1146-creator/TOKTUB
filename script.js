@@ -1,54 +1,96 @@
+/* ========================= */
+/*        YOUTUBE SETUP      */
+/* ========================= */
+
 let players = [];
 
+/* Dipanggil otomatis oleh YouTube API */
 function onYouTubeIframeAPIReady() {
 
   players[0] = new YT.Player('player1', {
     videoId: 'dQw4w9WgXcQ',
-    playerVars:{ autoplay:0, controls:0 }
+    playerVars:{
+      autoplay:0,
+      controls:0,
+      modestbranding:1,
+      rel:0
+    }
   });
 
   players[1] = new YT.Player('player2', {
     videoId: '9bZkp7q19f0',
-    playerVars:{ autoplay:0, controls:0 }
+    playerVars:{
+      autoplay:0,
+      controls:0,
+      modestbranding:1,
+      rel:0
+    }
   });
 
   players[2] = new YT.Player('player3', {
     videoId: '3tmd-ClpJxA',
-    playerVars:{ autoplay:0, controls:0 }
+    playerVars:{
+      autoplay:0,
+      controls:0,
+      modestbranding:1,
+      rel:0
+    }
   });
 }
 
-/* VOLUME GLOBAL */
+/* ========================= */
+/*        DOM READY          */
+/* ========================= */
+
 document.addEventListener("DOMContentLoaded", function(){
+
+  /* ===== SAFE VOLUME ===== */
 
   const slider = document.getElementById("volumeSlider");
 
-  slider.addEventListener("input", function(){
-    players.forEach(player=>{
-      if(player && player.setVolume){
-        player.setVolume(this.value);
-      }
+  if(slider){
+    slider.addEventListener("input", function(){
+      players.forEach(player=>{
+        if(player && player.setVolume){
+          player.setVolume(parseInt(this.value));
+        }
+      });
     });
-  });
+  }
 
-});
+  /* ===== AUTO PLAY SCROLL ===== */
 
-/* AUTO PLAY SAAT SCROLL */
-const container = document.querySelector(".container");
+  const container = document.querySelector(".container");
 
-container.addEventListener("scroll", function(){
+  if(container){
 
-  const boxes = document.querySelectorAll(".video-box");
+    container.addEventListener("scroll", function(){
 
-  boxes.forEach((box,index)=>{
-    const rect = box.getBoundingClientRect();
-    const center = window.innerHeight / 2;
+      const boxes = document.querySelectorAll(".video-box");
 
-    if(rect.top <= center && rect.bottom >= center){
-      players[index]?.playVideo();
-    } else {
-      players[index]?.pauseVideo();
-    }
-  });
+      boxes.forEach((box,index)=>{
+
+        const rect = box.getBoundingClientRect();
+        const center = window.innerHeight / 2;
+
+        if(rect.top <= center && rect.bottom >= center){
+
+          players.forEach((p,i)=>{
+            if(i !== index){
+              p?.pauseVideo();
+            }
+          });
+
+          players[index]?.playVideo();
+
+        } else {
+          players[index]?.pauseVideo();
+        }
+
+      });
+
+    });
+
+  }
 
 });
