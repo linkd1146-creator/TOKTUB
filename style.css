@@ -1,28 +1,19 @@
 /* ===================== BODY ===================== */
 
-body{
-  margin:0;
-  background:black;
-  font-family:Arial, sans-serif;
-  overflow:hidden;
-  color:white;
+body {
+  margin: 0;
+  background: black;
+  font-family: Arial, sans-serif;
+  overflow: hidden;
 }
 
-/* ===================== CONTAINER ===================== */
-
-.container{
-  height:100vh;
-  overflow-y:scroll;
-  scroll-snap-type:y mandatory;
-  margin-top:50px; /* supaya tidak ketutup topbar */
-  position:relative;
-  z-index:1;
-}
-
-.video-box{
-  height:100vh;
-  position:relative;
-  scroll-snap-align:start;
+.container {
+  height: 100vh;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+  position: relative;
+  z-index: 1;
+  margin-top: 60px;
 }
 
 iframe{
