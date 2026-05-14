@@ -215,13 +215,8 @@ iframe{
 }
 .volume-control{
   position:fixed;
-  top:20px;
-  right:20px;
-  z-index:9999;
-  background:rgba(0,0,0,0.6);
-  padding:8px 12px;
-  border-radius:20px;
+  top:50px;
+  right:10px;
+  z-index:10;
   color:white;
-  font-size:14px;
-  backdrop-filter: blur(10px);
 }
