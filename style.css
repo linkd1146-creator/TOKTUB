@@ -59,52 +59,47 @@ iframe{
   color:yellow;
 }
 
-/* ===================== TOPBAR ===================== */
-
-.topbar{
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  display:flex;
-  overflow-x:auto;
-  background:rgba(0,0,0,0.85);
-  z-index:999999; /* sangat tinggi supaya bisa diklik */
+/* ===== TOPBAR & MENU HARUS PALING ATAS ===== */
+.menu-btn {
+  position: fixed;
+  top: 15px;
+  right: 15px;
+  z-index: 99999;
+  cursor: pointer;
 }
 
-.topbar button{
-  color:white;
-  background:none;
-  border:none;
-  padding:12px;
-  cursor:pointer;
-  font-size:14px;
-}
-
-/* ===================== MENU ===================== */
-
-.topbar, .menu-btn {
-  position: relative;
-  z-index: 10000;
+.topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  background: rgba(0,0,0,0.8);
+  padding: 10px;
+  z-index: 99998;
 }
 
 .dropdown {
-  z-index: 10001;
+  position: fixed;
+  top: 50px;
+  right: 15px;
+  background: #111;
+  border-radius: 10px;
+  display: none;
+  flex-direction: column;
+  z-index: 99999;
 }
 
-.dropdown a{
-  display:block;
-  padding:8px;
-  color:white;
-  text-decoration:none;
+/* ===== VIDEO JANGAN NUTUPI UI ===== */
+iframe, video {
+  pointer-events: none;
 }
 
-.dropdown a:hover{
-  background:#222;
-}
-
-.show{
-  display:block;
+.video-box iframe,
+.video-box video {
+  pointer-events: auto;
 }
 
 /* ===================== VOLUME ===================== */
