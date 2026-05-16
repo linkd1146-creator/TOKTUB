@@ -5,25 +5,9 @@ const API_KEY = "AIzaSyDrOlaKeTgOo9DWw01IzdgDgENHJaX2_DI";
 let nextPageToken = "";
 let currentCategory = "trending";
 let isLoading = false;
-
 let players = [];
-let musicPlayer = null;
 let youtubeReady = false;
 let lastWatchedKeyword = "viral";
-
-/* ===================== LOAD YT API ===================== */
-
-(function(){
-  const tag = document.createElement("script");
-  tag.src = "https://www.youtube.com/iframe_api";
-  document.head.appendChild(tag);
-})();
-
-function onYouTubeIframeAPIReady(){
-  youtubeReady = true;
-  initMiniMusicPlayer();
-  setCategory("trending");
-}
 
 /* ===================== CATEGORY QUERY ===================== */
 
@@ -33,11 +17,21 @@ const categoryQuery = {
   sports: "sports highlights shorts"
 };
 
+/* ===================== YOUTUBE READY ===================== */
+
+function onYouTubeIframeAPIReady(){
+  youtubeReady = true;
+  initMiniMusicPlayer();
+  setCategory("trending");
+}
+
 /* ===================== TOPBAR COLOR ===================== */
 
 function updateTopbarColor(category){
   const topbar = document.getElementById("topbar");
-  topbar.className = "topbar " + category;
+  if(topbar){
+    topbar.className = "topbar " + category;
+  }
 }
 
 /* ===================== MINI FLOATING MUSIC ===================== */
@@ -45,12 +39,11 @@ function updateTopbarColor(category){
 let musicList = [
 "oofSnsGkops","XgdY_s1LsZc","lpdRqn6xwiM","6EEW-9NDM5k",
 "oRdxUFDoQe0","YHRvDo8rUoQ","e1mOmdykmwI","FcOctsNXyjk",
-"PlK_crOqt64","Z4DKAy7Biq8","ttcMfY7emxs","OdL3O67C-Bc",
-"-LESbtPT8uw","ufHLYw9q7vQ","KHlSq1rOmWU","0VOhIR3bnXY",
-"BeVwwJ4FpO0","2e0BMACvymo","F0d8JJUNkqo","Whyt3_lG3dA"
+"PlK_crOqt64","Z4DKAy7Biq8","ttcMfY7emxs","OdL3O67C-Bc"
 ];
 
 let musicIndex = 0;
+let miniMusicPlayer = null;
 
 function initMiniMusicPlayer(){
 
@@ -82,32 +75,40 @@ function initMiniMusicPlayer(){
 
   document.body.appendChild(bar);
 
-  musicPlayer = new YT.Player(document.createElement("div"),{
+  const hidden = document.createElement("div");
+  hidden.id = "miniMusicPlayer";
+  hidden.style.display = "none";
+  document.body.appendChild(hidden);
+
+  miniMusicPlayer = new YT.Player("miniMusicPlayer",{
     height:"0",
     width:"0",
     videoId: musicList[0],
-    playerVars:{autoplay:0}
+    playerVars:{ autoplay:0 }
   });
 }
 
 function toggleMusic(){
-  if(!musicPlayer) return;
-  if(musicPlayer.getPlayerState() === 1){
-    musicPlayer.pauseVideo();
+  if(!miniMusicPlayer) return;
+  const state = miniMusicPlayer.getPlayerState();
+  if(state === 1){
+    miniMusicPlayer.pauseVideo();
   }else{
-    musicPlayer.playVideo();
+    miniMusicPlayer.playVideo();
   }
 }
 
 function nextMusic(){
+  if(!miniMusicPlayer) return;
   musicIndex = (musicIndex+1) % musicList.length;
-  musicPlayer.loadVideoById(musicList[musicIndex]);
+  miniMusicPlayer.loadVideoById(musicList[musicIndex]);
 }
 
 function prevMusic(){
+  if(!miniMusicPlayer) return;
   musicIndex--;
   if(musicIndex < 0) musicIndex = musicList.length-1;
-  musicPlayer.loadVideoById(musicList[musicIndex]);
+  miniMusicPlayer.loadVideoById(musicList[musicIndex]);
 }
 
 /* ===================== SET CATEGORY ===================== */
@@ -149,15 +150,15 @@ async function loadVideos(reset=false){
 
   let smartQuery = categoryQuery[currentCategory];
 
-  // 🧠 AI RECOMMENDATION
+  // 🧠 SMART AI RECOMMENDATION
   if(lastWatchedKeyword){
     smartQuery += " " + lastWatchedKeyword;
   }
 
-  let url = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=6&q=${smartQuery}&key=${API_KEY}&pageToken=${nextPageToken}`;
+  const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=6&q=${smartQuery}&key=${API_KEY}&pageToken=${nextPageToken}`;
 
-  let res = await fetch(url);
-  let data = await res.json();
+  const res = await fetch(url);
+  const data = await res.json();
 
   nextPageToken = data.nextPageToken;
 
@@ -206,7 +207,7 @@ async function loadVideos(reset=false){
   isLoading = false;
 }
 
-/* ===================== AUTO PLAY + PRELOAD ===================== */
+/* ===================== AUTO PLAY + SMART PRELOAD ===================== */
 
 document.addEventListener("scroll",function(){
 
@@ -234,12 +235,10 @@ document.addEventListener("scroll",function(){
 
 /* ===================== INFINITE SCROLL ===================== */
 
-document.getElementById("feed").addEventListener("scroll",function(){
-
+document.getElementById("feed")?.addEventListener("scroll",function(){
   if(this.scrollTop + this.clientHeight >= this.scrollHeight - 500){
     loadVideos();
   }
-
 });
 
 /* ===================== ACTION BUTTON ===================== */
@@ -258,48 +257,4 @@ function shareSite(){
 
 function openCart(){
   window.open("https://collshp.com/l0ver5/","_blank");
-}
-
-/* ==========================
-   YOUTUBE IFRAME MUSIC PLAYER
-========================== */
-
-let musicPlayer;
-let musicReady = false;
-
-// WAJIB global
-window.onYouTubeIframeAPIReady = function () {
-  musicReady = true;
-  console.log("YouTube Iframe API Ready");
-};
-
-function loadMusic(videoId) {
-
-  if (!musicReady) {
-    console.log("Iframe API belum ready...");
-    return;
-  }
-
-  const container = document.getElementById("musicPlayer");
-  container.style.display = "block";
-
-  if (musicPlayer) {
-    musicPlayer.loadVideoById(videoId);
-  } else {
-    musicPlayer = new YT.Player("musicPlayer", {
-      height: "200",
-      width: "100%",
-      videoId: videoId,
-      playerVars: {
-        autoplay: 1,
-        controls: 1,
-        modestbranding: 1
-      },
-      events: {
-        onReady: (event) => {
-          event.target.playVideo();
-        }
-      }
-    });
-  }
 }
