@@ -83,6 +83,12 @@ iframe{
   z-index: 99999;
 }
 
+.topbar button.active{
+  background:#ff0050;
+  color:#fff;
+  font-weight:bold;
+}
+
 /* ===== VIDEO JANGAN NUTUPI UI ===== */
 iframe, video {
   pointer-events: none;
