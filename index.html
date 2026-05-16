@@ -13,36 +13,7 @@
 <meta name="robots" content="index, follow">
 
 <link rel="stylesheet" href="style.css">
-<div id="miniMusicBar" style="
-position:fixed;
-bottom:0;
-left:0;
-width:100%;
-height:70px;
-background:#111;
-display:flex;
-align-items:center;
-justify-content:space-between;
-padding:10px 20px;
-color:white;
-z-index:99999;
-display:none;
-">
 
-  <div id="musicPlayer" style="display:none;"></div>
-  
-<div>
-🎵 <span id="musicTitle">Music Player</span>
-</div>
-
-<div>
-<button onclick="prevMusic()">⏮</button>
-<button onclick="nextMusic()">⏭</button>
-<button onclick="toggleMusic()">⏯</button>
-</div>
-
-</div>
-  
 <style>
 body{
   margin:0;
@@ -51,7 +22,7 @@ body{
   overflow:hidden;
 }
 
-/* VIDEO */
+/* VIDEO FEED */
 .container{
   height:100vh;
   overflow-y:scroll;
@@ -61,12 +32,6 @@ body{
 .video-box{
   height:100vh;
   scroll-snap-align:start;
-}
-
-iframe{
-  width:100%;
-  height:100%;
-  border:none;
 }
 
 /* TOPBAR */
@@ -84,7 +49,8 @@ iframe{
 .topbar.trending { background:#ff004f; }
 .topbar.news { background:#0066ff; }
 .topbar.sports { background:#00c853; }
-  
+.topbar.music { background:#9c27b0; }
+
 .topbar button{
   color:white;
   background:none;
@@ -95,8 +61,7 @@ iframe{
 }
 
 .topbar button.active{
-  color:#2b6cff;
-  border-bottom:2px solid #2b6cff;
+  border-bottom:2px solid white;
 }
 
 /* MENU */
@@ -107,8 +72,7 @@ iframe{
   font-size:28px;
   z-index:10000;
   cursor:pointer;
-  color:#2b6cff;
-  font-weight:bold;
+  color:white;
 }
 
 .dropdown{
@@ -120,7 +84,6 @@ iframe{
   padding:10px;
   border-radius:8px;
   z-index:10000;
-  min-width:180px;
 }
 
 .dropdown a{
@@ -128,15 +91,28 @@ iframe{
   padding:8px;
   color:white;
   text-decoration:none;
-  font-size:14px;
 }
 
 .dropdown a:hover{
   background:#222;
 }
 
-.show{
-  display:block;
+.show{ display:block; }
+
+/* MINI MUSIC BAR */
+#miniMusicBar{
+  position:fixed;
+  bottom:0;
+  left:0;
+  width:100%;
+  height:70px;
+  background:#111;
+  display:none;
+  align-items:center;
+  justify-content:space-between;
+  padding:10px 20px;
+  color:white;
+  z-index:99999;
 }
 
 /* AI FLOAT */
@@ -185,76 +161,57 @@ iframe{
   <a href="promo.html">Promo</a>
   <a href="blibli.html">Blibli</a>
   <a href="donasi.html">Donasi</a>
-  <a href="disclaimer.html">Disclaimer</a>
   <a href="privacy.html">Privacy</a>
   <a href="terms.html">Terms</a>
 </div>
 
 <!-- TOPBAR -->
-<div class="topbar" id="topbar">
-  <button class="cat-btn active" onclick="setCategory('trending')">🔥 Trending</button>
-  <button class="cat-btn" onclick="setCategory('news')">📰 Berita</button>
-  <button class="cat-btn" onclick="setCategory('sports')">⚽ Olahraga</button>
-  <button class="cat-btn" onclick="openMusic()">🎵 Musik</button>
+<div class="topbar trending" id="topbar">
+  <button class="cat-btn active" data-cat="trending" onclick="setCategory('trending')">🔥 Trending</button>
+  <button class="cat-btn" data-cat="news" onclick="setCategory('news')">📰 Berita</button>
+  <button class="cat-btn" data-cat="sports" onclick="setCategory('sports')">⚽ Olahraga</button>
+  <button class="cat-btn" data-cat="music" onclick="setCategory('music')">🎵 Musik</button>
 </div>
 
 <!-- VIDEO FEED -->
 <div class="container" id="feed"></div>
 
-<!-- MUSIC SECTION (Hidden Default) -->
+<!-- MUSIC SECTION -->
 <div id="musicSection" style="display:none; height:100vh; background:black; color:white; text-align:center; padding-top:80px;">
   <h2>🎵 Music Player</h2>
-  <div id="musicPlayer" style="margin-top:20px;"></div>
+  <div id="musicPlayer"></div>
 
   <div style="margin-top:15px;">
     <button onclick="prevMusic()">⏮</button>
     <button onclick="nextMusic()">⏭</button>
   </div>
 </div>
-  
+
+<!-- MINI FLOATING MUSIC BAR -->
+<div id="miniMusicBar">
+  <div>🎵 <span id="musicTitle">Music Player</span></div>
+  <div>
+    <button onclick="prevMusic()">⏮</button>
+    <button onclick="nextMusic()">⏭</button>
+    <button onclick="toggleMusic()">⏯</button>
+  </div>
+</div>
+
 <!-- VOLUME -->
 <div class="volume-control">
   🔊 <input type="range" id="volumeSlider" min="0" max="100" value="50">
 </div>
 
-<!-- VIDEO FEED -->
-<div class="container" id="feed">
-
-  <div class="video-box">
-    <div id="player1"></div>
-  </div>
-
-  <div class="video-box">
-    <div id="player2"></div>
-  </div>
-
-  <div class="video-box">
-    <div id="player3"></div>
-  </div>
-
-</div>
-
-<!-- YOUTUBE API (LOAD SEKALI SAJA) -->
+<!-- YOUTUBE API -->
 <script src="https://www.youtube.com/iframe_api"></script>
 
-<!-- APP.JS -->
+<!-- APP JS -->
 <script src="app.js" defer></script>
 
 <script>
-/* MENU TOGGLE */
 function toggleMenu(){
   document.getElementById("dropdown").classList.toggle("show");
 }
-
-/* TOPBAR ACTIVE */
-const buttons = document.querySelectorAll(".cat-btn");
-
-buttons.forEach(btn=>{
-  btn.addEventListener("click",function(){
-    buttons.forEach(b=>b.classList.remove("active"));
-    this.classList.add("active");
-  });
-});
 </script>
 
 </body>
