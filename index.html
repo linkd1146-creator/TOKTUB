@@ -158,13 +158,13 @@ iframe{
 </div>
 
 <!-- CATEGORY TOPBAR -->
-<div class="topbar">
-  <button>🔥 Trending</button>
-  <button>😂 Comedy</button>
-  <button>🎌 Anime</button>
-  <button>📰 News</button>
-  <button>⚽ Sports</button>
-  <button>🛒 Products</button>
+<div class="topbar" id="topbar">
+  <button class="cat-btn active" data-cat="trending">🔥 Trending</button>
+  <button class="cat-btn" data-cat="comedy">😂 Comedy</button>
+  <button class="cat-btn" data-cat="anime">🎌 Anime</button>
+  <button class="cat-btn" data-cat="news">📰 News</button>
+  <button class="cat-btn" data-cat="sports">⚽ Sports</button>
+  <button class="cat-btn" data-cat="product">🛒 Products</button>
 </div>
 
 <!-- VOLUME -->
@@ -257,8 +257,61 @@ container.addEventListener("scroll",function(){
 </script>
 <script src="https://www.youtube.com/iframe_api"></script>
 <script src="app.js">
+  <script>
+let currentCategory = "trending";
+
+const videoData = {
+  trending: ["Trending 1","Trending 2","Trending 3"],
+  comedy: ["Comedy 1","Comedy 2"],
+  anime: ["Anime 1","Anime 2"],
+  news: ["News 1","News 2"],
+  sports: ["Sports 1","Sports 2"],
+  product: ["Product 1","Product 2"]
+};
+
+const buttons = document.querySelectorAll(".cat-btn");
+
+buttons.forEach(btn=>{
+  btn.addEventListener("click", function(){
+
+    // Hapus active semua
+    buttons.forEach(b=>b.classList.remove("active"));
+
+    // Tambah active ke tombol ini
+    this.classList.add("active");
+
+    // Ganti kategori
+    currentCategory = this.dataset.cat;
+
+    renderVideos();
+  });
+});
+
+function renderVideos(){
+  const feed = document.getElementById("feed");
+  feed.innerHTML = "";
+
+  videoData[currentCategory].forEach(video=>{
+    feed.innerHTML += `
+      <div style="
+        background:#111;
+        margin:15px;
+        padding:20px;
+        border-radius:12px;
+        cursor:pointer;
+        transition:0.3s;">
+        ${video}
+      </div>
+    `;
+  });
+}
+
+// load awal
+renderVideos();
+</script>
   
 </script>
 <script src="app.js" defer></script>  
+  
 </body>
 </html>
