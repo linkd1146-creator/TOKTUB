@@ -5,7 +5,9 @@ const API_KEY = "AIzaSyDrOlaKeTgOo9DWw01IzdgDgENHJaX2_DI";
 let nextPageToken = "";
 let currentCategory = "trending";
 let isLoading = false;
-let players = [];
+
+let players = [];          // untuk FEED
+let musicPlayer = null;    // khusus MUSIC
 let youtubeReady = false;
 
 /* ===================== LOAD YOUTUBE IFRAME API ===================== */
@@ -18,7 +20,9 @@ let youtubeReady = false;
 
 function onYouTubeIframeAPIReady(){
   youtubeReady = true;
-  setCategory("trending");
+
+  initMusicPlayer();   // init music dulu
+  setCategory("trending"); // baru load feed
 }
 
 /* ===================== DATA QUERY PER KATEGORI ===================== */
@@ -31,6 +35,30 @@ const categoryQuery = {
   sports: "sports shorts",
   product: "product review shorts"
 };
+
+/* ===================== MUSIC SYSTEM ===================== */
+
+function initMusicPlayer(){
+
+  if(!document.getElementById("musicPlayer")) return;
+
+  musicPlayer = new YT.Player("musicPlayer",{
+    videoId: "kJQP7kiw5Fk", // default music
+    playerVars:{
+      autoplay:0,
+      controls:1,
+      modestbranding:1,
+      rel:0
+    }
+  });
+
+}
+
+function changeMusic(videoId){
+  if(musicPlayer){
+    musicPlayer.loadVideoById(videoId);
+  }
+}
 
 /* ===================== TOGGLE MENU ===================== */
 
@@ -57,7 +85,7 @@ async function setCategory(category){
   await loadVideos(true);
 }
 
-/* ===================== LOAD VIDEO DARI API ===================== */
+/* ===================== LOAD VIDEO DARI API (FEED) ===================== */
 
 async function loadVideos(reset = false){
 
@@ -85,7 +113,7 @@ async function loadVideos(reset = false){
 
   if(data.items){
 
-    data.items.forEach((item,index)=>{
+    data.items.forEach((item)=>{
 
       const videoId = item.id.videoId;
       const boxIndex = players.length;
@@ -125,7 +153,7 @@ async function loadVideos(reset = false){
   isLoading = false;
 }
 
-/* ===================== AUTO PLAY SAAT SCROLL ===================== */
+/* ===================== AUTO PLAY FEED ===================== */
 
 document.addEventListener("scroll",function(){
 
