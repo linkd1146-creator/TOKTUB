@@ -22,8 +22,7 @@ body{
   overflow:hidden;
 }
 
-/* ================= VIDEO ================= */
-
+/* VIDEO */
 .container{
   height:100vh;
   overflow-y:scroll;
@@ -41,8 +40,7 @@ iframe{
   border:none;
 }
 
-/* ================= TOPBAR ================= */
-
+/* TOPBAR */
 .topbar{
   position:fixed;
   top:0;
@@ -63,8 +61,12 @@ iframe{
   font-size:14px;
 }
 
-/* ================= MENU ================= */
+.topbar button.active{
+  color:#2b6cff;
+  border-bottom:2px solid #2b6cff;
+}
 
+/* MENU */
 .menu-btn{
   position:fixed;
   top:10px;
@@ -72,7 +74,7 @@ iframe{
   font-size:28px;
   z-index:10000;
   cursor:pointer;
-  color:#2b6cff;   /* BIRU */
+  color:#2b6cff;
   font-weight:bold;
 }
 
@@ -104,8 +106,7 @@ iframe{
   display:block;
 }
 
-/* ================= AI FLOAT ================= */
-
+/* AI FLOAT */
 .ai-float{
   position:fixed;
   left:15px;
@@ -123,8 +124,7 @@ iframe{
   z-index:9999;
 }
 
-/* ================= VOLUME ================= */
-
+/* VOLUME */
 .volume-control{
   position:fixed;
   top:60px;
@@ -141,7 +141,7 @@ iframe{
 <!-- AI FLOAT -->
 <a href="ai.html" class="ai-float">🤖</a>
 
-<!-- MENU TITIK TIGA -->
+<!-- MENU -->
 <div class="menu-btn" onclick="toggleMenu()">⋮</div>
 
 <div class="dropdown" id="dropdown">
@@ -157,7 +157,7 @@ iframe{
   <a href="terms.html">Terms</a>
 </div>
 
-<!-- CATEGORY TOPBAR -->
+<!-- TOPBAR -->
 <div class="topbar" id="topbar">
   <button class="cat-btn active" data-cat="trending">🔥 Trending</button>
   <button class="cat-btn" data-cat="comedy">😂 Comedy</button>
@@ -173,7 +173,7 @@ iframe{
 </div>
 
 <!-- VIDEO FEED -->
-<div class="container">
+<div class="container" id="feed">
 
   <div class="video-box">
     <div id="player1"></div>
@@ -189,129 +189,28 @@ iframe{
 
 </div>
 
-<!-- YOUTUBE API -->
+<!-- YOUTUBE API (LOAD SEKALI SAJA) -->
 <script src="https://www.youtube.com/iframe_api"></script>
 
+<!-- APP.JS -->
+<script src="app.js" defer></script>
+
 <script>
-let players = [];
-
-/* YOUTUBE READY */
-function onYouTubeIframeAPIReady(){
-
-  players[0] = new YT.Player('player1',{
-    videoId:'dQw4w9WgXcQ',
-    playerVars:{autoplay:0,controls:0}
-  });
-
-  players[1] = new YT.Player('player2',{
-    videoId:'9bZkp7q19f0',
-    playerVars:{autoplay:0,controls:0}
-  });
-
-  players[2] = new YT.Player('player3',{
-    videoId:'3tmd-ClpJxA',
-    playerVars:{autoplay:0,controls:0}
-  });
-}
-
-/* MENU */
+/* MENU TOGGLE */
 function toggleMenu(){
   document.getElementById("dropdown").classList.toggle("show");
 }
 
-/* VOLUME */
-document.addEventListener("DOMContentLoaded",function(){
-
-  const slider=document.getElementById("volumeSlider");
-
-  slider.addEventListener("input",function(){
-    players.forEach(p=>{
-      if(p && p.setVolume){
-        p.setVolume(this.value);
-      }
-    });
-  });
-
-});
-
-/* AUTO PLAY SCROLL */
-const container=document.querySelector(".container");
-
-container.addEventListener("scroll",function(){
-
-  const boxes=document.querySelectorAll(".video-box");
-
-  boxes.forEach((box,index)=>{
-    const rect=box.getBoundingClientRect();
-    const center=window.innerHeight/2;
-
-    if(rect.top<=center && rect.bottom>=center){
-      players[index]?.playVideo();
-    }else{
-      players[index]?.pauseVideo();
-    }
-  });
-
-});
-  <div class="container"></div>
-</script>
-<script src="https://www.youtube.com/iframe_api"></script>
-<script src="app.js">
-  <script>
-let currentCategory = "trending";
-
-const videoData = {
-  trending: ["Trending 1","Trending 2","Trending 3"],
-  comedy: ["Comedy 1","Comedy 2"],
-  anime: ["Anime 1","Anime 2"],
-  news: ["News 1","News 2"],
-  sports: ["Sports 1","Sports 2"],
-  product: ["Product 1","Product 2"]
-};
-
+/* TOPBAR ACTIVE */
 const buttons = document.querySelectorAll(".cat-btn");
 
 buttons.forEach(btn=>{
-  btn.addEventListener("click", function(){
-
-    // Hapus active semua
+  btn.addEventListener("click",function(){
     buttons.forEach(b=>b.classList.remove("active"));
-
-    // Tambah active ke tombol ini
     this.classList.add("active");
-
-    // Ganti kategori
-    currentCategory = this.dataset.cat;
-
-    renderVideos();
   });
 });
-
-function renderVideos(){
-  const feed = document.getElementById("feed");
-  feed.innerHTML = "";
-
-  videoData[currentCategory].forEach(video=>{
-    feed.innerHTML += `
-      <div style="
-        background:#111;
-        margin:15px;
-        padding:20px;
-        border-radius:12px;
-        cursor:pointer;
-        transition:0.3s;">
-        ${video}
-      </div>
-    `;
-  });
-}
-
-// load awal
-renderVideos();
 </script>
-  
-</script>
-<script src="app.js" defer></script>  
-  
+
 </body>
 </html>
