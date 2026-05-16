@@ -12,7 +12,6 @@ let currentCategory = "trending";
 /* ===================== DATA VIDEO PER KATEGORI (MANUAL MODE) ===================== */
 
 const videoData = {
-
   trending: ["dQw4w9WgXcQ","9bZkp7q19f0","3tmd-ClpJxA"],
   comedy: ["l482T0yNkeo","kJQP7kiw5Fk","RgKAFK5djSk"],
   anime: ["QczGoCmX-pI","6hzrDeceEKc","w7ejDZ8SWv8"],
@@ -33,6 +32,17 @@ function setCategory(category){
 
   currentCategory = category;
 
+  // ====== TOPBAR ACTIVE COLOR ======
+  document.querySelectorAll(".topbar button").forEach(btn=>{
+    btn.classList.remove("active");
+  });
+
+  document.querySelectorAll(".topbar button").forEach(btn=>{
+    if(btn.getAttribute("onclick")?.includes(category)){
+      btn.classList.add("active");
+    }
+  });
+
   const feed = document.querySelector(".container");
 
   // Stop old players
@@ -45,7 +55,7 @@ function setCategory(category){
   players = [];
   feed.innerHTML = "";
 
-  // ===== MODE MANUAL (videoData) =====
+  // ===== MODE MANUAL =====
   videoData[category].forEach((videoId,index)=>{
 
     const box = document.createElement("div");
@@ -63,7 +73,6 @@ function setCategory(category){
     `;
 
     feed.appendChild(box);
-
   });
 
   setTimeout(initPlayers,300);
@@ -81,7 +90,8 @@ function initPlayers(){
         autoplay:0,
         controls:0,
         modestbranding:1,
-        rel:0
+        rel:0,
+        playsinline:1
       }
     });
 
@@ -120,24 +130,59 @@ document.addEventListener("DOMContentLoaded",function(){
 
 });
 
-/* ===================== MODE API (OPTIONAL LOAD MORE) ===================== */
+/* ===================== MODE API (OPTIONAL UPGRADE) ===================== */
 
-async function loadVideos(){
+async function loadVideosFromAPI(query){
 
   if(isLoading) return;
   isLoading = true;
 
-  let url = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=5&q=${currentQuery}&key=${API_KEY}&pageToken=${nextPageToken}`;
+  let url = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=6&q=${query}&key=${API_KEY}`;
 
   let res = await fetch(url);
   let data = await res.json();
 
-  nextPageToken = data.nextPageToken;
+  const feed = document.querySelector(".container");
+  feed.innerHTML = "";
+  players = [];
 
   if(data.items){
-    data.items.forEach(item=>{
-      console.log("API Video:", item.id.videoId);
+
+    data.items.forEach((item,index)=>{
+
+      const videoId = item.id.videoId;
+
+      const box = document.createElement("div");
+      box.className = "video-box";
+
+      box.innerHTML = `
+        <div id="player${index}"></div>
+
+        <div class="actions">
+          <div onclick="likeRedirect()">❤️</div>
+          <div onclick="openComment('${videoId}')">💬</div>
+          <div onclick="shareSite()">🔗</div>
+          <div onclick="openCart()">🛒</div>
+        </div>
+      `;
+
+      feed.appendChild(box);
     });
+
+    setTimeout(()=>{
+      data.items.forEach((item,index)=>{
+        players[index] = new YT.Player("player"+index,{
+          videoId: item.id.videoId,
+          playerVars:{
+            autoplay:0,
+            controls:0,
+            modestbranding:1,
+            rel:0,
+            playsinline:1
+          }
+        });
+      });
+    },300);
   }
 
   isLoading = false;
