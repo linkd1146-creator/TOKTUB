@@ -3,21 +3,33 @@
 const API_KEY = "AIzaSyDrOlaKeTgOo9DWw01IzdgDgENHJaX2_DI";
 
 let nextPageToken = "";
-let currentQuery = "trending shorts";
-let isLoading = false;
-
-let players = [];
 let currentCategory = "trending";
+let isLoading = false;
+let players = [];
+let youtubeReady = false;
 
-/* ===================== DATA VIDEO PER KATEGORI (MANUAL MODE) ===================== */
+/* ===================== LOAD YOUTUBE IFRAME API ===================== */
 
-const videoData = {
-  trending: ["dQw4w9WgXcQ","9bZkp7q19f0","3tmd-ClpJxA"],
-  comedy: ["l482T0yNkeo","kJQP7kiw5Fk","RgKAFK5djSk"],
-  anime: ["QczGoCmX-pI","6hzrDeceEKc","w7ejDZ8SWv8"],
-  news: ["21X5lGlDOfg","hHW1oY26kxQ","M7lc1UVf-VE"],
-  sports: ["kXYiU_JCYtU","JGwWNGJdvx8","CevxZvSJLk8"],
-  product: ["e-ORhEE9VVg","uelHwf8o7_U","2Vv-BfVoq4g"]
+(function loadYouTubeAPI(){
+  const tag = document.createElement("script");
+  tag.src = "https://www.youtube.com/iframe_api";
+  document.head.appendChild(tag);
+})();
+
+function onYouTubeIframeAPIReady(){
+  youtubeReady = true;
+  setCategory("trending");
+}
+
+/* ===================== DATA QUERY PER KATEGORI ===================== */
+
+const categoryQuery = {
+  trending: "viral shorts 2026",
+  comedy: "funny shorts",
+  anime: "anime shorts",
+  news: "news shorts",
+  sports: "sports shorts",
+  product: "product review shorts"
 };
 
 /* ===================== TOGGLE MENU ===================== */
@@ -28,135 +40,61 @@ function toggleMenu(){
 
 /* ===================== SET CATEGORY ===================== */
 
-function setCategory(category){
+async function setCategory(category){
+
+  if(!youtubeReady) return;
 
   currentCategory = category;
+  nextPageToken = "";
 
-  // ====== TOPBAR ACTIVE COLOR ======
   document.querySelectorAll(".topbar button").forEach(btn=>{
     btn.classList.remove("active");
   });
 
-  document.querySelectorAll(".topbar button").forEach(btn=>{
-    if(btn.getAttribute("onclick")?.includes(category)){
-      btn.classList.add("active");
-    }
-  });
+  document.querySelector(`button[onclick="setCategory('${category}')"]`)
+    ?.classList.add("active");
 
-  const feed = document.querySelector(".container");
-
-  // Stop old players
-  players.forEach(p=>{
-    if(p && p.destroy){
-      p.destroy();
-    }
-  });
-
-  players = [];
-  feed.innerHTML = "";
-
-  // ===== MODE MANUAL =====
-  videoData[category].forEach((videoId,index)=>{
-
-    const box = document.createElement("div");
-    box.className = "video-box";
-
-    box.innerHTML = `
-      <div id="player${index}"></div>
-
-      <div class="actions">
-        <div onclick="likeRedirect()">❤️</div>
-        <div onclick="openComment('${videoId}')">💬</div>
-        <div onclick="shareSite()">🔗</div>
-        <div onclick="openCart()">🛒</div>
-      </div>
-    `;
-
-    feed.appendChild(box);
-  });
-
-  setTimeout(initPlayers,300);
+  await loadVideos(true);
 }
 
-/* ===================== INIT YOUTUBE PLAYER ===================== */
+/* ===================== LOAD VIDEO DARI API ===================== */
 
-function initPlayers(){
-
-  videoData[currentCategory].forEach((videoId,index)=>{
-
-    players[index] = new YT.Player("player"+index,{
-      videoId: videoId,
-      playerVars:{
-        autoplay:0,
-        controls:0,
-        modestbranding:1,
-        rel:0,
-        playsinline:1
-      }
-    });
-
-  });
-
-}
-
-/* ===================== YOUTUBE READY ===================== */
-
-function onYouTubeIframeAPIReady(){
-  initPlayers();
-}
-
-/* ===================== AUTO PLAY SAAT SCROLL ===================== */
-
-document.addEventListener("DOMContentLoaded",function(){
-
-  const container = document.querySelector(".container");
-
-  container.addEventListener("scroll",function(){
-
-    const boxes = document.querySelectorAll(".video-box");
-
-    boxes.forEach((box,index)=>{
-      const rect = box.getBoundingClientRect();
-      const center = window.innerHeight/2;
-
-      if(rect.top <= center && rect.bottom >= center){
-        players[index]?.playVideo();
-      }else{
-        players[index]?.pauseVideo();
-      }
-    });
-
-  });
-
-});
-
-/* ===================== MODE API (OPTIONAL UPGRADE) ===================== */
-
-async function loadVideosFromAPI(query){
+async function loadVideos(reset = false){
 
   if(isLoading) return;
   isLoading = true;
 
-  let url = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=6&q=${query}&key=${API_KEY}`;
+  const feed = document.querySelector(".container");
+
+  if(reset){
+    players.forEach(p=>{
+      if(p && p.destroy) p.destroy();
+    });
+    players = [];
+    feed.innerHTML = "";
+  }
+
+  const query = categoryQuery[currentCategory];
+
+  let url = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=6&q=${query}&key=${API_KEY}&pageToken=${nextPageToken}`;
 
   let res = await fetch(url);
   let data = await res.json();
 
-  const feed = document.querySelector(".container");
-  feed.innerHTML = "";
-  players = [];
+  nextPageToken = data.nextPageToken;
 
   if(data.items){
 
     data.items.forEach((item,index)=>{
 
       const videoId = item.id.videoId;
+      const boxIndex = players.length;
 
       const box = document.createElement("div");
       box.className = "video-box";
 
       box.innerHTML = `
-        <div id="player${index}"></div>
+        <div id="player${boxIndex}"></div>
 
         <div class="actions">
           <div onclick="likeRedirect()">❤️</div>
@@ -167,47 +105,59 @@ async function loadVideosFromAPI(query){
       `;
 
       feed.appendChild(box);
-    });
 
-    setTimeout(()=>{
-      data.items.forEach((item,index)=>{
-        players[index] = new YT.Player("player"+index,{
-          videoId: item.id.videoId,
+      setTimeout(()=>{
+        players[boxIndex] = new YT.Player("player"+boxIndex,{
+          videoId: videoId,
           playerVars:{
             autoplay:0,
             controls:0,
             modestbranding:1,
-            rel:0,
-            playsinline:1
+            rel:0
           }
         });
-      });
-    },300);
+      },300);
+
+    });
+
   }
 
   isLoading = false;
 }
 
+/* ===================== AUTO PLAY SAAT SCROLL ===================== */
+
+document.addEventListener("scroll",function(){
+
+  const boxes = document.querySelectorAll(".video-box");
+
+  boxes.forEach((box,index)=>{
+    const rect = box.getBoundingClientRect();
+    const center = window.innerHeight/2;
+
+    if(rect.top <= center && rect.bottom >= center){
+      players[index]?.playVideo();
+    }else{
+      players[index]?.pauseVideo();
+    }
+  });
+
+});
+
 /* ===================== ACTION BUTTON ===================== */
 
 function likeRedirect(){
-  window.open("https://minitok.fun/donasi.html");
+  window.open("https://minitok.fun/donasi.html","_blank");
 }
 
 function openComment(videoId){
-  window.open(`https://www.youtube.com/watch?v=${videoId}`);
+  window.open(`https://www.youtube.com/watch?v=${videoId}`,"_blank");
 }
 
 function shareSite(){
-  window.open("https://omg10.com/4/10980966/");
+  window.open("https://omg10.com/4/10980966/","_blank");
 }
 
 function openCart(){
-  window.open("https://collshp.com/l0ver5/");
+  window.open("https://collshp.com/l0ver5/","_blank");
 }
-
-/* ===================== LOAD AWAL ===================== */
-
-document.addEventListener("DOMContentLoaded",()=>{
-  setCategory("trending");
-});
