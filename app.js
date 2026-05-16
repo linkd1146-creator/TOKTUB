@@ -6,13 +6,13 @@ let nextPageToken = "";
 let currentCategory = "trending";
 let isLoading = false;
 
-let players = [];          // untuk FEED
-let musicPlayer = null;    // khusus MUSIC
+let players = [];          // FEED players
+let musicPlayer = null;    // MUSIC player
 let youtubeReady = false;
 
 /* ===================== LOAD YOUTUBE IFRAME API ===================== */
 
-(function loadYouTubeAPI(){
+(function(){
   const tag = document.createElement("script");
   tag.src = "https://www.youtube.com/iframe_api";
   document.head.appendChild(tag);
@@ -20,8 +20,7 @@ let youtubeReady = false;
 
 function onYouTubeIframeAPIReady(){
   youtubeReady = true;
-
-  initMusicPlayer();   // init music dulu
+  initMusicSection();   // init music dulu
   setCategory("trending"); // baru load feed
 }
 
@@ -36,14 +35,43 @@ const categoryQuery = {
   product: "product review shorts"
 };
 
-/* ===================== MUSIC SYSTEM ===================== */
+/* ===================== MUSIC LIST ===================== */
 
-function initMusicPlayer(){
+let musicList = [
+"oofSnsGkops","XgdY_s1LsZc","lpdRqn6xwiM","6EEW-9NDM5k",
+"oRdxUFDoQe0","YHRvDo8rUoQ","e1mOmdykmwI","FcOctsNXyjk"
+];
 
-  if(!document.getElementById("musicPlayer")) return;
+let musicIndex = 0;
+
+/* ===================== INIT MUSIC SECTION ===================== */
+
+function initMusicSection(){
+
+  if(document.getElementById("musicSection")) return;
+
+  const section = document.createElement("div");
+  section.id = "musicSection";
+  section.style.padding = "15px";
+  section.style.background = "#000";
+  section.style.color = "#fff";
+  section.style.textAlign = "center";
+
+  section.innerHTML = `
+    <h3>🎵 Music Player</h3>
+    <div id="musicPlayer"></div>
+    <div style="margin-top:10px;">
+      <button onclick="prevMusic()">⏮</button>
+      <button onclick="nextMusic()">⏭</button>
+    </div>
+  `;
+
+  document.body.insertBefore(section, document.body.firstChild);
 
   musicPlayer = new YT.Player("musicPlayer",{
-    videoId: "kJQP7kiw5Fk", // default music
+    height:"250",
+    width:"100%",
+    videoId: musicList[0],
     playerVars:{
       autoplay:0,
       controls:1,
@@ -51,19 +79,26 @@ function initMusicPlayer(){
       rel:0
     }
   });
-
 }
 
-function changeMusic(videoId){
-  if(musicPlayer){
-    musicPlayer.loadVideoById(videoId);
-  }
+/* ===================== MUSIC CONTROL ===================== */
+
+function nextMusic(){
+  musicIndex++;
+  if(musicIndex >= musicList.length) musicIndex = 0;
+  musicPlayer.loadVideoById(musicList[musicIndex]);
+}
+
+function prevMusic(){
+  musicIndex--;
+  if(musicIndex < 0) musicIndex = musicList.length - 1;
+  musicPlayer.loadVideoById(musicList[musicIndex]);
 }
 
 /* ===================== TOGGLE MENU ===================== */
 
 function toggleMenu(){
-  document.getElementById("dropdown").classList.toggle("show");
+  document.getElementById("dropdown")?.classList.toggle("show");
 }
 
 /* ===================== SET CATEGORY ===================== */
@@ -85,7 +120,7 @@ async function setCategory(category){
   await loadVideos(true);
 }
 
-/* ===================== LOAD VIDEO DARI API (FEED) ===================== */
+/* ===================== LOAD FEED VIDEO ===================== */
 
 async function loadVideos(reset = false){
 
@@ -93,6 +128,7 @@ async function loadVideos(reset = false){
   isLoading = true;
 
   const feed = document.querySelector(".container");
+  if(!feed) return;
 
   if(reset){
     players.forEach(p=>{
@@ -134,17 +170,15 @@ async function loadVideos(reset = false){
 
       feed.appendChild(box);
 
-      setTimeout(()=>{
-        players[boxIndex] = new YT.Player("player"+boxIndex,{
-          videoId: videoId,
-          playerVars:{
-            autoplay:0,
-            controls:0,
-            modestbranding:1,
-            rel:0
-          }
-        });
-      },300);
+      players[boxIndex] = new YT.Player("player"+boxIndex,{
+        videoId: videoId,
+        playerVars:{
+          autoplay:0,
+          controls:0,
+          modestbranding:1,
+          rel:0
+        }
+      });
 
     });
 
@@ -189,95 +223,3 @@ function shareSite(){
 function openCart(){
   window.open("https://collshp.com/l0ver5/","_blank");
 }
-/* ================= MUSIC + FEED HYBRID SYSTEM ================= */
-
-let musicPlayer = null;
-let musicList = [
-"oofSnsGkops",
-"XgdY_s1LsZc",
-"lpdRqn6xwiM",
-"6EEW-9NDM5k",
-"oRdxUFDoQe0",
-"YHRvDo8rUoQ",
-"e1mOmdykmwI",
-"FcOctsNXyjk",
-"PlK_crOqt64",
-"Z4DKAy7Biq8",
-"ttcMfY7emxs",
-"OdL3O67C-Bc",
-"-LESbtPT8uw",
-"ufHLYw9q7vQ",
-"KHlSq1rOmWU",
-"0VOhIR3bnXY",
-"BeVwwJ4FpO0",
-"2e0BMACvymo",
-"F0d8JJUNkqo",
-"Whyt3_lG3dA"
-];
-
-let musicIndex = 0;
-
-/* ================= WAIT UNTIL YT READY ================= */
-
-function waitForYT(callback){
-  if(typeof YT !== "undefined" && YT.Player){
-    callback();
-  } else {
-    setTimeout(()=>waitForYT(callback),300);
-  }
-}
-
-/* ================= INIT MUSIC SECTION ================= */
-
-function initMusicSection(){
-
-  if(document.getElementById("musicSection")) return;
-
-  const section = document.createElement("div");
-  section.id = "musicSection";
-  section.style.padding = "20px";
-  section.style.background = "#000";
-  section.style.color = "#fff";
-
-  section.innerHTML = `
-    <h3>🎵 Music Player</h3>
-    <div id="musicPlayer"></div>
-    <div style="margin-top:10px;">
-      <button onclick="prevMusic()">⏮</button>
-      <button onclick="nextMusic()">⏭</button>
-    </div>
-  `;
-
-  document.body.insertBefore(section, document.body.firstChild);
-
-  musicPlayer = new YT.Player("musicPlayer",{
-    height:"250",
-    width:"100%",
-    videoId: musicList[0],
-    playerVars:{
-      autoplay:0,
-      controls:1
-    }
-  });
-
-}
-
-/* ================= MUSIC CONTROL ================= */
-
-function nextMusic(){
-  musicIndex++;
-  if(musicIndex >= musicList.length) musicIndex = 0;
-  musicPlayer.loadVideoById(musicList[musicIndex]);
-}
-
-function prevMusic(){
-  musicIndex--;
-  if(musicIndex < 0) musicIndex = musicList.length - 1;
-  musicPlayer.loadVideoById(musicList[musicIndex]);
-}
-
-/* ================= SYNC WITH EXISTING YT ================= */
-
-waitForYT(()=>{
-  initMusicSection();
-});
