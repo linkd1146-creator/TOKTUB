@@ -256,3 +256,8 @@ iframe, video {
   font-weight:bold;
   box-shadow:0 0 10px rgba(255,0,80,0.6);
 }
+
+.topbar.trending { background:#ff004f; }
+.topbar.news { background:#0066ff; }
+.topbar.sports { background:#00c853; }
+.topbar.music { background:#9c27b0; }
