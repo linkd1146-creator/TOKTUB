@@ -28,11 +28,8 @@ function onYouTubeIframeAPIReady(){
 
 const categoryQuery = {
   trending: "viral shorts 2026",
-  comedy: "funny shorts",
-  anime: "anime shorts",
-  news: "news shorts",
-  sports: "sports shorts",
-  product: "product review shorts"
+  news: "breaking news shorts",
+  sports: "sports highlights shorts"
 };
 
 /* ===================== MUSIC LIST ===================== */
@@ -223,3 +220,68 @@ function shareSite(){
 function openCart(){
   window.open("https://collshp.com/l0ver5/","_blank");
 }
+
+/* ================= TOPBAR SWITCH SYSTEM ================= */
+
+function setCategory(category){
+
+  if(!youtubeReady) return;
+
+  // tampilkan feed, sembunyikan music
+  document.getElementById("feed").style.display = "block";
+  document.getElementById("musicSection").style.display = "none";
+
+  currentCategory = category;
+  nextPageToken = "";
+
+  document.querySelectorAll(".cat-btn").forEach(btn=>{
+    btn.classList.remove("active");
+  });
+
+  event.target.classList.add("active");
+
+ setTimeout(()=>{
+  if(players[index+1]){
+  players[index+1].cueVideoById(players[index+1].getVideoData().video_id);
+}
+  
+/* ================= OPEN MUSIC ================= */
+
+function openMusic(){
+
+  document.getElementById("feed").style.display = "none";
+  document.getElementById("musicSection").style.display = "block";
+
+  document.querySelectorAll(".cat-btn").forEach(btn=>{
+    btn.classList.remove("active");
+  });
+
+  event.target.classList.add("active");
+
+}
+
+function openMusic(){
+  document.getElementById("feed").style.display="none";
+  document.getElementById("musicSection").style.display="block";
+  document.getElementById("miniMusicBar").style.display="flex";
+}
+
+function toggleMusic(){
+  if(musicPlayer.getPlayerState() == 1){
+    musicPlayer.pauseVideo();
+  } else {
+    musicPlayer.playVideo();
+  }
+}
+
+document.querySelector(".container").addEventListener("scroll", function(){
+
+  const container = this;
+  
+  if(container.scrollTop + container.clientHeight >= container.scrollHeight - 500){
+    loadVideos(); // load page berikutnya
+  }
+
+});
+
+
