@@ -13,7 +13,34 @@
 <meta name="robots" content="index, follow">
 
 <link rel="stylesheet" href="style.css">
+<div id="miniMusicBar" style="
+position:fixed;
+bottom:0;
+left:0;
+width:100%;
+height:70px;
+background:#111;
+display:flex;
+align-items:center;
+justify-content:space-between;
+padding:10px 20px;
+color:white;
+z-index:99999;
+display:none;
+">
 
+<div>
+🎵 <span id="musicTitle">Music Player</span>
+</div>
+
+<div>
+<button onclick="prevMusic()">⏮</button>
+<button onclick="nextMusic()">⏭</button>
+<button onclick="toggleMusic()">⏯</button>
+</div>
+
+</div>
+  
 <style>
 body{
   margin:0;
@@ -159,14 +186,26 @@ iframe{
 
 <!-- TOPBAR -->
 <div class="topbar" id="topbar">
-  <button class="cat-btn active" data-cat="trending">🔥 Trending</button>
-  <button class="cat-btn" data-cat="comedy">😂 Comedy</button>
-  <button class="cat-btn" data-cat="anime">🎌 Anime</button>
-  <button class="cat-btn" data-cat="news">📰 News</button>
-  <button class="cat-btn" data-cat="sports">⚽ Sports</button>
-  <button class="cat-btn" data-cat="product">🛒 Products</button>
+  <button class="cat-btn active" onclick="setCategory('trending')">🔥 Trending</button>
+  <button class="cat-btn" onclick="setCategory('news')">📰 Berita</button>
+  <button class="cat-btn" onclick="setCategory('sports')">⚽ Olahraga</button>
+  <button class="cat-btn" onclick="openMusic()">🎵 Musik</button>
 </div>
 
+<!-- VIDEO FEED -->
+<div class="container" id="feed"></div>
+
+<!-- MUSIC SECTION (Hidden Default) -->
+<div id="musicSection" style="display:none; height:100vh; background:black; color:white; text-align:center; padding-top:80px;">
+  <h2>🎵 Music Player</h2>
+  <div id="musicPlayer" style="margin-top:20px;"></div>
+
+  <div style="margin-top:15px;">
+    <button onclick="prevMusic()">⏮</button>
+    <button onclick="nextMusic()">⏭</button>
+  </div>
+</div>
+  
 <!-- VOLUME -->
 <div class="volume-control">
   🔊 <input type="range" id="volumeSlider" min="0" max="100" value="50">
