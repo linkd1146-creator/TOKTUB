@@ -217,3 +217,36 @@ iframe, video {
   text-decoration:none;
   z-index:999999;
 }
+.topbar{
+  display:flex;
+  overflow-x:auto;
+  gap:10px;
+  padding:10px;
+  background:#000;
+  position:sticky;
+  top:0;
+  z-index:1000;
+}
+
+.cat-btn{
+  background:#111;
+  color:#aaa;
+  border:none;
+  padding:8px 15px;
+  border-radius:20px;
+  cursor:pointer;
+  transition:0.3s;
+  white-space:nowrap;
+}
+
+.cat-btn:hover{
+  background:#222;
+  color:#fff;
+}
+
+.cat-btn.active{
+  background:#ff0050;
+  color:#fff;
+  font-weight:bold;
+  box-shadow:0 0 10px rgba(255,0,80,0.6);
+}
