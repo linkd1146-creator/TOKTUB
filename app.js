@@ -259,3 +259,47 @@ function shareSite(){
 function openCart(){
   window.open("https://collshp.com/l0ver5/","_blank");
 }
+
+/* ==========================
+   YOUTUBE IFRAME MUSIC PLAYER
+========================== */
+
+let musicPlayer;
+let musicReady = false;
+
+// WAJIB global
+window.onYouTubeIframeAPIReady = function () {
+  musicReady = true;
+  console.log("YouTube Iframe API Ready");
+};
+
+function loadMusic(videoId) {
+
+  if (!musicReady) {
+    console.log("Iframe API belum ready...");
+    return;
+  }
+
+  const container = document.getElementById("musicPlayer");
+  container.style.display = "block";
+
+  if (musicPlayer) {
+    musicPlayer.loadVideoById(videoId);
+  } else {
+    musicPlayer = new YT.Player("musicPlayer", {
+      height: "200",
+      width: "100%",
+      videoId: videoId,
+      playerVars: {
+        autoplay: 1,
+        controls: 1,
+        modestbranding: 1
+      },
+      events: {
+        onReady: (event) => {
+          event.target.playVideo();
+        }
+      }
+    });
+  }
+}
