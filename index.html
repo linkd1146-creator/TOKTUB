@@ -19,21 +19,16 @@
 body{margin:0;background:black;font-family:sans-serif;overflow:hidden;}
 .container{height:100vh;overflow-y:scroll;scroll-snap-type:y mandatory;}
 .video-box{height:100vh;scroll-snap-align:start;}
+
 .topbar{position:fixed;top:0;left:0;width:100%;display:flex;overflow-x:auto;background:rgba(0,0,0,0.7);z-index:9999;}
-.topbar.trending { background:#ff004f; }
-.topbar.news { background:#0066ff; }
-.topbar.sports { background:#00c853; }
-.topbar.music { background:#9c27b0; }
-.topbar button{color:white;background:none;border:none;padding:12px;cursor:pointer;font-size:14px;}
-.topbar button.active{border-bottom:2px solid white;}
-.menu-btn{position:fixed;top:10px;right:15px;font-size:28px;z-index:10000;cursor:pointer;color:white;}
-.dropdown{display:none;position:fixed;top:50px;right:15px;background:#111;padding:10px;border-radius:8px;z-index:10000;}
-.dropdown a{display:block;padding:8px;color:white;text-decoration:none;}
-.dropdown a:hover{background:#222;}
+.topbar button{color:white;background:none;border:none;padding:12px;cursor:pointer;}
+
+.menu-btn{position:fixed;top:10px;right:15px;font-size:28px;color:white;z-index:9999;}
+.dropdown{display:none;position:fixed;top:50px;right:15px;background:#111;padding:10px;z-index:9999;}
+.dropdown a{display:block;color:white;padding:8px;text-decoration:none;}
 .show{display:block;}
-#miniMusicBar{position:fixed;bottom:0;left:0;width:100%;height:70px;background:#111;display:none;align-items:center;justify-content:space-between;padding:10px 20px;color:white;z-index:99999;}
-.ai-float{position:fixed;left:15px;bottom:90px;width:60px;height:60px;background:#2b6cff;color:white;display:flex;align-items:center;justify-content:center;font-size:26px;border-radius:50%;text-decoration:none;z-index:9999;}
-.volume-control{position:fixed;top:60px;right:15px;z-index:9999;color:white;}
+
+.ai-float{position:fixed;left:15px;bottom:90px;width:60px;height:60px;background:#2b6cff;color:white;display:flex;align-items:center;justify-content:center;border-radius:50%;z-index:9999;}
 </style>
 
 </head>
@@ -57,15 +52,15 @@ body{margin:0;background:black;font-family:sans-serif;overflow:hidden;}
 </div>
 
 <div class="topbar trending" id="topbar">
-<button class="cat-btn active" data-cat="trending">🔥 Trending</button>
-<button class="cat-btn" data-cat="news">📰 News</button>
-<button class="cat-btn" data-cat="sports">⚽ Sport</button>
-<button class="cat-btn" data-cat="music">🎵 Musik</button>
+<button>🔥 Trending</button>
+<button>📰 News</button>
+<button>⚽ Sport</button>
+<button>🎵 Musik</button>
 </div>
 
 <div class="container" id="feed"></div>
 
-<div id="musicSection" style="display:none; height:100vh; background:black; color:white; text-align:center; padding-top:80px;">
+<div id="musicSection" style="display:none;height:100vh;background:black;color:white;text-align:center;padding-top:80px;">
 <h2>🎵 Music Player</h2>
 <div id="musicPlayer"></div>
 </div>
@@ -84,31 +79,21 @@ document.getElementById("dropdown").classList.toggle("show");
 }
 </script>
 
-<!-- ================= FIREBASE ================= -->
+<!-- ================= FIREBASE COMPAT (FIXED) ================= -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
-<script type="module">
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-analytics.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
-
-  // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-  const firebaseConfig = {
-    apiKey: "AIzaSyBFfH4ix22IIjYczrXi4EeuAzH7eykWH1A",
-    authDomain: "toktube-70b00.firebaseapp.com",
-    projectId: "toktube-70b00",
-    storageBucket: "toktube-70b00.firebasestorage.app",
-    messagingSenderId: "668818456806",
-    appId: "1:668818456806:web:6452e3e606819ff72abb27",
-    measurementId: "G-MN85RFYLNV"
-  };
-
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-</script>
+<script>
+/* ================= FIREBASE CONFIG ================= */
+const firebaseConfig = {
+apiKey: "AIzaSyBFfH4ix22IIjYczrXi4EeuAzH7eykWH1A",
+authDomain: "toktube-70b00.firebaseapp.com",
+projectId: "toktube-70b00",
+storageBucket: "toktube-70b00.firebasestorage.app",
+messagingSenderId: "668818456806",
+appId: "1:668818456806:web:6452e3e606819ff72abb27"
+};
 
 firebase.initializeApp(firebaseConfig);
 
@@ -118,7 +103,12 @@ const db = firebase.firestore();
 let currentUser = null;
 let creatorId = "GANTI_DENGAN_UID_KAMU";
 
-/* AUTO UI */
+/* ================= MENU LOGIC ================= */
+function toggleMenu(){
+document.getElementById("dropdown").classList.toggle("show");
+}
+
+/* ================= LOGIN BUTTON ================= */
 const loginBtn = document.createElement("button");
 loginBtn.innerText="Login";
 loginBtn.style.position="fixed";
@@ -132,6 +122,7 @@ const provider=new firebase.auth.GoogleAuthProvider();
 auth.signInWithPopup(provider);
 };
 
+/* ================= FOLLOW BUTTON ================= */
 const followBtn=document.createElement("button");
 followBtn.innerText="Follow";
 followBtn.style.position="fixed";
@@ -140,98 +131,59 @@ followBtn.style.right="15px";
 followBtn.style.zIndex="99999";
 document.body.appendChild(followBtn);
 
+/* ================= FOLLOWER COUNT ================= */
 const followerBox=document.createElement("div");
 followerBox.style.position="fixed";
 followerBox.style.bottom="90px";
 followerBox.style.right="15px";
 followerBox.style.color="white";
-followerBox.style.zIndex="99999";
-followerBox.innerHTML="Followers: <span id='followerCount'>0</span>";
+followerBox.innerHTML="Followers: <span id='count'>0</span>";
 document.body.appendChild(followerBox);
 
-const notifIcon=document.createElement("div");
-notifIcon.style.position="fixed";
-notifIcon.style.top="10px";
-notifIcon.style.right="60px";
-notifIcon.style.color="white";
-notifIcon.style.zIndex="100000";
-notifIcon.innerHTML="🔔 <span id='notifCount'>0</span>";
-document.body.appendChild(notifIcon);
-
-/* AUTH STATE */
-auth.onAuthStateChanged(async user=>{
+/* ================= AUTH STATE ================= */
+auth.onAuthStateChanged(user=>{
 if(user){
 currentUser=user;
-console.log("UID:",user.uid);
 loginBtn.style.display="none";
-
-await db.collection("users").doc(user.uid).set({
-name:user.displayName,
-photo:user.photoURL,
-createdAt:Date.now()
-},{merge:true});
-
-checkFollowStatus();
-updateFollowerCount();
-listenNotifications(user.uid);
+console.log("UID:",user.uid);
 }
 });
 
-/* FOLLOW */
+/* ================= FOLLOW SYSTEM ================= */
 followBtn.onclick=async ()=>{
 if(!currentUser) return alert("Login dulu!");
-if(currentUser.uid===creatorId) return alert("Tidak bisa follow diri sendiri");
 
-const ref=db.collection("follows").doc(currentUser.uid+"_"+creatorId);
+const ref=db.collection("follows")
+.doc(currentUser.uid+"_"+creatorId);
+
 const doc=await ref.get();
 
 if(doc.exists){
 await ref.delete();
+followBtn.innerText="Follow";
 }else{
 await ref.set({
 followerId:currentUser.uid,
 creatorId:creatorId,
 timestamp:Date.now()
 });
-await db.collection("notifications").add({
-to:creatorId,
-from:currentUser.uid,
-type:"follow",
-read:false,
-timestamp:Date.now()
-});
+followBtn.innerText="Unfollow";
 }
 
-updateFollowerCount();
-checkFollowStatus();
+updateCount();
 };
 
-async function checkFollowStatus(){
-if(!currentUser) return;
-const doc=await db.collection("follows")
-.doc(currentUser.uid+"_"+creatorId).get();
-followBtn.innerText=doc.exists?"Unfollow":"Follow";
-}
-
-async function updateFollowerCount(){
+/* ================= COUNT FOLLOWER ================= */
+async function updateCount(){
 const snap=await db.collection("follows")
-.where("creatorId","==",creatorId).get();
-document.getElementById("followerCount").innerText=snap.size;
+.where("creatorId","==",creatorId)
+.get();
+
+document.getElementById("count").innerText=snap.size;
 }
 
-function listenNotifications(uid){
-db.collection("notifications")
-.where("to","==",uid)
-.where("read","==",false)
-.onSnapshot(snap=>{
-document.getElementById("notifCount").innerText=snap.size;
-snap.docChanges().forEach(c=>{
-if(c.type==="added"){
-alert("🔔 Kamu mendapat follower baru!");
-}
-});
-});
-}
+updateCount();
+
 </script>
 
 </body>
