@@ -16,83 +16,269 @@
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
 
 <style>
-body{margin:0;background:black;font-family:sans-serif;overflow:hidden;}
-.container{height:100vh;overflow-y:scroll;scroll-snap-type:y mandatory;}
-.video-box{height:100vh;scroll-snap-align:start;}
+body{
+  margin:0;
+  background:black;
+  font-family:sans-serif;
+  overflow:hidden;
+}
 
-.topbar{position:fixed;top:0;left:0;width:100%;display:flex;overflow-x:auto;background:rgba(0,0,0,0.7);z-index:9999;}
-.topbar button{color:white;background:none;border:none;padding:12px;cursor:pointer;}
+/* VIDEO FEED */
+.container{
+  height:100vh;
+  overflow-y:scroll;
+  scroll-snap-type:y mandatory;
+}
 
-.menu-btn{position:fixed;top:10px;right:15px;font-size:28px;color:white;z-index:9999;}
-.dropdown{display:none;position:fixed;top:50px;right:15px;background:#111;padding:10px;z-index:9999;}
-.dropdown a{display:block;color:white;padding:8px;text-decoration:none;}
-.show{display:block;}
+.video-box{
+  height:100vh;
+  scroll-snap-align:start;
+}
 
-.ai-float{position:fixed;left:15px;bottom:90px;width:60px;height:60px;background:#2b6cff;color:white;display:flex;align-items:center;justify-content:center;border-radius:50%;z-index:9999;}
+/* TOPBAR */
+.topbar{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  display:flex;
+  overflow-x:auto;
+  background:rgba(0,0,0,0.7);
+  z-index:9999;
+}
+
+.topbar.trending { background:#ff004f; }
+.topbar.news { background:#0066ff; }
+.topbar.sports { background:#00c853; }
+.topbar.music { background:#9c27b0; }
+
+.topbar button{
+  color:white;
+  background:none;
+  border:none;
+  padding:12px;
+  cursor:pointer;
+  font-size:14px;
+}
+
+.topbar button.active{
+  border-bottom:2px solid white;
+}
+
+/* MENU */
+.menu-btn{
+  position:fixed;
+  top:10px;
+  right:15px;
+  font-size:28px;
+  z-index:10000;
+  cursor:pointer;
+  color:white;
+}
+
+.dropdown{
+  display:none;
+  position:fixed;
+  top:50px;
+  right:15px;
+  background:#111;
+  padding:10px;
+  border-radius:8px;
+  z-index:10000;
+}
+
+.dropdown a{
+  display:block;
+  padding:8px;
+  color:white;
+  text-decoration:none;
+}
+
+.dropdown a:hover{
+  background:#222;
+}
+
+.show{ display:block; }
+
+/* MINI MUSIC BAR */
+#miniMusicBar{
+  position:fixed;
+  bottom:0;
+  left:0;
+  width:100%;
+  height:70px;
+  background:#111;
+  display:none;
+  align-items:center;
+  justify-content:space-between;
+  padding:10px 20px;
+  color:white;
+  z-index:99999;
+}
+
+/* AI FLOAT */
+.ai-float{
+  position:fixed;
+  left:15px;
+  bottom:90px;
+  width:60px;
+  height:60px;
+  background:#2b6cff;
+  color:white;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:26px;
+  border-radius:50%;
+  text-decoration:none;
+  z-index:9999;
+}
+
+/* VOLUME */
+.volume-control{
+  position:fixed;
+  top:60px;
+  right:15px;
+  z-index:9999;
+  color:white;
+}
+
+/* ================== ADD ON UI (FOLLOW + LOGIN + NOTIF) ================== */
+
+/* LOGIN CENTER */
+.login-center{
+  position:fixed;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  text-align:center;
+  z-index:99999;
+  color:white;
+}
+
+.login-btn{
+  padding:14px 25px;
+  border:none;
+  border-radius:30px;
+  background:linear-gradient(45deg,#ff0050,#ff6600);
+  color:white;
+  cursor:pointer;
+  font-size:16px;
+}
+
+/* FOLLOW BUTTON (TIKTOK STYLE) */
+.follow-btn{
+  position:fixed;
+  bottom:25px;
+  left:50%;
+  transform:translateX(-50%);
+  width:65px;
+  height:65px;
+  border-radius:50%;
+  background:#ff0050;
+  border:none;
+  color:white;
+  font-size:28px;
+  z-index:99999;
+  box-shadow:0 0 15px rgba(255,0,80,0.6);
+}
+
+/* NOTIF */
+.notif{
+  position:fixed;
+  top:10px;
+  right:60px;
+  color:white;
+  z-index:10000;
+}
 </style>
 
 </head>
 
 <body>
 
+<!-- AI FLOAT -->
 <a href="ai.html" class="ai-float">🤖</a>
 
+<!-- MENU -->
 <div class="menu-btn" onclick="toggleMenu()">⋮</div>
 
 <div class="dropdown" id="dropdown">
-<a href="blog.html">Blog</a>
-<a href="about.html">About</a>
-<a href="streaming.html">Streaming</a>
-<a href="game.html">Game</a>
-<a href="promo.html">Promo</a>
-<a href="blibli.html">Blibli</a>
-<a href="donasi.html">Donasi</a>
-<a href="privacy.html">Privacy</a>
-<a href="terms.html">Terms</a>
+  <a href="blog.html">Blog</a>
+  <a href="about.html">About</a>
+  <a href="streaming.html">Streaming</a>
+  <a href="game.html">Game</a>
+  <a href="promo.html">Promo</a>
+  <a href="blibli.html">Blibli</a>
+  <a href="donasi.html">Donasi</a>
+  <a href="privacy.html">Privacy</a>
+  <a href="terms.html">Terms</a>
 </div>
 
+<!-- TOPBAR -->
 <div class="topbar trending" id="topbar">
-<button>🔥 Trending</button>
-<button>📰 News</button>
-<button>⚽ Sport</button>
-<button>🎵 Musik</button>
+  <button class="cat-btn active" data-cat="trending" onclick="setCategory('trending')">🔥 Trending</button>
+  <button class="cat-btn" data-cat="news" onclick="setCategory('news')">📰 News</button>
+  <button class="cat-btn" data-cat="sports" onclick="setCategory('sports')">⚽ Sport</button>
+  <button class="cat-btn" data-cat="music" onclick="setCategory('music')">🎵 Musik</button>
 </div>
 
+<!-- VIDEO FEED -->
 <div class="container" id="feed"></div>
 
-<div id="musicSection" style="display:none;height:100vh;background:black;color:white;text-align:center;padding-top:80px;">
-<h2>🎵 Music Player</h2>
-<div id="musicPlayer"></div>
+<!-- MUSIC SECTION -->
+<div id="musicSection" style="display:none; height:100vh; background:black; color:white; text-align:center; padding-top:80px;">
+  <h2>🎵 Music Player</h2>
+  <div id="musicPlayer"></div>
 </div>
 
+<!-- MINI MUSIC BAR -->
 <div id="miniMusicBar">
-<div>🎵 <span id="musicTitle">Music Player</span></div>
+  <div>🎵 <span id="musicTitle">Music Player</span></div>
 </div>
 
+<!-- VOLUME -->
 <div class="volume-control">
-🔊 <input type="range" min="0" max="100" value="50">
+  🔊 <input type="range" id="volumeSlider" min="0" max="100" value="50">
 </div>
+
+<!-- NOTIF -->
+<div class="notif">🔔 <span id="notifCount">0</span></div>
+
+<!-- LOGIN CENTER -->
+<div class="login-center" id="loginBox">
+  <h2>Welcome to MiniTok.fun</h2>
+  <button class="login-btn" id="loginBtn">Login with Google</button>
+</div>
+
+<!-- FOLLOW BUTTON -->
+<button class="follow-btn" id="followBtn">+</button>
+
+<!-- YOUTUBE API -->
+<script src="https://www.youtube.com/iframe_api"></script>
+
+<!-- APP JS -->
+<script src="app.js" defer></script>
 
 <script>
 function toggleMenu(){
-document.getElementById("dropdown").classList.toggle("show");
+  document.getElementById("dropdown").classList.toggle("show");
 }
 </script>
 
-<!-- ================= FIREBASE COMPAT (FIXED) ================= -->
+<!-- ================= FIREBASE ================= -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
 <script>
-/* ================= FIREBASE CONFIG ================= */
 const firebaseConfig = {
-apiKey: "AIzaSyBFfH4ix22IIjYczrXi4EeuAzH7eykWH1A",
-authDomain: "toktube-70b00.firebaseapp.com",
-projectId: "toktube-70b00",
-storageBucket: "toktube-70b00.firebasestorage.app",
-messagingSenderId: "668818456806",
-appId: "1:668818456806:web:6452e3e606819ff72abb27"
+  apiKey: "AIzaSyBFfH4ix22IIjYczrXi4EeuAzH7eykWH1A",
+  authDomain: "toktube-70b00.firebaseapp.com",
+  projectId: "toktube-70b00",
+  storageBucket: "toktube-70b00.firebasestorage.app",
+  messagingSenderId: "668818456806",
+  appId: "1:668818456806:web:6452e3e606819ff72abb27"
 };
 
 firebase.initializeApp(firebaseConfig);
@@ -101,89 +287,57 @@ const auth = firebase.auth();
 const db = firebase.firestore();
 
 let currentUser = null;
-let creatorId = "GANTI_DENGAN_UID_KAMU";
+let creatorId = "GANTI_UID_KAMU";
 
-/* ================= MENU LOGIC ================= */
-function toggleMenu(){
-document.getElementById("dropdown").classList.toggle("show");
-}
-
-/* ================= LOGIN BUTTON ================= */
-const loginBtn = document.createElement("button");
-loginBtn.innerText="Login";
-loginBtn.style.position="fixed";
-loginBtn.style.bottom="160px";
-loginBtn.style.right="15px";
-loginBtn.style.zIndex="99999";
-document.body.appendChild(loginBtn);
-
-loginBtn.onclick=()=>{
-const provider=new firebase.auth.GoogleAuthProvider();
-auth.signInWithPopup(provider);
+/* LOGIN */
+document.getElementById("loginBtn").onclick = () => {
+  const provider = new firebase.auth.GoogleAuthProvider();
+  auth.signInWithPopup(provider);
 };
 
-/* ================= FOLLOW BUTTON ================= */
-const followBtn=document.createElement("button");
-followBtn.innerText="Follow";
-followBtn.style.position="fixed";
-followBtn.style.bottom="120px";
-followBtn.style.right="15px";
-followBtn.style.zIndex="99999";
-document.body.appendChild(followBtn);
-
-/* ================= FOLLOWER COUNT ================= */
-const followerBox=document.createElement("div");
-followerBox.style.position="fixed";
-followerBox.style.bottom="90px";
-followerBox.style.right="15px";
-followerBox.style.color="white";
-followerBox.innerHTML="Followers: <span id='count'>0</span>";
-document.body.appendChild(followerBox);
-
-/* ================= AUTH STATE ================= */
+/* AUTH */
 auth.onAuthStateChanged(user=>{
-if(user){
-currentUser=user;
-loginBtn.style.display="none";
-console.log("UID:",user.uid);
-}
+  if(user){
+    currentUser = user;
+    document.getElementById("loginBox").style.display="none";
+    console.log("UID:", user.uid);
+  }
 });
 
-/* ================= FOLLOW SYSTEM ================= */
-followBtn.onclick=async ()=>{
-if(!currentUser) return alert("Login dulu!");
+/* FOLLOW */
+document.getElementById("followBtn").onclick = async () => {
+  if(!currentUser) return alert("Login dulu!");
 
-const ref=db.collection("follows")
-.doc(currentUser.uid+"_"+creatorId);
+  const ref = db.collection("follows")
+  .doc(currentUser.uid+"_"+creatorId);
 
-const doc=await ref.get();
+  const doc = await ref.get();
 
-if(doc.exists){
-await ref.delete();
-followBtn.innerText="Follow";
-}else{
-await ref.set({
-followerId:currentUser.uid,
-creatorId:creatorId,
-timestamp:Date.now()
-});
-followBtn.innerText="Unfollow";
-}
+  if(doc.exists){
+    await ref.delete();
+    document.getElementById("followBtn").innerText = "+";
+  }else{
+    await ref.set({
+      followerId: currentUser.uid,
+      creatorId: creatorId,
+      time: Date.now()
+    });
+    document.getElementById("followBtn").innerText = "✓";
+  }
 
-updateCount();
+  updateFollowers();
 };
 
-/* ================= COUNT FOLLOWER ================= */
-async function updateCount(){
-const snap=await db.collection("follows")
-.where("creatorId","==",creatorId)
-.get();
+/* COUNT */
+async function updateFollowers(){
+  const snap = await db.collection("follows")
+  .where("creatorId","==",creatorId)
+  .get();
 
-document.getElementById("count").innerText=snap.size;
+  document.getElementById("notifCount").innerText = snap.size;
 }
 
-updateCount();
-
+updateFollowers();
 </script>
 
 </body>
