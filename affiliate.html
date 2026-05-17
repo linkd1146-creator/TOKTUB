@@ -3,184 +3,437 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Affiliate Shopee - MiniTok</title>
+<title>MiniTok Game - Robot Bombe</title>
 
-body{
-  margin:0;
-  font-family:Arial, sans-serif;
-  background:#f5f5f5;
+<style>
+body{margin:0;overflow:hidden;background:#000;font-family:Arial;color:white;}
+canvas{display:block;background:#0b0f14;}
+
+#menu{
+position:absolute;width:100%;height:100%;
+display:flex;flex-direction:column;
+justify-content:center;align-items:center;
+background:radial-gradient(circle,#000,#031421);
+z-index:10;
 }
 
-/* HEADER */
-.header{
-  background:#ff5722;
-  padding:15px;
-  color:white;
-  font-size:18px;
-  font-weight:bold;
-  text-align:center;
-  position:sticky;
-  top:0;
-  z-index:10;
+button{
+padding:14px 30px;
+margin:10px;
+font-size:18px;
+background:cyan;
+border:none;border-radius:8px;
+cursor:pointer;
 }
 
-/* SEARCH */
-.search-box{
-  padding:10px;
-  background:white;
+#settingsPanel{
+display:none;
+position:absolute;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+background:#111;
+padding:20px;
+z-index:20;
 }
 
-.search-box input{
-  width:100%;
-  padding:10px;
-  border-radius:25px;
-  border:1px solid #ddd;
-  outline:none;
-  font-size:14px;
+#ui{
+position:absolute;top:10px;left:10px;
+z-index:5;
+text-shadow:0 0 10px cyan;
+font-size:14px;
 }
 
-/* STORE LIST */
-.container{
-  padding:10px;
+#topControls{
+position:absolute;
+top:10px;
+right:10px;
+display:flex;
+flex-direction:column;
+gap:10px;
+z-index:6;
 }
 
-.store{
-  background:white;
-  border-radius:15px;
-  padding:12px;
-  margin-bottom:12px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  box-shadow:0 2px 8px rgba(0,0,0,0.05);
-  transition:0.2s;
+.controlBtn{
+width:60px;height:60px;
+border-radius:50%;
+display:flex;
+justify-content:center;
+align-items:center;
+font-size:24px;
+color:white;
+cursor:pointer;
 }
 
-.store:hover{
-  transform:scale(1.02);
+#bombBtn{background:red;}
+#detBtn{background:orange;}
+
+#joystick{
+position:absolute;
+top:80px;
+left:20px;
+width:120px;height:120px;
+background:rgba(255,255,255,0.1);
+border-radius:50%;
+display:none;
+touch-action:none;
 }
 
-.store-info{
-  display:flex;
-  flex-direction:column;
-}
-
-.store-name{
-  font-weight:bold;
-  font-size:15px;
-}
-
-.store-date{
-  font-size:12px;
-  color:gray;
-  margin-top:4px;
-}
-
-.btn{
-  background:#ff5722;
-  color:white;
-  padding:8px 14px;
-  border-radius:20px;
-  text-decoration:none;
-  font-size:12px;
-  font-weight:bold;
-}
-
-/* FOOTER NAV */
-.bottom-nav{
-  position:fixed;
-  bottom:0;
-  width:100%;
-  background:white;
-  display:flex;
-  justify-content:space-around;
-  padding:10px 0;
-  box-shadow:0 -2px 10px rgba(0,0,0,0.1);
-}
-
-.bottom-nav a{
-  text-decoration:none;
-  color:#555;
-  font-size:12px;
-  text-align:center;
-}
-
-.bottom-nav a.active{
-  color:#ff5722;
-  font-weight:bold;
-}
-
-.spacer{
-  height:70px;
+#stick{
+position:absolute;width:50px;height:50px;
+background:cyan;border-radius:50%;
+left:35px;top:35px;
 }
 </style>
 </head>
-
 <body>
 
-<div class="header">🛍 Shopee Partner Store</div>
-
-<div class="search-box">
-  <input type="text" placeholder="Cari nama toko..." onkeyup="searchStore(this.value)">
+<div id="menu">
+<h1>🤖 ROBOT BOMBER PRO</h1>
+<button onclick="start()">START GAME</button>
+<button onclick="openSettings()">SETTINGS</button>
 </div>
 
-<div class="container" id="storeList">
-
-<div class="store">
-  <div class="store-info">
-    <div class="store-name">ClevonCare</div>
-    <div class="store-date">Mulai: 2026-01-30</div>
-  </div>
-  <a href="https://s.shopee.co.id/2g7ehs3X4U" target="_blank" class="btn">Kunjungi</a>
+<div id="settingsPanel">
+<h3>SETTINGS</h3>
+<label>
+Music
+<input type="checkbox" checked onchange="toggleMusic(this)">
+</label>
+<p>
+Tutorial:<br>
+🎮 Analog kiri untuk gerak<br>
+💣 Pasang bom<br>
+🔥 Ledakkan bom<br>
+🧱 Hancurkan bata cari 🔑<br>
+👑 Kalahkan boss untuk menang
+</p>
+<button onclick="closeSettings()">CLOSE</button>
 </div>
 
-<div class="store">
-  <div class="store-info">
-    <div class="store-name">PaperLab Studio</div>
-  </div>
-  <a href="https://s.shopee.co.id/2qR4uB2tjX" target="_blank" class="btn">Kunjungi</a>
+<div id="ui">
+HP: <span id="hp">100</span><br>
+Enemy: <span id="enemyCount">0</span><br>
+Score: <span id="score">0</span>
 </div>
 
-<div class="store">
-  <div class="store-info">
-    <div class="store-name">Doreen Beauty</div>
-  </div>
-  <a href="https://s.shopee.co.id/1BIqv79F7V" target="_blank" class="btn">Kunjungi</a>
+<div id="topControls">
+<div id="bombBtn" class="controlBtn">💣</div>
+<div id="detBtn" class="controlBtn">🔥</div>
 </div>
 
-<div class="store">
-  <div class="store-info">
-    <div class="store-name">Goodshoes4U</div>
-  </div>
-  <a href="https://s.shopee.co.id/qg0WVAVnT" target="_blank" class="btn">Kunjungi</a>
-</div>
-
-</div>
-
-<div class="spacer"></div>
-
-<div class="bottom-nav">
-  <a href="index.html">Home</a>
-  <a href="streaming.html">Streaming</a>
-  <a href="affiliate.html" class="active">Affiliate</a>
-  <a href="promo.html">Promo</a>
-</div>
+<div id="joystick"><div id="stick"></div></div>
+<canvas id="game"></canvas>
 
 <script>
-function searchStore(keyword){
-  let stores = document.querySelectorAll(".store");
-  keyword = keyword.toLowerCase();
+const canvas=document.getElementById("game");
+const ctx=canvas.getContext("2d");
+canvas.width=innerWidth;
+canvas.height=innerHeight;
 
-  stores.forEach(store=>{
-    let name = store.innerText.toLowerCase();
-    if(name.includes(keyword)){
-      store.style.display="flex";
-    } else {
-      store.style.display="none";
-    }
-  });
+const tile=40;
+const rows=13;
+const cols=17;
+
+/* AUDIO */
+let musicOn=true;
+const bgMusic=new Audio("https://cdn.pixabay.com/audio/2022/03/15/audio_c8c8a73467.mp3");
+bgMusic.loop=true;
+bgMusic.volume=0.5;
+
+const bombSound=new Audio("https://cdn.pixabay.com/audio/2022/03/10/audio_2c1a8c7f97.mp3");
+const explodeSound=new Audio("https://cdn.pixabay.com/audio/2022/03/15/audio_94b2a8b7e1.mp3");
+
+let map,player,enemies=[],bombs=[],explosions=[];
+let moveX=0,moveY=0;
+let score=0;
+let keySpawned=false;
+let keyPosition=null;
+let treasure=[];
+let boss=null;
+
+/* MAP */
+function generateMap(){
+map=[];
+for(let y=0;y<rows;y++){
+map[y]=[];
+for(let x=0;x<cols;x++){
+if(y===0||x===0||y===rows-1||x===cols-1)
+map[y][x]=2;
+else if(y%2===0 && x%2===0)
+map[y][x]=2;
+else
+map[y][x]=Math.random()<0.3?1:0;
 }
-</script>
+}
+map[1][1]=0;map[1][2]=0;map[2][1]=0;
+}
 
+/* START */
+function start(){
+document.getElementById("menu").style.display="none";
+document.getElementById("joystick").style.display="block";
+generateMap();
+player={x:1,y:1,hp:100};
+enemies=[];
+score=0;
+keySpawned=false;
+treasure=[];
+boss=null;
+
+for(let i=0;i<4;i++){
+enemies.push({x:cols-2-i,y:rows-2});
+}
+if(musicOn) bgMusic.play();
+loop();
+}
+
+/* SETTINGS */
+function openSettings(){document.getElementById("settingsPanel").style.display="block";}
+function closeSettings(){document.getElementById("settingsPanel").style.display="none";}
+function toggleMusic(el){
+musicOn=el.checked;
+if(musicOn) bgMusic.play();
+else bgMusic.pause();
+}
+
+/* MOVEMENT CHECK */
+function canMove(x,y){
+if(!map[y])return false;
+if(map[y][x]!==0)return false;
+for(let b of bombs){
+if(b.x===x && b.y===y)return false;
+}
+return true;
+}
+
+/* ROBOT */
+function drawRobot(x,y){
+let px=x*tile;
+let py=y*tile;
+let walk=Math.sin(Date.now()/150)*4;
+ctx.fillStyle="#00eaff";
+ctx.fillRect(px+8,py+10,24,25);
+ctx.fillStyle="#fff";
+ctx.fillRect(px+12,py,16,14);
+ctx.fillStyle="red";
+ctx.fillRect(px+15,py+4,4,4);
+ctx.fillRect(px+23,py+4,4,4);
+ctx.fillStyle="#00aaff";
+ctx.fillRect(px+12,py+35+walk,6,10);
+ctx.fillRect(px+22,py+35-walk,6,10);
+}
+
+/* MONSTER */
+function drawMonster(x,y){
+let px=x*tile;
+let py=y*tile;
+ctx.fillStyle="green";
+ctx.beginPath();
+ctx.arc(px+20,py+25,18,0,Math.PI*2);
+ctx.fill();
+ctx.fillStyle="red";
+ctx.fillRect(px+14,py+18,6,6);
+ctx.fillRect(px+24,py+18,6,6);
+}
+
+/* SMART AI */
+function moveEnemy(en){
+for(let b of bombs){
+if(Math.abs(en.x-b.x)<1 && Math.abs(en.y-b.y)<1){
+en.x+=Math.random()<0.5?0.05:-0.05;
+en.y+=Math.random()<0.5?0.05:-0.05;
+return;
+}
+}
+let dx=player.x-en.x;
+let dy=player.y-en.y;
+if(Math.abs(dx)>Math.abs(dy)){
+let step=Math.sign(dx)*0.03;
+if(canMove(Math.floor(en.x+step),Math.floor(en.y))) en.x+=step;
+}else{
+let step=Math.sign(dy)*0.03;
+if(canMove(Math.floor(en.x),Math.floor(en.y+step))) en.y+=step;
+}
+}
+
+/* BOMBS */
+document.getElementById("bombBtn").onclick=()=>{
+bombSound.play();
+bombs.push({x:Math.floor(player.x),y:Math.floor(player.y),t:180});
+};
+
+document.getElementById("detBtn").onclick=()=>{
+bombs.forEach(b=>explode(b.x,b.y));
+bombs=[];
+};
+
+function explode(x,y){
+explodeSound.play();
+let dirs=[[0,0],[1,0],[-1,0],[0,1],[0,-1]];
+for(let d of dirs){
+let nx=x+d[0];
+let ny=y+d[1];
+if(map[ny] && map[ny][nx]===1){
+map[ny][nx]=0;
+
+if(!keySpawned && Math.random()<0.15){
+keySpawned=true;
+keyPosition={x:nx,y:ny};
+}
+
+if(Math.random()<0.3){
+treasure.push({x:nx,y:ny,type:Math.random()<0.5?"gold":"diamond"});
+}
+}
+explosions.push({x:nx,y:ny,t:30});
+}
+}
+
+/* BOSS */
+function spawnBoss(){
+boss={x:cols-2,y:1,hp:20};
+}
+
+/* LOOP */
+function loop(){
+requestAnimationFrame(loop);
+ctx.clearRect(0,0,canvas.width,canvas.height);
+
+/* DRAW MAP */
+for(let y=0;y<rows;y++){
+for(let x=0;x<cols;x++){
+if(map[y][x]===1){
+ctx.fillStyle="#8b4513";
+ctx.fillRect(x*tile,y*tile,tile-2,tile-2);
+}
+if(map[y][x]===2){
+ctx.fillStyle="#555";
+ctx.fillRect(x*tile,y*tile,tile-2,tile-2);
+}
+}
+}
+
+/* MOVE PLAYER */
+let nx=player.x+moveX*0.07;
+let ny=player.y+moveY*0.07;
+if(canMove(Math.floor(nx),Math.floor(player.y))) player.x=nx;
+if(canMove(Math.floor(player.x),Math.floor(ny))) player.y=ny;
+
+drawRobot(player.x,player.y);
+
+/* ENEMIES */
+enemies=enemies.filter(en=>{
+moveEnemy(en);
+drawMonster(en.x,en.y);
+if(Math.abs(en.x-player.x)<0.5 && Math.abs(en.y-player.y)<0.5){
+player.hp--;
+}
+return true;
+});
+
+/* BOMBS */
+bombs.forEach(b=>{
+b.t--;
+ctx.fillStyle="black";
+ctx.beginPath();
+ctx.arc(b.x*tile+20,b.y*tile+20,15,0,Math.PI*2);
+ctx.fill();
+if(b.t<=0) explode(b.x,b.y);
+});
+bombs=bombs.filter(b=>b.t>0);
+
+/* EXPLOSION */
+explosions.forEach(e=>{
+ctx.fillStyle="orange";
+ctx.fillRect(e.x*tile,e.y*tile,tile,tile);
+e.t--;
+});
+explosions=explosions.filter(e=>e.t>0);
+
+/* TREASURE */
+treasure=treasure.filter(t=>{
+ctx.fillStyle=t.type==="gold"?"gold":"cyan";
+ctx.beginPath();
+ctx.arc(t.x*tile+20,t.y*tile+20,10,0,Math.PI*2);
+ctx.fill();
+if(Math.floor(player.x)===t.x && Math.floor(player.y)===t.y){
+score+=t.type==="gold"?50:100;
+return false;
+}
+return true;
+});
+
+/* KEY */
+if(keySpawned && keyPosition){
+ctx.fillStyle="yellow";
+ctx.fillRect(keyPosition.x*tile+12,keyPosition.y*tile+12,16,16);
+if(Math.floor(player.x)===keyPosition.x &&
+   Math.floor(player.y)===keyPosition.y){
+spawnBoss();
+keySpawned=false;
+}
+}
+
+/* BOSS */
+if(boss){
+ctx.fillStyle="purple";
+ctx.beginPath();
+ctx.arc(boss.x*tile+20,boss.y*tile+20,25,0,Math.PI*2);
+ctx.fill();
+
+let dx=player.x-boss.x;
+let dy=player.y-boss.y;
+boss.x+=Math.sign(dx)*0.02;
+boss.y+=Math.sign(dy)*0.02;
+
+explosions.forEach(e=>{
+if(Math.floor(boss.x)===e.x && Math.floor(boss.y)===e.y){
+boss.hp--;
+score+=200;
+}
+});
+
+if(boss.hp<=0){
+alert("YOU WIN 🏆 SCORE: "+score);
+location.reload();
+}
+}
+
+document.getElementById("hp").innerText=player.hp;
+document.getElementById("enemyCount").innerText=enemies.length;
+document.getElementById("score").innerText=score;
+
+if(player.hp<=0){
+alert("GAME OVER");
+location.reload();
+}
+}
+
+/* JOYSTICK */
+const joystick=document.getElementById("joystick");
+const stick=document.getElementById("stick");
+let drag=false;
+
+joystick.addEventListener("pointerdown",()=>drag=true);
+window.addEventListener("pointerup",()=>{
+drag=false;moveX=0;moveY=0;
+stick.style.left="35px";
+stick.style.top="35px";
+});
+
+window.addEventListener("pointermove",e=>{
+if(!drag)return;
+let r=joystick.getBoundingClientRect();
+let x=e.clientX-r.left-60;
+let y=e.clientY-r.top-60;
+let d=Math.hypot(x,y);
+if(d>40){x=x/d*40;y=y/d*40;}
+stick.style.left=35+x+"px";
+stick.style.top=35+y+"px";
+moveX=x/40;
+moveY=y/40;
+});
+</script>
 </body>
 </html>
