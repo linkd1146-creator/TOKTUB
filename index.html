@@ -14,377 +14,215 @@
 
 <link rel="stylesheet" href="style.css">
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
+
 <style>
-body{
-  margin:0;
-  background:black;
-  font-family:sans-serif;
-  overflow:hidden;
-}
-
-/* VIDEO FEED */
-.container{
-  height:100vh;
-  overflow-y:scroll;
-  scroll-snap-type:y mandatory;
-}
-
-.video-box{
-  height:100vh;
-  scroll-snap-align:start;
-}
-
-/* TOPBAR */
-.topbar{
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  display:flex;
-  overflow-x:auto;
-  background:rgba(0,0,0,0.7);
-  z-index:9999;
-}
-
+body{margin:0;background:black;font-family:sans-serif;overflow:hidden;}
+.container{height:100vh;overflow-y:scroll;scroll-snap-type:y mandatory;}
+.video-box{height:100vh;scroll-snap-align:start;}
+.topbar{position:fixed;top:0;left:0;width:100%;display:flex;overflow-x:auto;background:rgba(0,0,0,0.7);z-index:9999;}
 .topbar.trending { background:#ff004f; }
 .topbar.news { background:#0066ff; }
 .topbar.sports { background:#00c853; }
 .topbar.music { background:#9c27b0; }
-
-.topbar button{
-  color:white;
-  background:none;
-  border:none;
-  padding:12px;
-  cursor:pointer;
-  font-size:14px;
-}
-
-.topbar button.active{
-  border-bottom:2px solid white;
-}
-
-/* MENU */
-.menu-btn{
-  position:fixed;
-  top:10px;
-  right:15px;
-  font-size:28px;
-  z-index:10000;
-  cursor:pointer;
-  color:white;
-}
-
-.dropdown{
-  display:none;
-  position:fixed;
-  top:50px;
-  right:15px;
-  background:#111;
-  padding:10px;
-  border-radius:8px;
-  z-index:10000;
-}
-
-.dropdown a{
-  display:block;
-  padding:8px;
-  color:white;
-  text-decoration:none;
-}
-
-.dropdown a:hover{
-  background:#222;
-}
-
-.show{ display:block; }
-
-/* MINI MUSIC BAR */
-#miniMusicBar{
-  position:fixed;
-  bottom:0;
-  left:0;
-  width:100%;
-  height:70px;
-  background:#111;
-  display:none;
-  align-items:center;
-  justify-content:space-between;
-  padding:10px 20px;
-  color:white;
-  z-index:99999;
-}
-
-/* AI FLOAT */
-.ai-float{
-  position:fixed;
-  left:15px;
-  bottom:90px;
-  width:60px;
-  height:60px;
-  background:#2b6cff;
-  color:white;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:26px;
-  border-radius:50%;
-  text-decoration:none;
-  z-index:9999;
-}
-
-/* VOLUME */
-.volume-control{
-  position:fixed;
-  top:60px;
-  right:15px;
-  z-index:9999;
-  color:white;
-}
+.topbar button{color:white;background:none;border:none;padding:12px;cursor:pointer;font-size:14px;}
+.topbar button.active{border-bottom:2px solid white;}
+.menu-btn{position:fixed;top:10px;right:15px;font-size:28px;z-index:10000;cursor:pointer;color:white;}
+.dropdown{display:none;position:fixed;top:50px;right:15px;background:#111;padding:10px;border-radius:8px;z-index:10000;}
+.dropdown a{display:block;padding:8px;color:white;text-decoration:none;}
+.dropdown a:hover{background:#222;}
+.show{display:block;}
+#miniMusicBar{position:fixed;bottom:0;left:0;width:100%;height:70px;background:#111;display:none;align-items:center;justify-content:space-between;padding:10px 20px;color:white;z-index:99999;}
+.ai-float{position:fixed;left:15px;bottom:90px;width:60px;height:60px;background:#2b6cff;color:white;display:flex;align-items:center;justify-content:center;font-size:26px;border-radius:50%;text-decoration:none;z-index:9999;}
+.volume-control{position:fixed;top:60px;right:15px;z-index:9999;color:white;}
 </style>
 
 </head>
 
 <body>
 
-<!-- AI FLOAT -->
 <a href="ai.html" class="ai-float">🤖</a>
 
-<!-- MENU -->
 <div class="menu-btn" onclick="toggleMenu()">⋮</div>
 
 <div class="dropdown" id="dropdown">
-  <a href="blog.html">Blog</a>
-  <a href="about.html">About</a>
-  <a href="streaming.html">Streaming</a>
-  <a href="game.html">Game</a>
-  <a href="promo.html">Promo</a>
-  <a href="blibli.html">Blibli</a>
-  <a href="donasi.html">Donasi</a>
-  <a href="privacy.html">Privacy</a>
-  <a href="terms.html">Terms</a>
+<a href="blog.html">Blog</a>
+<a href="about.html">About</a>
+<a href="streaming.html">Streaming</a>
+<a href="game.html">Game</a>
+<a href="promo.html">Promo</a>
+<a href="blibli.html">Blibli</a>
+<a href="donasi.html">Donasi</a>
+<a href="privacy.html">Privacy</a>
+<a href="terms.html">Terms</a>
 </div>
 
-<!-- TOPBAR -->
 <div class="topbar trending" id="topbar">
-  <button class="cat-btn active" data-cat="trending" onclick="setCategory('trending')">🔥 Trending</button>
-  <button class="cat-btn" data-cat="news" onclick="setCategory('news')">📰 News</button>
-  <button class="cat-btn" data-cat="sports" onclick="setCategory('sports')">⚽ Sport</button>
-  <button class="cat-btn" data-cat="music" onclick="setCategory('music')">🎵 Musik</button>
+<button class="cat-btn active" data-cat="trending">🔥 Trending</button>
+<button class="cat-btn" data-cat="news">📰 News</button>
+<button class="cat-btn" data-cat="sports">⚽ Sport</button>
+<button class="cat-btn" data-cat="music">🎵 Musik</button>
 </div>
 
-<!-- VIDEO FEED -->
 <div class="container" id="feed"></div>
 
-<!-- MUSIC SECTION -->
 <div id="musicSection" style="display:none; height:100vh; background:black; color:white; text-align:center; padding-top:80px;">
-  <h2>🎵 Music Player</h2>
-  <div id="musicPlayer"></div>
-
-  <div style="margin-top:15px;">
-    <button onclick="prevMusic()">⏮</button>
-    <button onclick="nextMusic()">⏭</button>
-  </div>
+<h2>🎵 Music Player</h2>
+<div id="musicPlayer"></div>
 </div>
 
-<!-- MINI FLOATING MUSIC BAR -->
 <div id="miniMusicBar">
-  <div>🎵 <span id="musicTitle">Music Player</span></div>
-  <div>
-    <button onclick="prevMusic()">⏮</button>
-    <button onclick="nextMusic()">⏭</button>
-    <button onclick="toggleMusic()">⏯</button>
-  </div>
+<div>🎵 <span id="musicTitle">Music Player</span></div>
 </div>
 
-<!-- VOLUME -->
 <div class="volume-control">
-  🔊 <input type="range" id="volumeSlider" min="0" max="100" value="50">
+🔊 <input type="range" min="0" max="100" value="50">
 </div>
-
-<!-- YOUTUBE API -->
-<script src="https://www.youtube.com/iframe_api"></script>
-
-<!-- APP JS -->
-<script src="app.js" defer></script>
 
 <script>
 function toggleMenu(){
-  document.getElementById("dropdown").classList.toggle("show");
+document.getElementById("dropdown").classList.toggle("show");
 }
 </script>
 
-  <!-- ================= FIREBASE FOLLOWER + REALTIME NOTIFICATION ================= -->
+<!-- ================= FIREBASE ================= -->
 
-<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-  
+
 <script>
-/* ================== FIREBASE CONFIG ================== */
 const firebaseConfig = {
-  apiKey: "AIzaSyDRbZaikbDC2GuWIfL7OWalXY81nvSd_DA",
-  authDomain: "minitok-bd7c1.firebaseapp.com",
-  projectId: "minitok-bd7c1",
-  storageBucket: "minitok-bd7c1.firebasestorage.app",
-  messagingSenderId: "507499794732",
-  appId: "1:507499794732:web:6f97c616d022e8beb79c89"
+apiKey: "AIzaSyDRbZaikbDC2GuWIfL7OWalXY81nvSd_DA",
+authDomain: "minitok-bd7c1.firebaseapp.com",
+projectId: "minitok-bd7c1",
+storageBucket: "minitok-bd7c1.firebasestorage.app",
+messagingSenderId: "507499794732",
+appId: "1:507499794732:web:6f97c616d022e8beb79c89"
 };
 
-  auth.onAuthStateChanged(user=>{
-  if(user){
-    console.log("UID AKUN INI:", user.uid);
-  }
-});
-
 firebase.initializeApp(firebaseConfig);
+
 const auth = firebase.auth();
 const db = firebase.firestore();
 
 let currentUser = null;
-let creatorId = "OWNER_MINITOK_UID"; // GANTI dengan UID akun utama kamu
+let creatorId = "GANTI_DENGAN_UID_KAMU";
 
-/* ================== LOGIN BUTTON AUTO ================== */
+/* AUTO UI */
 const loginBtn = document.createElement("button");
-loginBtn.innerText = "Login";
-loginBtn.style.position = "fixed";
-loginBtn.style.bottom = "160px";
-loginBtn.style.right = "15px";
-loginBtn.style.zIndex = "99999";
-loginBtn.style.padding = "8px";
+loginBtn.innerText="Login";
+loginBtn.style.position="fixed";
+loginBtn.style.bottom="160px";
+loginBtn.style.right="15px";
+loginBtn.style.zIndex="99999";
 document.body.appendChild(loginBtn);
 
-loginBtn.onclick = () => {
-  const provider = new firebase.auth.GoogleAuthProvider();
-  auth.signInWithPopup(provider);
+loginBtn.onclick=()=>{
+const provider=new firebase.auth.GoogleAuthProvider();
+auth.signInWithPopup(provider);
 };
 
-/* ================== FOLLOW BUTTON AUTO ================== */
-const followBtn = document.createElement("button");
-followBtn.innerText = "Follow";
-followBtn.style.position = "fixed";
-followBtn.style.bottom = "120px";
-followBtn.style.right = "15px";
-followBtn.style.zIndex = "99999";
-followBtn.style.padding = "8px";
+const followBtn=document.createElement("button");
+followBtn.innerText="Follow";
+followBtn.style.position="fixed";
+followBtn.style.bottom="120px";
+followBtn.style.right="15px";
+followBtn.style.zIndex="99999";
 document.body.appendChild(followBtn);
 
-/* ================== FOLLOWER COUNTER ================== */
-const followerBox = document.createElement("div");
-followerBox.style.position = "fixed";
-followerBox.style.bottom = "90px";
-followerBox.style.right = "15px";
-followerBox.style.color = "white";
-followerBox.style.zIndex = "99999";
-followerBox.innerHTML = "Followers: <span id='followerCount'>0</span>";
+const followerBox=document.createElement("div");
+followerBox.style.position="fixed";
+followerBox.style.bottom="90px";
+followerBox.style.right="15px";
+followerBox.style.color="white";
+followerBox.style.zIndex="99999";
+followerBox.innerHTML="Followers: <span id='followerCount'>0</span>";
 document.body.appendChild(followerBox);
 
-/* ================== NOTIFICATION ICON ================== */
-const notifIcon = document.createElement("div");
-notifIcon.style.position = "fixed";
-notifIcon.style.top = "10px";
-notifIcon.style.right = "60px";
-notifIcon.style.color = "white";
-notifIcon.style.zIndex = "100000";
-notifIcon.innerHTML = "🔔 <span id='notifCount'>0</span>";
+const notifIcon=document.createElement("div");
+notifIcon.style.position="fixed";
+notifIcon.style.top="10px";
+notifIcon.style.right="60px";
+notifIcon.style.color="white";
+notifIcon.style.zIndex="100000";
+notifIcon.innerHTML="🔔 <span id='notifCount'>0</span>";
 document.body.appendChild(notifIcon);
 
-/* ================== AUTH STATE ================== */
+/* AUTH STATE */
 auth.onAuthStateChanged(async user=>{
-  if(user){
-    currentUser = user;
-    loginBtn.style.display="none";
+if(user){
+currentUser=user;
+console.log("UID:",user.uid);
+loginBtn.style.display="none";
 
-    await db.collection("users").doc(user.uid).set({
-      name: user.displayName,
-      photo: user.photoURL,
-      createdAt: Date.now()
-    }, {merge:true});
+await db.collection("users").doc(user.uid).set({
+name:user.displayName,
+photo:user.photoURL,
+createdAt:Date.now()
+},{merge:true});
 
-    checkFollowStatus();
-    listenNotifications(user.uid);
-  }
+checkFollowStatus();
+updateFollowerCount();
+listenNotifications(user.uid);
+}
 });
 
-/* ================== FOLLOW FUNCTION ================== */
-async function toggleFollow(){
-  if(!currentUser) return alert("Login dulu!");
+/* FOLLOW */
+followBtn.onclick=async ()=>{
+if(!currentUser) return alert("Login dulu!");
+if(currentUser.uid===creatorId) return alert("Tidak bisa follow diri sendiri");
 
-  if(currentUser.uid === creatorId)
-    return alert("Tidak bisa follow diri sendiri");
+const ref=db.collection("follows").doc(currentUser.uid+"_"+creatorId);
+const doc=await ref.get();
 
-  const followRef = db.collection("follows")
-    .doc(currentUser.uid + "_" + creatorId);
-
-  const doc = await followRef.get();
-
-  if(doc.exists){
-    await followRef.delete();
-  } else {
-    await followRef.set({
-      followerId: currentUser.uid,
-      creatorId: creatorId,
-      timestamp: Date.now()
-    });
-
-    // CREATE NOTIFICATION
-    await db.collection("notifications").add({
-      to: creatorId,
-      from: currentUser.uid,
-      type: "follow",
-      read: false,
-      timestamp: Date.now()
-    });
-  }
-
-  updateFollowerCount();
-  checkFollowStatus();
-}
-
-followBtn.onclick = toggleFollow;
-
-/* ================== CHECK FOLLOW STATUS ================== */
-async function checkFollowStatus(){
-  if(!currentUser) return;
-
-  const doc = await db.collection("follows")
-    .doc(currentUser.uid + "_" + creatorId)
-    .get();
-
-  followBtn.innerText = doc.exists ? "Unfollow" : "Follow";
-}
-
-/* ================== UPDATE FOLLOWER COUNT ================== */
-async function updateFollowerCount(){
-  const snapshot = await db.collection("follows")
-    .where("creatorId","==",creatorId)
-    .get();
-
-  document.getElementById("followerCount").innerText =
-    snapshot.size;
+if(doc.exists){
+await ref.delete();
+}else{
+await ref.set({
+followerId:currentUser.uid,
+creatorId:creatorId,
+timestamp:Date.now()
+});
+await db.collection("notifications").add({
+to:creatorId,
+from:currentUser.uid,
+type:"follow",
+read:false,
+timestamp:Date.now()
+});
 }
 
 updateFollowerCount();
+checkFollowStatus();
+};
 
-/* ================== REALTIME NOTIFICATION ================== */
-function listenNotifications(userId){
-  db.collection("notifications")
-    .where("to","==",userId)
-    .where("read","==",false)
-    .onSnapshot(snapshot=>{
-      document.getElementById("notifCount").innerText = snapshot.size;
+async function checkFollowStatus(){
+if(!currentUser) return;
+const doc=await db.collection("follows")
+.doc(currentUser.uid+"_"+creatorId).get();
+followBtn.innerText=doc.exists?"Unfollow":"Follow";
+}
 
-      if(snapshot.size > 0){
-        snapshot.docChanges().forEach(change=>{
-          if(change.type === "added"){
-            alert("🔔 Kamu mendapat follower baru!");
-          }
-        });
-      }
-    });
+async function updateFollowerCount(){
+const snap=await db.collection("follows")
+.where("creatorId","==",creatorId).get();
+document.getElementById("followerCount").innerText=snap.size;
+}
+
+function listenNotifications(uid){
+db.collection("notifications")
+.where("to","==",uid)
+.where("read","==",false)
+.onSnapshot(snap=>{
+document.getElementById("notifCount").innerText=snap.size;
+snap.docChanges().forEach(c=>{
+if(c.type==="added"){
+alert("🔔 Kamu mendapat follower baru!");
+}
+});
+});
 }
 </script>
-  
+
 </body>
 </html>
