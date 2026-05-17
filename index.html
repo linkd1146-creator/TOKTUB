@@ -86,19 +86,29 @@ document.getElementById("dropdown").classList.toggle("show");
 
 <!-- ================= FIREBASE ================= -->
 
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-analytics.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
 
-<script>
-const firebaseConfig = {
-apiKey: "AIzaSyDRbZaikbDC2GuWIfL7OWalXY81nvSd_DA",
-authDomain: "minitok-bd7c1.firebaseapp.com",
-projectId: "minitok-bd7c1",
-storageBucket: "minitok-bd7c1.firebasestorage.app",
-messagingSenderId: "507499794732",
-appId: "1:507499794732:web:6f97c616d022e8beb79c89"
-};
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  const firebaseConfig = {
+    apiKey: "AIzaSyBFfH4ix22IIjYczrXi4EeuAzH7eykWH1A",
+    authDomain: "toktube-70b00.firebaseapp.com",
+    projectId: "toktube-70b00",
+    storageBucket: "toktube-70b00.firebasestorage.app",
+    messagingSenderId: "668818456806",
+    appId: "1:668818456806:web:6452e3e606819ff72abb27",
+    measurementId: "G-MN85RFYLNV"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+</script>
 
 firebase.initializeApp(firebaseConfig);
 
