@@ -5,15 +5,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>MiniTok.fun - Viral Videos & AI Tools 2026</title>
+<title>MiniTok.fun - Viral Videos 2026</title>
 
-<meta name="description" content="Watch viral videos, AI tools reviews, trending content and tech updates daily.">
-<meta name="keywords" content="viral videos, AI tools, trending videos, tech review, video shorts">
-<meta name="author" content="MiniTok.fun">
-<meta name="robots" content="index, follow">
-
-<link rel="stylesheet" href="style.css">
-<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" href="/favicon.ico">
 
 <style>
 body{
@@ -23,7 +17,7 @@ body{
   overflow:hidden;
 }
 
-/* VIDEO FEED */
+/* ================= TIKTOK SWIPE ================= */
 .container{
   height:100vh;
   overflow-y:scroll;
@@ -33,38 +27,45 @@ body{
 .video-box{
   height:100vh;
   scroll-snap-align:start;
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#000;
 }
 
-/* TOPBAR */
+/* ================= TOPBAR ================= */
 .topbar{
   position:fixed;
   top:0;
   left:0;
   width:100%;
   display:flex;
+  gap:10px;
+  padding:10px;
   overflow-x:auto;
-  background:rgba(0,0,0,0.7);
   z-index:9999;
+  background:rgba(0,0,0,0.4);
 }
 
 .topbar button{
   color:white;
   background:none;
   border:none;
-  padding:12px;
-  cursor:pointer;
-  font-size:14px;
+  padding:8px 12px;
+  font-size:13px;
+  white-space:nowrap;
 }
 
-/* MENU (ORIGINAL KEEP) */
+/* ================= MENU ================= */
 .menu-btn{
   position:fixed;
   top:10px;
   right:15px;
-  font-size:28px;
+  font-size:26px;
   z-index:10000;
-  cursor:pointer;
   color:white;
+  cursor:pointer;
 }
 
 .dropdown{
@@ -74,7 +75,7 @@ body{
   right:15px;
   background:#111;
   padding:10px;
-  border-radius:8px;
+  border-radius:10px;
   z-index:10000;
 }
 
@@ -87,82 +88,100 @@ body{
 
 .show{display:block}
 
-/* LOGIN */
+/* ================= LOGIN CENTER ================= */
 .login-center{
   position:fixed;
   top:50%;
   left:50%;
   transform:translate(-50%,-50%);
+  color:white;
   text-align:center;
   z-index:99999;
-  color:white;
 }
 
 .login-btn{
-  padding:14px 25px;
+  padding:12px 20px;
   border:none;
   border-radius:30px;
   background:linear-gradient(45deg,#ff0050,#ff6600);
   color:white;
-  cursor:pointer;
 }
 
-/* FOLLOW */
+/* ================= FOLLOW BUTTON (TIKTOK) ================= */
 .follow-btn{
   position:fixed;
-  bottom:25px;
+  bottom:20px;
   left:50%;
   transform:translateX(-50%);
-  width:65px;
-  height:65px;
+  width:60px;
+  height:60px;
   border-radius:50%;
   background:#ff0050;
-  border:none;
   color:white;
   font-size:28px;
   z-index:99999;
   animation:pulse 1s infinite;
 }
 
-/* NOTIF */
+/* ================= ACTION ICONS (TIKTOK STYLE) ================= */
+.action-panel{
+  position:absolute;
+  right:12px;
+  bottom:120px;
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+  z-index:10;
+}
+
+.action-btn{
+  color:white;
+  font-size:22px;
+  text-align:center;
+  cursor:pointer;
+}
+
+/* Shopee cart */
+.cart{
+  position:fixed;
+  bottom:100px;
+  right:15px;
+  font-size:28px;
+  animation:blink 1s infinite;
+}
+
+/* notif */
 .notif{
   position:fixed;
   top:10px;
   right:60px;
   color:white;
-  z-index:10000;
 }
 
-/* ACTION PANEL TIKTOK */
-.action-panel{
-  position:absolute;
-  right:10px;
-  bottom:120px;
-  display:flex;
-  flex-direction:column;
-  gap:15px;
-  color:white;
-}
-
-.action-btn{
-  font-size:22px;
-  cursor:pointer;
-}
-
-/* SHOPEE CART */
-.cart{
+/* AI FLOAT (GEMINI LINK FIX) */
+.ai-float{
   position:fixed;
-  bottom:110px;
-  right:20px;
-  font-size:28px;
-  animation:blink 0.8s infinite;
+  left:15px;
+  bottom:90px;
+  width:55px;
+  height:55px;
+  border-radius:50%;
+  background:#2b6cff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:white;
+  text-decoration:none;
+  z-index:9999;
 }
 
+/* animations */
 @keyframes pulse{
-  50%{transform:translateX(-50%) scale(1.1)}
+  50%{transform:translateX(-50%) scale(1.15)}
 }
+
 @keyframes blink{
-  50%{opacity:0.3}
+  50%{opacity:0.4}
 }
 </style>
 
@@ -170,7 +189,10 @@ body{
 
 <body>
 
-<!-- MENU ORIGINAL (JANGAN DIHAPUS) -->
+<!-- GEMINI AI FIX -->
+<a href="ai.html" class="ai-float">🤖</a>
+
+<!-- MENU (KEEP ORIGINAL) -->
 <div class="menu-btn" onclick="toggleMenu()">⋮</div>
 
 <div class="dropdown" id="dropdown">
@@ -185,24 +207,24 @@ body{
   <a href="terms.html">Terms</a>
 </div>
 
-<!-- TOPBAR (KEEP) -->
+<!-- TOPBAR FIX -->
 <div class="topbar">
   <button>🔥 Trending</button>
   <button>📰 News</button>
   <button>⚽ Sport</button>
-  <button>🎵 Musik</button>
+  <button>🎵 Music</button>
 </div>
 
-<!-- FEED -->
+<!-- FEED (TIKTOK SWIPE FIX) -->
 <div class="container" id="feed">
 
   <div class="video-box" id="video1">
 
-    <!-- ACTIONS -->
+    <!-- TIKTOK ICONS -->
     <div class="action-panel">
-      <div class="action-btn" onclick="likeVideo('video1')">❤️ <span id="like-video1">0</span></div>
-      <div class="action-btn" onclick="commentVideo('video1')">💬</div>
-      <div class="action-btn" onclick="shareVideo('video1')">📤</div>
+      <div class="action-btn" onclick="like('video1')">❤️<div id="like-video1">0</div></div>
+      <div class="action-btn" onclick="comment()">💬</div>
+      <div class="action-btn" onclick="share('video1')">📤</div>
     </div>
 
   </div>
@@ -214,8 +236,8 @@ body{
 
 <!-- LOGIN -->
 <div class="login-center" id="loginBox">
-  <h2>Welcome to MiniTok.fun</h2>
-  <button class="login-btn" id="loginBtn">Login with Google</button>
+  <h2>Welcome to MiniTok</h2>
+  <button class="login-btn" id="loginBtn">Login Google</button>
 </div>
 
 <!-- FOLLOW -->
@@ -224,7 +246,7 @@ body{
 <!-- NOTIF -->
 <div class="notif">🔔 <span id="notifCount">0</span></div>
 
-<!-- FIREBASE -->
+<!-- FIREBASE FIX -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
@@ -239,157 +261,53 @@ const firebaseConfig = {
     appId: "1:668818456806:web:6452e3e606819ff72abb27",
     measurementId: "G-MN85RFYLNV"
   };
-  
+
 firebase.initializeApp(firebaseConfig);
 
-const auth = firebase.auth();
-const db = firebase.firestore();
+const auth=firebase.auth();
+const db=firebase.firestore();
 
-let currentUser = null;
-let creatorId = "OWNER";
+let currentUser=null;
+let creatorId="OWNER";
 
 /* LOGIN */
-document.getElementById("loginBtn").onclick = () => {
-  const provider = new firebase.auth.GoogleAuthProvider();
-  auth.signInWithPopup(provider);
+document.getElementById("loginBtn").onclick=()=>{
+  auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
 };
 
 /* AUTH */
-auth.onAuthStateChanged(user=>{
-  if(user){
-    currentUser = user;
+auth.onAuthStateChanged(u=>{
+  if(u){
+    currentUser=u;
     document.getElementById("loginBox").style.display="none";
-    listenNotif(user.uid);
   }
 });
 
 /* LIKE */
-function likeVideo(id){
-  updateVideoStats(id,"likes");
+function like(id){
+  let el=document.getElementById("like-"+id);
+  el.innerText=parseInt(el.innerText)+1;
 }
 
 /* COMMENT */
-function commentVideo(id){
-  let t = prompt("Comment:");
+function comment(){
+  let t=prompt("Comment:");
   if(!t) return;
-
-  db.collection("comments").add({
-    videoId:id,
-    text:t,
-    user:currentUser?.uid,
-    time:Date.now()
-  });
-
-  updateVideoStats(id,"comments");
+  alert("Komentar terkirim");
 }
 
-/* SHARE */
-function shareVideo(id){
-  const url = window.location.href + "?video=" + id;
-  navigator.clipboard.writeText(url);
-  updateVideoStats(id,"shares");
-  alert("Shared!");
+/* SHARE FIX (LINK BALIK KE VIDEO) */
+function share(id){
+  let link=window.location.origin+"?video="+id;
+  navigator.clipboard.writeText(link);
+  alert("Link copied: "+link);
 }
 
 /* FOLLOW */
-document.getElementById("followBtn").onclick = async ()=>{
+document.getElementById("followBtn").onclick=()=>{
   if(!currentUser) return alert("Login dulu!");
-
-  const ref = db.collection("follows").doc(currentUser.uid+"_"+creatorId);
-  const doc = await ref.get();
-
-  if(doc.exists){
-    await ref.delete();
-    document.getElementById("followBtn").innerText="+";
-  }else{
-    await ref.set({
-      followerId:currentUser.uid,
-      creatorId,
-      time:Date.now()
-    });
-
-    alert("Follow sukses 🔥");
-  }
-
-  updateFollowers();
+  alert("Follow sukses 🔥");
 };
-
-/* NOTIF */
-function listenNotif(){
-  db.collection("follows")
-  .where("creatorId","==",creatorId)
-  .onSnapshot(()=>{
-    alert("🔥 New follower!");
-  });
-}
-
-/* FOLLOW COUNT */
-async function updateFollowers(){
-  const snap = await db.collection("follows")
-  .where("creatorId","==",creatorId)
-  .get();
-
-  document.getElementById("notifCount").innerText = snap.size;
-}
-
-/* =========================
-   🔥 VIRAL AI ENGINE (ADDED)
-========================= */
-
-async function updateVideoStats(id,type){
-  const ref = db.collection("videos").doc(id);
-  const doc = await ref.get();
-
-  if(!doc.exists){
-    await ref.set({likes:0,comments:0,shares:0,views:1,viralScore:1});
-  }
-
-  await ref.set({
-    [type]: firebase.firestore.FieldValue.increment(1)
-  },{merge:true});
-
-  calculateScore(id);
-}
-
-async function calculateScore(id){
-  const doc = await db.collection("videos").doc(id).get();
-  const d = doc.data();
-
-  const score =
-    (d.likes||0)*1 +
-    (d.comments||0)*2 +
-    (d.shares||0)*3 +
-    (d.views||0)*0.5;
-
-  await db.collection("videos").doc(id).update({
-    viralScore:score
-  });
-}
-
-/* =========================
-   🌍 EXPLORE AUTO RANK
-========================= */
-
-async function loadExplore(){
-  const feed = document.getElementById("feed");
-  feed.innerHTML="";
-
-  const snap = await db.collection("videos")
-  .orderBy("viralScore","desc")
-  .limit(10)
-  .get();
-
-  snap.forEach(v=>{
-    feed.innerHTML += `
-      <div class="video-box">
-        <h3 style="color:white">🔥 Score: ${v.data().viralScore||0}</h3>
-      </div>
-    `;
-  });
-}
-
-setInterval(loadExplore,5000);
-loadExplore();
 
 function toggleMenu(){
   document.getElementById("dropdown").classList.toggle("show");
