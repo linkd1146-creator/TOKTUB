@@ -12,8 +12,7 @@
 <meta name="author" content="MiniTok.fun">
 <meta name="robots" content="index, follow">
 
-<link rel="stylesheet" href="style.css">
-<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" href="/favicon.ico">
 
 <style>
 body{
@@ -23,7 +22,7 @@ body{
   overflow:hidden;
 }
 
-/* VIDEO FEED (TIKTOK SWIPE) */
+/* FEED */
 .container{
   height:100vh;
   overflow-y:scroll;
@@ -36,7 +35,7 @@ body{
   position:relative;
 }
 
-/* TOPBAR */
+/* ================= TOPBAR ================= */
 .topbar{
   position:fixed;
   top:0;
@@ -48,15 +47,28 @@ body{
   z-index:9999;
 }
 
-/* MENU (TETAP ORIGINAL) */
+.topbar button{
+  color:white;
+  background:none;
+  border:none;
+  padding:12px;
+  font-size:14px;
+  cursor:pointer;
+}
+
+.topbar button.active{
+  border-bottom:2px solid white;
+}
+
+/* ================= MENU ================= */
 .menu-btn{
   position:fixed;
   top:10px;
   right:15px;
   font-size:28px;
   z-index:10000;
-  cursor:pointer;
   color:white;
+  cursor:pointer;
 }
 
 .dropdown{
@@ -79,7 +91,7 @@ body{
 
 .show{display:block}
 
-/* LOGIN CENTER */
+/* ================= LOGIN ================= */
 .login-center{
   position:fixed;
   top:50%;
@@ -90,7 +102,7 @@ body{
   text-align:center;
 }
 
-/* FOLLOW BUTTON TIKTOK */
+/* ================= FOLLOW ================= */
 .follow-btn{
   position:fixed;
   bottom:25px;
@@ -106,7 +118,7 @@ body{
   animation:pulse 1s infinite;
 }
 
-/* ICON PANEL (LIKE COMMENT SHARE) */
+/* ================= ACTION PANEL ================= */
 .action-panel{
   position:absolute;
   right:10px;
@@ -114,39 +126,81 @@ body{
   display:flex;
   flex-direction:column;
   gap:15px;
+  color:white;
   z-index:9999;
 }
 
 .action-btn{
-  color:white;
   font-size:22px;
-  text-align:center;
-  cursor:pointer;
 }
 
-.blink{
-  animation:blink 1s infinite;
-}
-
-/* SHOPEE CART */
+/* ================= CART ================= */
 .cart{
   position:fixed;
   bottom:100px;
   right:20px;
   font-size:30px;
   animation:blink 0.8s infinite;
-  z-index:99999;
 }
 
-/* NOTIF */
+/* ================= NOTIF ================= */
 .notif{
   position:fixed;
   top:10px;
   right:60px;
   color:white;
-  z-index:10000;
 }
 
+/* ================= AI ================= */
+.ai-btn{
+  position:fixed;
+  left:15px;
+  bottom:180px;
+  width:55px;
+  height:55px;
+  background:#00c3ff;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:white;
+  font-size:24px;
+  z-index:99999;
+  cursor:pointer;
+}
+
+.ai-box{
+  position:fixed;
+  left:15px;
+  bottom:250px;
+  width:260px;
+  height:300px;
+  background:#111;
+  display:none;
+  flex-direction:column;
+  z-index:99999;
+}
+
+.ai-header{
+  background:#00c3ff;
+  padding:10px;
+  color:white;
+}
+
+.ai-chat{
+  flex:1;
+  overflow:auto;
+  padding:10px;
+  color:white;
+  font-size:13px;
+}
+
+#aiInput{
+  padding:10px;
+  border:none;
+}
+
+/* ANIMATION */
 @keyframes pulse{
   0%{transform:translateX(-50%) scale(1)}
   50%{transform:translateX(-50%) scale(1.1)}
@@ -162,7 +216,7 @@ body{
 
 <body>
 
-<!-- MENU (TIDAK DIHAPUS) -->
+<!-- MENU -->
 <div class="menu-btn" onclick="toggleMenu()">⋮</div>
 <div class="dropdown" id="dropdown">
   <a href="blog.html">Blog</a>
@@ -176,7 +230,7 @@ body{
   <a href="terms.html">Terms</a>
 </div>
 
-<!-- TOPBAR (TETAP) -->
+<!-- TOPBAR (FIXED) -->
 <div class="topbar">
   <button>🔥 Trending</button>
   <button>📰 News</button>
@@ -186,26 +240,26 @@ body{
 
 <!-- FEED -->
 <div class="container" id="feed">
-  <!-- contoh video -->
+
   <div class="video-box" data-id="video1">
 
-    <!-- ACTION PANEL -->
     <div class="action-panel">
-      <div class="action-btn" onclick="likeVideo('video1')">❤️ <span id="like-video1">0</span></div>
+      <div class="action-btn" onclick="likeVideo('video1')">❤️</div>
       <div class="action-btn" onclick="commentVideo('video1')">💬</div>
       <div class="action-btn" onclick="shareVideo('video1')">📤</div>
     </div>
 
   </div>
+
 </div>
 
-<!-- SHOPEE CART -->
+<!-- CART -->
 <div class="cart">🛒</div>
 
 <!-- LOGIN -->
 <div class="login-center" id="loginBox">
   <h2>Welcome to MiniTok.fun</h2>
-  <button onclick="login()">Login with Google</button>
+  <button onclick="login()">Login</button>
 </div>
 
 <!-- FOLLOW -->
@@ -214,6 +268,15 @@ body{
 <!-- NOTIF -->
 <div class="notif">🔔 <span id="notifCount">0</span></div>
 
+<!-- AI GEMINITOK -->
+<div class="ai-btn" onclick="toggleAI()">🤖</div>
+
+<div class="ai-box" id="aiBox">
+  <div class="ai-header">GeminiTok AI</div>
+  <div class="ai-chat" id="aiChat"></div>
+  <input id="aiInput" placeholder="Tanya AI..." />
+</div>
+
 <!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
@@ -221,106 +284,75 @@ body{
 
 <script>
 const firebaseConfig = {
-  apiKey: "XXX",
-  authDomain: "XXX",
-  projectId: "XXX"
-};
+    apiKey: "AIzaSyBFfH4ix22IIjYczrXi4EeuAzH7eykWH1A",
+    authDomain: "toktube-70b00.firebaseapp.com",
+    projectId: "toktube-70b00",
+    storageBucket: "toktube-70b00.firebasestorage.app",
+    messagingSenderId: "668818456806",
+    appId: "1:668818456806:web:6452e3e606819ff72abb27",
+    measurementId: "G-MN85RFYLNV"
+  };
 
 firebase.initializeApp(firebaseConfig);
 
-const auth = firebase.auth();
-const db = firebase.firestore();
+const auth=firebase.auth();
+const db=firebase.firestore();
 
-let currentUser = null;
-let creatorId = "OWNER_ID";
+let currentUser=null;
+let creatorId="OWNER";
 
 /* LOGIN */
 function login(){
-  const provider = new firebase.auth.GoogleAuthProvider();
-  auth.signInWithPopup(provider);
+  auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
 }
 
 /* AUTH */
 auth.onAuthStateChanged(user=>{
   if(user){
-    currentUser = user;
+    currentUser=user;
     document.getElementById("loginBox").style.display="none";
-    listenNotif(user.uid);
   }
 });
 
-/* LIKE */
-function likeVideo(id){
-  db.collection("likes").doc(id).set({
-    count: firebase.firestore.FieldValue.increment(1)
-  },{merge:true});
-
-  document.getElementById("like-"+id).innerText++;
-}
-
-/* COMMENT */
-function commentVideo(id){
-  let text = prompt("Tulis komentar:");
-  if(!text) return;
-
-  db.collection("comments").add({
-    videoId:id,
-    text:text,
-    user:currentUser?.uid || "anon",
-    time:Date.now()
-  });
-}
-
-/* SHARE */
+/* LIKE / COMMENT / SHARE */
+function likeVideo(id){ console.log("like",id); }
+function commentVideo(id){ prompt("Comment:"); }
 function shareVideo(id){
-  const url = window.location.href + "?video=" + id;
-  navigator.clipboard.writeText(url);
-  alert("Link copied: " + url);
+  navigator.clipboard.writeText(location.href+"?video="+id);
 }
 
 /* FOLLOW */
-document.getElementById("followBtn").onclick = async ()=>{
+document.getElementById("followBtn").onclick=async()=>{
   if(!currentUser) return alert("Login dulu!");
-
-  const ref = db.collection("follows")
-  .doc(currentUser.uid+"_"+creatorId);
-
-  const doc = await ref.get();
-
-  if(doc.exists){
-    await ref.delete();
-    document.getElementById("followBtn").innerText="+";
-  }else{
-    await ref.set({
-      followerId:currentUser.uid,
-      creatorId,
-      time:Date.now()
-    });
-
-    alert("🔥 Follow sukses!");
-  }
-
-  updateFollowers();
+  document.getElementById("followBtn").innerText="✓";
 };
 
-/* FOLLOW COUNT */
-async function updateFollowers(){
-  const snap = await db.collection("follows")
-  .where("creatorId","==",creatorId)
-  .get();
-
-  document.getElementById("notifCount").innerText = snap.size;
+/* ================= AI ================= */
+function toggleAI(){
+  let box=document.getElementById("aiBox");
+  box.style.display=box.style.display==="flex"?"none":"flex";
+  box.style.flexDirection="column";
 }
 
-/* NOTIF REALTIME */
-function listenNotif(uid){
-  db.collection("follows")
-  .where("creatorId","==",creatorId)
-  .onSnapshot(snap=>{
-    alert("🔔 Ada follower baru!");
-  });
+document.getElementById("aiInput").addEventListener("keydown",e=>{
+  if(e.key==="Enter"){
+    let msg=e.target.value;
+    let chat=document.getElementById("aiChat");
+
+    chat.innerHTML+="👤 "+msg+"<br>";
+    chat.innerHTML+="🤖 "+ai(msg)+"<br>";
+
+    e.target.value="";
+  }
+});
+
+function ai(t){
+  if(t.includes("viral")) return "AI: viral = likes + share + comment";
+  if(t.includes("tiktok")) return "AI: MiniTok aktif 🔥";
+  return "AI siap bantu 🚀";
 }
 
+/* MENU */
 function toggleMenu(){
   document.getElementById("dropdown").classList.toggle("show");
 }
