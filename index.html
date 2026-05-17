@@ -214,5 +214,177 @@ function toggleMenu(){
 }
 </script>
 
+  <!-- ================= FIREBASE FOLLOWER + REALTIME NOTIFICATION ================= -->
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"></script>
+
+<script>
+/* ================== FIREBASE CONFIG ================== */
+const firebaseConfig = {
+  apiKey: "AIzaSyDRbZaikbDC2GuWIfL7OWalXY81nvSd_DA",
+  authDomain: "minitok-bd7c1.firebaseapp.com",
+  projectId: "minitok-bd7c1",
+  storageBucket: "minitok-bd7c1.firebasestorage.app",
+  messagingSenderId: "507499794732",
+  appId: "1:507499794732:web:6f97c616d022e8beb79c89"
+};
+
+  auth.onAuthStateChanged(user=>{
+  if(user){
+    console.log("UID AKUN INI:", user.uid);
+  }
+});
+
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+
+let currentUser = null;
+let creatorId = "OWNER_MINITOK_UID"; // GANTI dengan UID akun utama kamu
+
+/* ================== LOGIN BUTTON AUTO ================== */
+const loginBtn = document.createElement("button");
+loginBtn.innerText = "Login";
+loginBtn.style.position = "fixed";
+loginBtn.style.bottom = "160px";
+loginBtn.style.right = "15px";
+loginBtn.style.zIndex = "99999";
+loginBtn.style.padding = "8px";
+document.body.appendChild(loginBtn);
+
+loginBtn.onclick = () => {
+  const provider = new firebase.auth.GoogleAuthProvider();
+  auth.signInWithPopup(provider);
+};
+
+/* ================== FOLLOW BUTTON AUTO ================== */
+const followBtn = document.createElement("button");
+followBtn.innerText = "Follow";
+followBtn.style.position = "fixed";
+followBtn.style.bottom = "120px";
+followBtn.style.right = "15px";
+followBtn.style.zIndex = "99999";
+followBtn.style.padding = "8px";
+document.body.appendChild(followBtn);
+
+/* ================== FOLLOWER COUNTER ================== */
+const followerBox = document.createElement("div");
+followerBox.style.position = "fixed";
+followerBox.style.bottom = "90px";
+followerBox.style.right = "15px";
+followerBox.style.color = "white";
+followerBox.style.zIndex = "99999";
+followerBox.innerHTML = "Followers: <span id='followerCount'>0</span>";
+document.body.appendChild(followerBox);
+
+/* ================== NOTIFICATION ICON ================== */
+const notifIcon = document.createElement("div");
+notifIcon.style.position = "fixed";
+notifIcon.style.top = "10px";
+notifIcon.style.right = "60px";
+notifIcon.style.color = "white";
+notifIcon.style.zIndex = "100000";
+notifIcon.innerHTML = "🔔 <span id='notifCount'>0</span>";
+document.body.appendChild(notifIcon);
+
+/* ================== AUTH STATE ================== */
+auth.onAuthStateChanged(async user=>{
+  if(user){
+    currentUser = user;
+    loginBtn.style.display="none";
+
+    await db.collection("users").doc(user.uid).set({
+      name: user.displayName,
+      photo: user.photoURL,
+      createdAt: Date.now()
+    }, {merge:true});
+
+    checkFollowStatus();
+    listenNotifications(user.uid);
+  }
+});
+
+/* ================== FOLLOW FUNCTION ================== */
+async function toggleFollow(){
+  if(!currentUser) return alert("Login dulu!");
+
+  if(currentUser.uid === creatorId)
+    return alert("Tidak bisa follow diri sendiri");
+
+  const followRef = db.collection("follows")
+    .doc(currentUser.uid + "_" + creatorId);
+
+  const doc = await followRef.get();
+
+  if(doc.exists){
+    await followRef.delete();
+  } else {
+    await followRef.set({
+      followerId: currentUser.uid,
+      creatorId: creatorId,
+      timestamp: Date.now()
+    });
+
+    // CREATE NOTIFICATION
+    await db.collection("notifications").add({
+      to: creatorId,
+      from: currentUser.uid,
+      type: "follow",
+      read: false,
+      timestamp: Date.now()
+    });
+  }
+
+  updateFollowerCount();
+  checkFollowStatus();
+}
+
+followBtn.onclick = toggleFollow;
+
+/* ================== CHECK FOLLOW STATUS ================== */
+async function checkFollowStatus(){
+  if(!currentUser) return;
+
+  const doc = await db.collection("follows")
+    .doc(currentUser.uid + "_" + creatorId)
+    .get();
+
+  followBtn.innerText = doc.exists ? "Unfollow" : "Follow";
+}
+
+/* ================== UPDATE FOLLOWER COUNT ================== */
+async function updateFollowerCount(){
+  const snapshot = await db.collection("follows")
+    .where("creatorId","==",creatorId)
+    .get();
+
+  document.getElementById("followerCount").innerText =
+    snapshot.size;
+}
+
+updateFollowerCount();
+
+/* ================== REALTIME NOTIFICATION ================== */
+function listenNotifications(userId){
+  db.collection("notifications")
+    .where("to","==",userId)
+    .where("read","==",false)
+    .onSnapshot(snapshot=>{
+      document.getElementById("notifCount").innerText = snapshot.size;
+
+      if(snapshot.size > 0){
+        snapshot.docChanges().forEach(change=>{
+          if(change.type === "added"){
+            alert("🔔 Kamu mendapat follower baru!");
+          }
+        });
+      }
+    });
+}
+</script>
+  
 </body>
 </html>
