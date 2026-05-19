@@ -13,8 +13,8 @@ let lastWatchedKeyword = "viral";
 
 const categoryQuery = {
   trending: "viral shorts 2026",
-  news: "breaking news shorts",
-  sports: "sports highlights shorts"
+  news: "breaking news global",
+  sports: "sports highlights"
 };
 
 /* ===================== MUSIC VIDEO LIST ===================== */
