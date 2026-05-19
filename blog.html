@@ -3,258 +3,276 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MiniTok Creator Platform</title>
+<title>MiniTok Creator PRO</title>
 
 <style>
 body{
-  margin:0;
-  font-family:Arial, Helvetica, sans-serif;
-  background:#111;
-  color:white;
+margin:0;
+font-family: 'Segoe UI', sans-serif;
+background:#0f0f0f;
+color:white;
 }
 
 header{
-  text-align:center;
-  padding:20px;
-  font-size:22px;
-  font-weight:bold;
-  background:#000;
+background:#141414;
+padding:15px 30px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+border-bottom:1px solid #222;
 }
 
-nav{
-  display:flex;
-  justify-content:center;
-  gap:10px;
-  padding:15px;
+.logo{
+font-size:20px;
+font-weight:bold;
+color:#00f2ff;
 }
 
-button{
-  padding:8px 14px;
-  border:none;
-  border-radius:20px;
-  background:#ffcc00;
-  font-weight:bold;
-  cursor:pointer;
+nav button{
+background:none;
+border:none;
+color:white;
+margin:0 10px;
+cursor:pointer;
+font-weight:600;
 }
 
-.section{display:none;}
-.section.active{display:block;}
+nav button:hover{
+color:#00f2ff;
+}
+
+.container{
+padding:30px;
+}
 
 .grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-  gap:20px;
-  padding:20px;
+display:grid;
+grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
+gap:20px;
 }
 
 .card{
-  background:#1c1c1c;
-  padding:15px;
-  border-radius:15px;
+background:#1c1c1c;
+border-radius:12px;
+padding:15px;
+border:1px solid #222;
+transition:0.3s;
 }
 
-.badge{
-  font-size:12px;
-  padding:4px 8px;
-  border-radius:20px;
-  display:inline-block;
+.card:hover{
+transform:scale(1.05);
+border-color:#00f2ff;
 }
 
-.free{background:#00c853;}
-.premium{background:#d50000;}
-
-.form{
-  border-top:1px solid #333;
-  padding:20px;
-  max-width:700px;
-  margin:auto;
+button{
+padding:8px 12px;
+border:none;
+border-radius:6px;
+cursor:pointer;
+font-weight:bold;
 }
 
-input, textarea, select{
-  width:100%;
-  padding:10px;
-  margin:10px 0;
-  border-radius:10px;
-  border:none;
-  background:#222;
-  color:white;
+.btn-primary{
+background:#00f2ff;
+color:black;
+}
+
+.btn-gold{
+background:gold;
+color:black;
+}
+
+input, select{
+width:100%;
+padding:10px;
+margin:5px 0;
+background:#111;
+border:1px solid #333;
+color:white;
+border-radius:6px;
 }
 
 .viewer{
-  position:fixed;
-  inset:0;
-  background:#000;
-  display:none;
-  flex-direction:column;
+margin-top:20px;
+height:500px;
+border:1px solid #333;
+border-radius:10px;
+overflow:hidden;
 }
 
-.viewer iframe{
-  flex:1;
-  border:none;
+iframe{
+width:100%;
+height:100%;
+border:none;
 }
 
-.close-btn{
-  background:red;
-  color:white;
+.hidden{
+display:none;
+}
+
+.premium-badge{
+color:gold;
+font-weight:bold;
 }
 </style>
 </head>
+
 <body>
 
 <header>
-🚀 MiniTok Creator (Free & Premium)
+<div class="logo">MiniTok Creator PRO</div>
+<nav>
+<button onclick="showPage('artikel')">Artikel</button>
+<button onclick="showPage('komik')">Komik</button>
+<button onclick="showPage('ebook')">E-Book</button>
+<button onclick="showPage('upload')">Upload</button>
+<button onclick="activatePremium()">Upgrade Premium</button>
+</nav>
 </header>
 
-<nav>
-  <button onclick="showTab('artikel')">Artikel</button>
-  <button onclick="showTab('komik')">Komik</button>
-  <button onclick="showTab('ebook')">E-Book</button>
-</nav>
+<div class="container">
 
-<!-- VIEWER -->
-<div class="viewer" id="viewer">
-  <button class="close-btn" onclick="closeViewer()">Tutup</button>
-  <iframe id="fileFrame"></iframe>
+<!-- LOGIN -->
+<div id="loginPage">
+<h2>Login User</h2>
+<input type="text" id="username" placeholder="Masukkan Nama">
+<button class="btn-primary" onclick="login()">Login</button>
 </div>
 
-<!-- ================= ARTIKEL ================= -->
-<div id="artikel" class="section active">
-  <div class="grid" id="artikelList"></div>
-
-  <div class="form">
-    <h3>Upload Artikel</h3>
-    <input type="text" id="artikelTitle" placeholder="Judul">
-    <textarea id="artikelDesc" placeholder="Deskripsi"></textarea>
-    <select id="artikelAccess">
-      <option value="free">Free</option>
-      <option value="premium">Premium</option>
-    </select>
-    <input type="file" id="artikelFile" accept=".pdf,.doc,.docx">
-    <button onclick="addContent('artikel')">Publish</button>
-  </div>
+<!-- UPLOAD -->
+<div id="uploadPage" class="hidden">
+<h2>Upload Konten</h2>
+<input type="text" id="judul" placeholder="Judul">
+<select id="kategori">
+<option value="artikel">Artikel</option>
+<option value="komik">Komik</option>
+<option value="ebook">E-Book</option>
+</select>
+<select id="akses">
+<option value="free">Free</option>
+<option value="premium">Premium</option>
+</select>
+<input type="file" id="fileUpload" accept=".pdf,.doc,.docx">
+<button class="btn-primary" onclick="uploadContent()">Upload</button>
 </div>
 
-<!-- ================= KOMIK ================= -->
-<div id="komik" class="section">
-  <div class="grid" id="komikList"></div>
-
-  <div class="form">
-    <h3>Upload Komik</h3>
-    <input type="text" id="komikTitle" placeholder="Judul">
-    <textarea id="komikDesc" placeholder="Deskripsi"></textarea>
-    <select id="komikAccess">
-      <option value="free">Free</option>
-      <option value="premium">Premium</option>
-    </select>
-    <input type="file" id="komikFile" accept=".pdf,.doc,.docx">
-    <button onclick="addContent('komik')">Publish</button>
-  </div>
+<!-- KONTEN -->
+<div id="artikelPage" class="hidden">
+<h2>Artikel</h2>
+<div id="artikelList" class="grid"></div>
 </div>
 
-<!-- ================= EBOOK ================= -->
-<div id="ebook" class="section">
-  <div class="grid" id="ebookList"></div>
+<div id="komikPage" class="hidden">
+<h2>Komik</h2>
+<div id="komikList" class="grid"></div>
+</div>
 
-  <div class="form">
-    <h3>Upload E-Book</h3>
-    <input type="text" id="ebookTitle" placeholder="Judul">
-    <textarea id="ebookDesc" placeholder="Deskripsi"></textarea>
-    <select id="ebookAccess">
-      <option value="free">Free</option>
-      <option value="premium">Premium</option>
-    </select>
-    <input type="file" id="ebookFile" accept=".pdf,.doc,.docx">
-    <button onclick="addContent('ebook')">Publish</button>
-  </div>
+<div id="ebookPage" class="hidden">
+<h2>E-Book</h2>
+<div id="ebookList" class="grid"></div>
+</div>
+
+<div id="viewerContainer" class="hidden">
+<h2 id="viewerTitle"></h2>
+<div class="viewer">
+<iframe id="viewerFrame"></iframe>
+</div>
+<button id="downloadBtn" class="btn-primary hidden">Download File</button>
+</div>
+
 </div>
 
 <script>
 
-let db = JSON.parse(localStorage.getItem("minitokDB")) || {
-  artikel:[],
-  komik:[],
-  ebook:[]
+let database=[];
+let currentUser=null;
+let isPremium=false;
+
+function login(){
+let name=document.getElementById("username").value;
+if(!name){
+alert("Masukkan nama dulu!");
+return;
+}
+currentUser=name;
+document.getElementById("loginPage").style.display="none";
+showPage("artikel");
+}
+
+function showPage(page){
+["upload","artikel","komik","ebook"].forEach(p=>{
+document.getElementById(p+"Page").classList.add("hidden");
+});
+document.getElementById(page+"Page").classList.remove("hidden");
+document.getElementById("viewerContainer").classList.add("hidden");
+}
+
+function activatePremium(){
+alert("Untuk akses Premium silakan donasi seikhlasnya 🙏");
+window.location.href="https://minitok.fun/donasi.html";
+}
+
+function uploadContent(){
+let judul=document.getElementById("judul").value;
+let kategori=document.getElementById("kategori").value;
+let akses=document.getElementById("akses").value;
+let file=document.getElementById("fileUpload").files[0];
+
+if(!judul || !file){
+alert("Isi semua data!");
+return;
+}
+
+let fileURL=URL.createObjectURL(file);
+
+database.push({judul,kategori,akses,fileURL,file});
+
+renderContent();
+alert("Upload berhasil!");
+}
+
+function renderContent(){
+document.getElementById("artikelList").innerHTML="";
+document.getElementById("komikList").innerHTML="";
+document.getElementById("ebookList").innerHTML="";
+
+database.forEach((item,index)=>{
+let card=document.createElement("div");
+card.className="card";
+card.innerHTML=`
+<h3>${item.judul}</h3>
+<p>${item.akses=="premium"?"<span class='premium-badge'>Premium</span>":"Free"}</p>
+<button class="btn-primary" onclick="openContent(${index})">Buka</button>
+`;
+document.getElementById(item.kategori+"List").appendChild(card);
+});
+}
+
+function openContent(index){
+let item=database[index];
+
+if(item.akses=="premium" && !isPremium){
+window.location.href="https://minitok.fun/donasi.html";
+return;
+}
+
+document.getElementById("viewerContainer").classList.remove("hidden");
+document.getElementById("viewerTitle").innerText=item.judul;
+document.getElementById("viewerFrame").src=item.fileURL;
+
+let downloadBtn=document.getElementById("downloadBtn");
+downloadBtn.classList.remove("hidden");
+downloadBtn.onclick=function(){
+let a=document.createElement("a");
+a.href=item.fileURL;
+a.download=item.judul;
+a.click();
 };
 
-let tempFile = {};
-
-function showTab(tab){
-  document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
-  document.getElementById(tab).classList.add("active");
+window.scrollTo(0,document.body.scrollHeight);
 }
-
-["artikel","komik","ebook"].forEach(type=>{
-  document.getElementById(type+"File").addEventListener("change", function(e){
-    const reader = new FileReader();
-    reader.onload = ()=> tempFile[type]=reader.result;
-    if(e.target.files[0]) reader.readAsDataURL(e.target.files[0]);
-  });
-});
-
-function addContent(type){
-  const title = document.getElementById(type+"Title").value;
-  const desc = document.getElementById(type+"Desc").value;
-  const access = document.getElementById(type+"Access").value;
-  const file = tempFile[type];
-
-  if(!title){alert("Judul wajib diisi"); return;}
-
-  db[type].unshift({title,desc,access,file});
-  localStorage.setItem("minitokDB",JSON.stringify(db));
-
-  render();
-}
-
-function render(){
-  ["artikel","komik","ebook"].forEach(type=>{
-    const container=document.getElementById(type+"List");
-    container.innerHTML="";
-    db[type].forEach(item=>{
-      container.innerHTML+=`
-        <div class="card">
-          <h3>${item.title}</h3>
-          <p>${item.desc}</p>
-          <span class="badge ${item.access}">
-            ${item.access==="free"?"FREE":"PREMIUM"}
-          </span>
-          <br><br>
-          <button onclick="openFile('${type}','${item.title}')">Buka</button>
-          <button onclick="downloadFile('${type}','${item.title}')">Download</button>
-        </div>
-      `;
-    });
-  });
-}
-
-function openFile(type,title){
-  const item=db[type].find(x=>x.title===title);
-  if(item.access==="premium"){
-    window.location.href="https://minitok.fun/donasi.html";
-    return;
-  }
-  document.getElementById("viewer").style.display="flex";
-  document.getElementById("fileFrame").src=item.file;
-}
-
-function downloadFile(type,title){
-  const item=db[type].find(x=>x.title===title);
-  if(item.access==="premium"){
-    window.location.href="https://minitok.fun/donasi.html";
-    return;
-  }
-
-  const a=document.createElement("a");
-  a.href=item.file;
-  a.download=title;
-  a.click();
-}
-
-function closeViewer(){
-  document.getElementById("viewer").style.display="none";
-}
-
-render();
 
 </script>
+
 </body>
 </html>
