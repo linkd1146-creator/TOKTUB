@@ -3,52 +3,183 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Video Viral & Affiliate Marketing 2026 - MiniTok</title>
-<meta name="description" content="Panduan lengkap video viral, YouTube Shorts, dan affiliate marketing terbaru 2026. Cara menghasilkan uang dari konten video pendek.">
-<link rel="stylesheet" href="style.css">
+<title>MiniTok Blog</title>
+
+<style>
+body{
+  margin:0;
+  font-family:Arial, Helvetica, sans-serif;
+  background:#0f0f0f;
+  color:white;
+}
+
+/* HEADER */
+header{
+  text-align:center;
+  padding:20px;
+  font-size:24px;
+  font-weight:bold;
+  border-bottom:1px solid #222;
+}
+
+/* FILTER */
+.topbar{
+  display:flex;
+  justify-content:center;
+  gap:10px;
+  padding:15px;
+  flex-wrap:wrap;
+}
+
+button{
+  padding:8px 14px;
+  border:none;
+  border-radius:8px;
+  background:#222;
+  color:white;
+  cursor:pointer;
+}
+
+button:hover{background:#333;}
+
+/* GRID POST */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+  gap:20px;
+  padding:20px;
+}
+
+.card{
+  background:#1a1a1a;
+  padding:15px;
+  border-radius:12px;
+  transition:0.3s;
+}
+
+.card:hover{
+  background:#222;
+  transform:translateY(-5px);
+}
+
+.meta{
+  font-size:12px;
+  color:#aaa;
+}
+
+/* FORM */
+.form-section{
+  border-top:1px solid #222;
+  padding:20px;
+  max-width:800px;
+  margin:auto;
+}
+
+input, textarea, select{
+  width:100%;
+  padding:10px;
+  margin:10px 0;
+  border-radius:8px;
+  border:none;
+  background:#1a1a1a;
+  color:white;
+}
+
+textarea{min-height:120px;}
+
+.post-btn{
+  background:#ffcc00;
+  color:black;
+  font-weight:bold;
+}
+
+</style>
 </head>
 
-<body style="padding:30px;background:black;color:white;max-width:900px;margin:auto;line-height:1.7;">
+<body>
 
-<h1>Strategi Video Viral & Affiliate Marketing 2026</h1>
+<header>
+🚀 MiniTok Blog (Artikel & Komik)
+</header>
 
-<p>Perkembangan video pendek seperti Shorts, Reel, dan konten vertikal semakin mendominasi internet. Platform seperti YouTube dan website streaming kini menjadi sumber penghasilan baru melalui monetisasi dan affiliate marketing.</p>
+<div class="topbar">
+  <button onclick="filterCategory('all')">Semua</button>
+  <button onclick="filterCategory('artikel')">Artikel</button>
+  <button onclick="filterCategory('komik')">Komik</button>
+</div>
 
-<h2>Kenapa Video Pendek Sangat Populer?</h2>
+<div class="grid" id="postContainer"></div>
 
-<p>Konten berdurasi singkat lebih mudah dikonsumsi, cepat viral, dan memiliki potensi engagement tinggi. Algoritma platform digital cenderung merekomendasikan video dengan interaksi tinggi seperti like, share, dan komentar.</p>
+<!-- FORM TAMBAH POST -->
+<div class="form-section">
+  <h2>📝 Tambah Post</h2>
 
-<h2>Cara Menghasilkan Uang dari Video</h2>
+  <select id="category">
+    <option value="artikel">Artikel</option>
+    <option value="komik">Komik</option>
+  </select>
 
-<ul>
-<li>Monetisasi iklan (Ad Revenue)</li>
-<li>Affiliate marketing produk</li>
-<li>Promosi brand</li>
-<li>Traffic website</li>
-</ul>
+  <input type="text" id="title" placeholder="Judul">
 
-<h2>Apa Itu Affiliate Marketing?</h2>
+  <textarea id="content" placeholder="Isi konten (untuk komik bisa isi link gambar atau teks cerita)"></textarea>
 
-<p>Affiliate marketing adalah sistem promosi produk dimana kreator mendapatkan komisi dari setiap pembelian melalui link khusus. Sistem ini banyak digunakan oleh marketplace dan platform e-commerce.</p>
+  <button class="post-btn" onclick="addPost()">Publish</button>
+</div>
 
-<h2>Strategi Affiliate yang Efektif</h2>
+<script>
 
-<p>Untuk meningkatkan konversi, pilih produk yang relevan dengan konten video. Gunakan call-to-action yang jelas dan tempatkan link di area yang mudah diakses oleh pengunjung.</p>
+let posts = JSON.parse(localStorage.getItem("blogPosts")) || [];
 
-<h2>Optimasi SEO untuk Website Video</h2>
+function displayPosts(data){
+  const container = document.getElementById("postContainer");
+  container.innerHTML = "";
 
-<p>Gunakan kata kunci yang tepat seperti "video viral 2026", "cara dapat uang dari shorts", dan "affiliate marketing terbaru". Pastikan website cepat diakses dan mobile-friendly.</p>
+  data.forEach(post=>{
+    container.innerHTML += `
+      <div class="card">
+        <h3>${post.title}</h3>
+        <div class="meta">📂 ${post.category}</div>
+        <p>${post.content.substring(0,100)}...</p>
+      </div>
+    `;
+  });
+}
 
-<h2>Masa Depan Streaming & Monetisasi</h2>
+function addPost(){
+  const title = document.getElementById("title").value;
+  const content = document.getElementById("content").value;
+  const category = document.getElementById("category").value;
 
-<p>Streaming online dan konten vertikal akan terus berkembang. Dengan strategi yang tepat, kreator bisa membangun aset digital jangka panjang melalui website sendiri.</p>
+  if(title === "" || content === ""){
+    alert("Isi semua kolom!");
+    return;
+  }
 
-<hr>
+  posts.unshift({
+    title,
+    content,
+    category
+  });
 
-<p><strong>MiniTok</strong> hadir sebagai platform agregator video dan promo affiliate untuk membantu pengguna menemukan konten menarik dan produk relevan dalam satu tempat.</p>
+  localStorage.setItem("blogPosts", JSON.stringify(posts));
 
-<br>
-<a href="index.html" style="color:yellow;">⬅ Kembali ke Beranda</a>
+  document.getElementById("title").value="";
+  document.getElementById("content").value="";
+
+  displayPosts(posts);
+}
+
+function filterCategory(cat){
+  if(cat === "all"){
+    displayPosts(posts);
+  }else{
+    displayPosts(posts.filter(p=>p.category===cat));
+  }
+}
+
+displayPosts(posts);
+
+</script>
 
 </body>
 </html>
