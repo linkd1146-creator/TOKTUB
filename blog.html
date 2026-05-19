@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MiniTok Blog Upload File</title>
+<title>MiniTok Blog & E-Book</title>
 
 <style>
 body{
@@ -21,7 +21,7 @@ header{
   border-bottom:1px solid #222;
 }
 
-.topbar{
+nav{
   display:flex;
   justify-content:center;
   gap:10px;
@@ -40,6 +40,20 @@ button{
 
 button:hover{background:#333;}
 
+.active{
+  background:#ffcc00;
+  color:black;
+  font-weight:bold;
+}
+
+.section{
+  display:none;
+}
+
+.section.active{
+  display:block;
+}
+
 .grid{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
@@ -51,6 +65,7 @@ button:hover{background:#333;}
   background:#1a1a1a;
   padding:15px;
   border-radius:12px;
+  box-shadow:0 0 10px rgba(0,0,0,0.4);
 }
 
 .meta{
@@ -94,10 +109,18 @@ textarea{min-height:120px;}
 <body>
 
 <header>
-🚀 MiniTok Blog (Upload Word & PDF)
+🚀 MiniTok Blog & E-Book Platform
 </header>
 
-<div class="topbar">
+<nav>
+  <button onclick="showSection('blog')" class="active" id="btnBlog">Blog</button>
+  <button onclick="showSection('ebook')" id="btnEbook">E-Book</button>
+</nav>
+
+<!-- ================= BLOG ================= -->
+<div id="blog" class="section active">
+
+<div style="text-align:center; padding-top:10px;">
   <button onclick="filterCategory('all')">Semua</button>
   <button onclick="filterCategory('artikel')">Artikel</button>
   <button onclick="filterCategory('komik')">Komik</button>
@@ -105,7 +128,6 @@ textarea{min-height:120px;}
 
 <div class="grid" id="postContainer"></div>
 
-<!-- FORM TAMBAH POST -->
 <div class="form-section">
   <h2>📝 Tambah Post</h2>
 
@@ -124,10 +146,50 @@ textarea{min-height:120px;}
   <button class="post-btn" onclick="addPost()">Publish</button>
 </div>
 
+</div>
+
+<!-- ================= EBOOK ================= -->
+<div id="ebook" class="section">
+
+<div class="grid" id="ebookContainer"></div>
+
+<div class="form-section">
+  <h2>📚 Tambah E-Book</h2>
+
+  <input type="text" id="ebookTitle" placeholder="Judul E-Book">
+
+  <textarea id="ebookDesc" placeholder="Deskripsi singkat"></textarea>
+
+  <label>Upload File E-Book (PDF / Word):</label>
+  <input type="file" id="ebookUpload" accept=".pdf,.doc,.docx">
+
+  <button class="post-btn" onclick="addEbook()">Publish E-Book</button>
+</div>
+
+</div>
+
 <script>
 
 let posts = JSON.parse(localStorage.getItem("blogPosts")) || [];
+let ebooks = JSON.parse(localStorage.getItem("ebooks")) || [];
 let uploadedFile = null;
+let uploadedEbook = null;
+
+/* ================= NAVIGATION ================= */
+
+function showSection(section){
+  document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
+  document.querySelectorAll("nav button").forEach(b=>b.classList.remove("active"));
+  
+  document.getElementById(section).classList.add("active");
+  document.getElementById("btn"+capitalize(section)).classList.add("active");
+}
+
+function capitalize(str){
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+/* ================= BLOG ================= */
 
 function displayPosts(data){
   const container = document.getElementById("postContainer");
@@ -150,18 +212,12 @@ function addPost(){
   const content = document.getElementById("content").value;
   const category = document.getElementById("category").value;
 
-  if(title === ""){
+  if(title===""){
     alert("Judul wajib diisi!");
     return;
   }
 
-  posts.unshift({
-    title,
-    content,
-    category,
-    file: uploadedFile
-  });
-
+  posts.unshift({title, content, category, file: uploadedFile});
   localStorage.setItem("blogPosts", JSON.stringify(posts));
 
   document.getElementById("title").value="";
@@ -175,25 +231,66 @@ function addPost(){
 document.getElementById("fileUpload").addEventListener("change", function(e){
   const file = e.target.files[0];
   const reader = new FileReader();
-
-  reader.onload = function(){
-    uploadedFile = reader.result;
-  }
-
-  if(file){
-    reader.readAsDataURL(file);
-  }
+  reader.onload = ()=> uploadedFile = reader.result;
+  if(file) reader.readAsDataURL(file);
 });
 
 function filterCategory(cat){
-  if(cat === "all"){
+  if(cat==="all"){
     displayPosts(posts);
   }else{
     displayPosts(posts.filter(p=>p.category===cat));
   }
 }
 
+/* ================= EBOOK ================= */
+
+function displayEbooks(){
+  const container = document.getElementById("ebookContainer");
+  container.innerHTML = "";
+
+  ebooks.forEach(book=>{
+    container.innerHTML += `
+      <div class="card">
+        <h3>${book.title}</h3>
+        <p>${book.desc}</p>
+        ${book.file ? `<a class="file-link" href="${book.file}" target="_blank">📖 Buka E-Book</a>` : ""}
+      </div>
+    `;
+  });
+}
+
+function addEbook(){
+  const title = document.getElementById("ebookTitle").value;
+  const desc = document.getElementById("ebookDesc").value;
+
+  if(title===""){
+    alert("Judul wajib diisi!");
+    return;
+  }
+
+  ebooks.unshift({title, desc, file: uploadedEbook});
+  localStorage.setItem("ebooks", JSON.stringify(ebooks));
+
+  document.getElementById("ebookTitle").value="";
+  document.getElementById("ebookDesc").value="";
+  document.getElementById("ebookUpload").value="";
+  uploadedEbook=null;
+
+  displayEbooks();
+}
+
+document.getElementById("ebookUpload").addEventListener("change", function(e){
+  const file = e.target.files[0];
+  const reader = new FileReader();
+  reader.onload = ()=> uploadedEbook = reader.result;
+  if(file) reader.readAsDataURL(file);
+});
+
+/* ================= INIT ================= */
+
 displayPosts(posts);
+displayEbooks();
 
 </script>
 
