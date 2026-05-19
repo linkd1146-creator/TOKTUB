@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MiniTok Blog & E-Book</title>
+<title>MiniTok Creator Platform</title>
 
 <style>
 body{
@@ -46,13 +46,8 @@ button:hover{background:#333;}
   font-weight:bold;
 }
 
-.section{
-  display:none;
-}
-
-.section.active{
-  display:block;
-}
+.section{display:none;}
+.section.active{display:block;}
 
 .grid{
   display:grid;
@@ -77,6 +72,17 @@ button:hover{background:#333;}
   display:block;
   margin-top:10px;
   color:#ffcc00;
+  font-weight:bold;
+}
+
+.premium{
+  color:#ff4444;
+  font-weight:bold;
+}
+
+.free{
+  color:#00ff99;
+  font-weight:bold;
 }
 
 .form-section{
@@ -96,201 +102,184 @@ input, textarea, select{
   color:white;
 }
 
-textarea{min-height:120px;}
+textarea{min-height:100px;}
 
 .post-btn{
   background:#ffcc00;
   color:black;
   font-weight:bold;
 }
+
+.viewer{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:#000;
+  display:none;
+  flex-direction:column;
+}
+
+.viewer iframe{
+  flex:1;
+  border:none;
+}
+
+.close-btn{
+  background:red;
+  padding:10px;
+}
 </style>
 </head>
-
 <body>
 
 <header>
-🚀 MiniTok Blog & E-Book Platform
+🚀 MiniTok Creator Platform
 </header>
 
 <nav>
-  <button onclick="showSection('blog')" class="active" id="btnBlog">Blog</button>
+  <button onclick="showSection('artikel')" class="active" id="btnArtikel">Artikel</button>
+  <button onclick="showSection('komik')" id="btnKomik">Komik</button>
   <button onclick="showSection('ebook')" id="btnEbook">E-Book</button>
 </nav>
 
-<!-- ================= BLOG ================= -->
-<div id="blog" class="section active">
-
-<div style="text-align:center; padding-top:10px;">
-  <button onclick="filterCategory('all')">Semua</button>
-  <button onclick="filterCategory('artikel')">Artikel</button>
-  <button onclick="filterCategory('komik')">Komik</button>
+<!-- ================= VIEWER ================= -->
+<div class="viewer" id="viewer">
+  <button class="close-btn" onclick="closeViewer()">Tutup</button>
+  <iframe id="fileFrame"></iframe>
 </div>
 
-<div class="grid" id="postContainer"></div>
-
-<div class="form-section">
-  <h2>📝 Tambah Post</h2>
-
-  <select id="category">
-    <option value="artikel">Artikel</option>
-    <option value="komik">Komik</option>
-  </select>
-
-  <input type="text" id="title" placeholder="Judul">
-
-  <textarea id="content" placeholder="Isi deskripsi konten"></textarea>
-
-  <label>Upload File (Word / PDF):</label>
-  <input type="file" id="fileUpload" accept=".pdf,.doc,.docx">
-
-  <button class="post-btn" onclick="addPost()">Publish</button>
+<!-- ================= SECTION TEMPLATE ================= -->
+<div id="artikel" class="section active">
+  <div class="grid" id="artikelContainer"></div>
+  <div class="form-section">
+    <h2>Upload Artikel</h2>
+    <input type="text" id="artikelTitle" placeholder="Judul Artikel">
+    <textarea id="artikelDesc" placeholder="Deskripsi"></textarea>
+    <select id="artikelAccess">
+      <option value="free">Free</option>
+      <option value="premium">Premium</option>
+    </select>
+    <input type="file" id="artikelFile" accept=".pdf,.doc,.docx">
+    <button class="post-btn" onclick="addContent('artikel')">Publish</button>
+  </div>
 </div>
 
+<div id="komik" class="section">
+  <div class="grid" id="komikContainer"></div>
+  <div class="form-section">
+    <h2>Upload Komik</h2>
+    <input type="text" id="komikTitle" placeholder="Judul Komik">
+    <textarea id="komikDesc" placeholder="Deskripsi"></textarea>
+    <select id="komikAccess">
+      <option value="free">Free</option>
+      <option value="premium">Premium</option>
+    </select>
+    <input type="file" id="komikFile" accept=".pdf,.doc,.docx">
+    <button class="post-btn" onclick="addContent('komik')">Publish</button>
+  </div>
 </div>
 
-<!-- ================= EBOOK ================= -->
 <div id="ebook" class="section">
-
-<div class="grid" id="ebookContainer"></div>
-
-<div class="form-section">
-  <h2>📚 Tambah E-Book</h2>
-
-  <input type="text" id="ebookTitle" placeholder="Judul E-Book">
-
-  <textarea id="ebookDesc" placeholder="Deskripsi singkat"></textarea>
-
-  <label>Upload File E-Book (PDF / Word):</label>
-  <input type="file" id="ebookUpload" accept=".pdf,.doc,.docx">
-
-  <button class="post-btn" onclick="addEbook()">Publish E-Book</button>
-</div>
-
+  <div class="grid" id="ebookContainer"></div>
+  <div class="form-section">
+    <h2>Upload E-Book</h2>
+    <input type="text" id="ebookTitle" placeholder="Judul E-Book">
+    <textarea id="ebookDesc" placeholder="Deskripsi"></textarea>
+    <select id="ebookAccess">
+      <option value="free">Free</option>
+      <option value="premium">Premium</option>
+    </select>
+    <input type="file" id="ebookFile" accept=".pdf,.doc,.docx">
+    <button class="post-btn" onclick="addContent('ebook')">Publish</button>
+  </div>
 </div>
 
 <script>
 
-let posts = JSON.parse(localStorage.getItem("blogPosts")) || [];
-let ebooks = JSON.parse(localStorage.getItem("ebooks")) || [];
-let uploadedFile = null;
-let uploadedEbook = null;
+let database = JSON.parse(localStorage.getItem("creatorDB")) || {
+  artikel:[],
+  komik:[],
+  ebook:[]
+};
 
-/* ================= NAVIGATION ================= */
+let uploadedFiles = {};
 
-function showSection(section){
+function showSection(sec){
   document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
   document.querySelectorAll("nav button").forEach(b=>b.classList.remove("active"));
-  
-  document.getElementById(section).classList.add("active");
-  document.getElementById("btn"+capitalize(section)).classList.add("active");
+  document.getElementById(sec).classList.add("active");
+  document.getElementById("btn"+capitalize(sec)).classList.add("active");
 }
 
 function capitalize(str){
-  return str.charAt(0).toUpperCase() + str.slice(1);
+  return str.charAt(0).toUpperCase()+str.slice(1);
 }
 
-/* ================= BLOG ================= */
+["artikel","komik","ebook"].forEach(type=>{
+  document.getElementById(type+"File").addEventListener("change", function(e){
+    const file = e.target.files[0];
+    const reader = new FileReader();
+    reader.onload = ()=> uploadedFiles[type] = reader.result;
+    if(file) reader.readAsDataURL(file);
+  });
+});
 
-function displayPosts(data){
-  const container = document.getElementById("postContainer");
-  container.innerHTML = "";
+function addContent(type){
+  const title = document.getElementById(type+"Title").value;
+  const desc = document.getElementById(type+"Desc").value;
+  const access = document.getElementById(type+"Access").value;
+  const file = uploadedFiles[type];
 
-  data.forEach(post=>{
-    container.innerHTML += `
-      <div class="card">
-        <h3>${post.title}</h3>
-        <div class="meta">📂 ${post.category}</div>
-        <p>${post.content}</p>
-        ${post.file ? `<a class="file-link" href="${post.file}" target="_blank">📄 Buka File</a>` : ""}
-      </div>
-    `;
+  if(title===""){alert("Judul wajib diisi"); return;}
+
+  database[type].unshift({title, desc, access, file});
+  localStorage.setItem("creatorDB", JSON.stringify(database));
+
+  displayAll();
+}
+
+function displayAll(){
+  ["artikel","komik","ebook"].forEach(type=>{
+    const container = document.getElementById(type+"Container");
+    container.innerHTML="";
+    database[type].forEach(item=>{
+      container.innerHTML += `
+        <div class="card">
+          <h3>${item.title}</h3>
+          <p>${item.desc}</p>
+          <div class="meta ${item.access}">
+            ${item.access==="free"?"🟢 FREE":"🔒 PREMIUM"}
+          </div>
+          <button onclick="openContent('${type}','${item.title}')">Buka</button>
+        </div>
+      `;
+    });
   });
 }
 
-function addPost(){
-  const title = document.getElementById("title").value;
-  const content = document.getElementById("content").value;
-  const category = document.getElementById("category").value;
+function openContent(type,title){
+  const item = database[type].find(i=>i.title===title);
 
-  if(title===""){
-    alert("Judul wajib diisi!");
-    return;
+  if(item.access==="premium"){
+    const pass = prompt("Konten Premium. Masukkan kode akses:");
+    if(pass!=="12345"){
+      alert("Akses ditolak!");
+      return;
+    }
   }
 
-  posts.unshift({title, content, category, file: uploadedFile});
-  localStorage.setItem("blogPosts", JSON.stringify(posts));
-
-  document.getElementById("title").value="";
-  document.getElementById("content").value="";
-  document.getElementById("fileUpload").value="";
-  uploadedFile=null;
-
-  displayPosts(posts);
+  document.getElementById("fileFrame").src = item.file;
+  document.getElementById("viewer").style.display="flex";
 }
 
-document.getElementById("fileUpload").addEventListener("change", function(e){
-  const file = e.target.files[0];
-  const reader = new FileReader();
-  reader.onload = ()=> uploadedFile = reader.result;
-  if(file) reader.readAsDataURL(file);
-});
-
-function filterCategory(cat){
-  if(cat==="all"){
-    displayPosts(posts);
-  }else{
-    displayPosts(posts.filter(p=>p.category===cat));
-  }
+function closeViewer(){
+  document.getElementById("viewer").style.display="none";
+  document.getElementById("fileFrame").src="";
 }
 
-/* ================= EBOOK ================= */
-
-function displayEbooks(){
-  const container = document.getElementById("ebookContainer");
-  container.innerHTML = "";
-
-  ebooks.forEach(book=>{
-    container.innerHTML += `
-      <div class="card">
-        <h3>${book.title}</h3>
-        <p>${book.desc}</p>
-        ${book.file ? `<a class="file-link" href="${book.file}" target="_blank">📖 Buka E-Book</a>` : ""}
-      </div>
-    `;
-  });
-}
-
-function addEbook(){
-  const title = document.getElementById("ebookTitle").value;
-  const desc = document.getElementById("ebookDesc").value;
-
-  if(title===""){
-    alert("Judul wajib diisi!");
-    return;
-  }
-
-  ebooks.unshift({title, desc, file: uploadedEbook});
-  localStorage.setItem("ebooks", JSON.stringify(ebooks));
-
-  document.getElementById("ebookTitle").value="";
-  document.getElementById("ebookDesc").value="";
-  document.getElementById("ebookUpload").value="";
-  uploadedEbook=null;
-
-  displayEbooks();
-}
-
-document.getElementById("ebookUpload").addEventListener("change", function(e){
-  const file = e.target.files[0];
-  const reader = new FileReader();
-  reader.onload = ()=> uploadedEbook = reader.result;
-  if(file) reader.readAsDataURL(file);
-});
-
-/* ================= INIT ================= */
-
-displayPosts(posts);
-displayEbooks();
+displayAll();
 
 </script>
 
