@@ -3,34 +3,29 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MiniTok Creator Premium</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+<title>MiniTok Creator Platform</title>
 
 <style>
 body{
   margin:0;
-  font-family:'Poppins',sans-serif;
+  font-family:Arial, Helvetica, sans-serif;
   background:#111;
   color:white;
 }
 
 header{
+  text-align:center;
   padding:20px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
+  font-size:22px;
+  font-weight:bold;
   background:#000;
 }
 
-.logo{
-  font-weight:700;
-  font-size:22px;
-  color:#ffcc00;
-}
-
-nav button{
-  margin-left:10px;
+nav{
+  display:flex;
+  justify-content:center;
+  gap:10px;
+  padding:15px;
 }
 
 button{
@@ -42,22 +37,20 @@ button{
   cursor:pointer;
 }
 
+.section{display:none;}
+.section.active{display:block;}
+
 .grid{
   display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
   gap:20px;
   padding:20px;
 }
 
 .card{
   background:#1c1c1c;
-  border-radius:15px;
   padding:15px;
-  transition:0.3s;
-}
-
-.card:hover{
-  transform:scale(1.05);
+  border-radius:15px;
 }
 
 .badge{
@@ -69,6 +62,23 @@ button{
 
 .free{background:#00c853;}
 .premium{background:#d50000;}
+
+.form{
+  border-top:1px solid #333;
+  padding:20px;
+  max-width:700px;
+  margin:auto;
+}
+
+input, textarea, select{
+  width:100%;
+  padding:10px;
+  margin:10px 0;
+  border-radius:10px;
+  border:none;
+  background:#222;
+  color:white;
+}
 
 .viewer{
   position:fixed;
@@ -82,98 +92,168 @@ button{
   flex:1;
   border:none;
 }
+
+.close-btn{
+  background:red;
+  color:white;
+}
 </style>
 </head>
 <body>
 
 <header>
-  <div class="logo">MiniTok Creator</div>
-  <div>
-    <span id="userEmail"></span>
-    <button onclick="logout()">Logout</button>
-  </div>
+🚀 MiniTok Creator (Free & Premium)
 </header>
 
-<div class="grid" id="contentGrid"></div>
+<nav>
+  <button onclick="showTab('artikel')">Artikel</button>
+  <button onclick="showTab('komik')">Komik</button>
+  <button onclick="showTab('ebook')">E-Book</button>
+</nav>
 
 <!-- VIEWER -->
 <div class="viewer" id="viewer">
-  <button onclick="closeViewer()">Tutup</button>
+  <button class="close-btn" onclick="closeViewer()">Tutup</button>
   <iframe id="fileFrame"></iframe>
 </div>
 
-<!-- FIREBASE -->
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+<!-- ================= ARTIKEL ================= -->
+<div id="artikel" class="section active">
+  <div class="grid" id="artikelList"></div>
+
+  <div class="form">
+    <h3>Upload Artikel</h3>
+    <input type="text" id="artikelTitle" placeholder="Judul">
+    <textarea id="artikelDesc" placeholder="Deskripsi"></textarea>
+    <select id="artikelAccess">
+      <option value="free">Free</option>
+      <option value="premium">Premium</option>
+    </select>
+    <input type="file" id="artikelFile" accept=".pdf,.doc,.docx">
+    <button onclick="addContent('artikel')">Publish</button>
+  </div>
+</div>
+
+<!-- ================= KOMIK ================= -->
+<div id="komik" class="section">
+  <div class="grid" id="komikList"></div>
+
+  <div class="form">
+    <h3>Upload Komik</h3>
+    <input type="text" id="komikTitle" placeholder="Judul">
+    <textarea id="komikDesc" placeholder="Deskripsi"></textarea>
+    <select id="komikAccess">
+      <option value="free">Free</option>
+      <option value="premium">Premium</option>
+    </select>
+    <input type="file" id="komikFile" accept=".pdf,.doc,.docx">
+    <button onclick="addContent('komik')">Publish</button>
+  </div>
+</div>
+
+<!-- ================= EBOOK ================= -->
+<div id="ebook" class="section">
+  <div class="grid" id="ebookList"></div>
+
+  <div class="form">
+    <h3>Upload E-Book</h3>
+    <input type="text" id="ebookTitle" placeholder="Judul">
+    <textarea id="ebookDesc" placeholder="Deskripsi"></textarea>
+    <select id="ebookAccess">
+      <option value="free">Free</option>
+      <option value="premium">Premium</option>
+    </select>
+    <input type="file" id="ebookFile" accept=".pdf,.doc,.docx">
+    <button onclick="addContent('ebook')">Publish</button>
+  </div>
+</div>
 
 <script>
 
-// 🔥 GANTI DENGAN CONFIG FIREBASE KAMU
-const firebaseConfig = {
-    apiKey: "AIzaSyBFfH4ix22IIjYczrXi4EeuAzH7eykWH1A",
-    authDomain: "toktube-70b00.firebaseapp.com",
-    projectId: "toktube-70b00",
-    storageBucket: "toktube-70b00.firebasestorage.app",
-    messagingSenderId: "668818456806",
-    appId: "1:668818456806:web:6452e3e606819ff72abb27",
-    measurementId: "G-MN85RFYLNV"
-  };
+let db = JSON.parse(localStorage.getItem("minitokDB")) || {
+  artikel:[],
+  komik:[],
+  ebook:[]
+};
 
+let tempFile = {};
 
-firebase.initializeApp(firebaseConfig);
-
-const auth = firebase.auth();
-const db = firebase.firestore();
-const storage = firebase.storage();
-
-auth.onAuthStateChanged(user=>{
-  if(!user){
-    window.location.href="login.html";
-  }else{
-    document.getElementById("userEmail").innerText=user.email;
-    loadContent();
-  }
-});
-
-function logout(){
-  auth.signOut();
+function showTab(tab){
+  document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
+  document.getElementById(tab).classList.add("active");
 }
 
-async function loadContent(){
-  const snap = await db.collection("contents").get();
-  const grid = document.getElementById("contentGrid");
-  grid.innerHTML="";
+["artikel","komik","ebook"].forEach(type=>{
+  document.getElementById(type+"File").addEventListener("change", function(e){
+    const reader = new FileReader();
+    reader.onload = ()=> tempFile[type]=reader.result;
+    if(e.target.files[0]) reader.readAsDataURL(e.target.files[0]);
+  });
+});
 
-  snap.forEach(doc=>{
-    const data = doc.data();
-    grid.innerHTML += `
-      <div class="card">
-        <h3>${data.title}</h3>
-        <span class="badge ${data.access}">
-          ${data.access==="free"?"FREE":"PREMIUM"}
-        </span>
-        <p>${data.desc}</p>
-        <button onclick="openContent('${data.fileURL}','${data.access}')">Buka</button>
-      </div>
-    `;
+function addContent(type){
+  const title = document.getElementById(type+"Title").value;
+  const desc = document.getElementById(type+"Desc").value;
+  const access = document.getElementById(type+"Access").value;
+  const file = tempFile[type];
+
+  if(!title){alert("Judul wajib diisi"); return;}
+
+  db[type].unshift({title,desc,access,file});
+  localStorage.setItem("minitokDB",JSON.stringify(db));
+
+  render();
+}
+
+function render(){
+  ["artikel","komik","ebook"].forEach(type=>{
+    const container=document.getElementById(type+"List");
+    container.innerHTML="";
+    db[type].forEach(item=>{
+      container.innerHTML+=`
+        <div class="card">
+          <h3>${item.title}</h3>
+          <p>${item.desc}</p>
+          <span class="badge ${item.access}">
+            ${item.access==="free"?"FREE":"PREMIUM"}
+          </span>
+          <br><br>
+          <button onclick="openFile('${type}','${item.title}')">Buka</button>
+          <button onclick="downloadFile('${type}','${item.title}')">Download</button>
+        </div>
+      `;
+    });
   });
 }
 
-function openContent(url,access){
-  if(access==="premium"){
+function openFile(type,title){
+  const item=db[type].find(x=>x.title===title);
+  if(item.access==="premium"){
+    window.location.href="https://minitok.fun/donasi.html";
+    return;
+  }
+  document.getElementById("viewer").style.display="flex";
+  document.getElementById("fileFrame").src=item.file;
+}
+
+function downloadFile(type,title){
+  const item=db[type].find(x=>x.title===title);
+  if(item.access==="premium"){
     window.location.href="https://minitok.fun/donasi.html";
     return;
   }
 
-  document.getElementById("viewer").style.display="flex";
-  document.getElementById("fileFrame").src=url;
+  const a=document.createElement("a");
+  a.href=item.file;
+  a.download=title;
+  a.click();
 }
 
 function closeViewer(){
   document.getElementById("viewer").style.display="none";
 }
+
+render();
 
 </script>
 </body>
