@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MiniTok Blog Upload</title>
+<title>MiniTok Blog Upload File</title>
 
 <style>
 body{
@@ -51,12 +51,6 @@ button:hover{background:#333;}
   background:#1a1a1a;
   padding:15px;
   border-radius:12px;
-  transition:0.3s;
-}
-
-.card:hover{
-  background:#222;
-  transform:translateY(-5px);
 }
 
 .meta{
@@ -64,10 +58,10 @@ button:hover{background:#333;}
   color:#aaa;
 }
 
-.card img{
-  width:100%;
-  border-radius:8px;
-  margin-bottom:10px;
+.file-link{
+  display:block;
+  margin-top:10px;
+  color:#ffcc00;
 }
 
 .form-section{
@@ -94,19 +88,13 @@ textarea{min-height:120px;}
   color:black;
   font-weight:bold;
 }
-
-.preview-img{
-  width:150px;
-  margin-top:10px;
-  border-radius:8px;
-}
 </style>
 </head>
 
 <body>
 
 <header>
-🚀 MiniTok Blog (Artikel & Komik + Upload)
+🚀 MiniTok Blog (Upload Word & PDF)
 </header>
 
 <div class="topbar">
@@ -128,11 +116,10 @@ textarea{min-height:120px;}
 
   <input type="text" id="title" placeholder="Judul">
 
-  <textarea id="content" placeholder="Isi konten"></textarea>
+  <textarea id="content" placeholder="Isi deskripsi konten"></textarea>
 
-  <label>Upload Gambar:</label>
-  <input type="file" id="imageUpload" accept="image/*">
-  <img id="preview" class="preview-img" style="display:none;">
+  <label>Upload File (Word / PDF):</label>
+  <input type="file" id="fileUpload" accept=".pdf,.doc,.docx">
 
   <button class="post-btn" onclick="addPost()">Publish</button>
 </div>
@@ -140,7 +127,7 @@ textarea{min-height:120px;}
 <script>
 
 let posts = JSON.parse(localStorage.getItem("blogPosts")) || [];
-let uploadedImage = "";
+let uploadedFile = null;
 
 function displayPosts(data){
   const container = document.getElementById("postContainer");
@@ -149,10 +136,10 @@ function displayPosts(data){
   data.forEach(post=>{
     container.innerHTML += `
       <div class="card">
-        ${post.image ? `<img src="${post.image}">` : ""}
         <h3>${post.title}</h3>
         <div class="meta">📂 ${post.category}</div>
-        <p>${post.content.substring(0,100)}...</p>
+        <p>${post.content}</p>
+        ${post.file ? `<a class="file-link" href="${post.file}" target="_blank">📄 Buka File</a>` : ""}
       </div>
     `;
   });
@@ -163,8 +150,8 @@ function addPost(){
   const content = document.getElementById("content").value;
   const category = document.getElementById("category").value;
 
-  if(title === "" || content === ""){
-    alert("Isi semua kolom!");
+  if(title === ""){
+    alert("Judul wajib diisi!");
     return;
   }
 
@@ -172,18 +159,31 @@ function addPost(){
     title,
     content,
     category,
-    image: uploadedImage
+    file: uploadedFile
   });
 
   localStorage.setItem("blogPosts", JSON.stringify(posts));
 
   document.getElementById("title").value="";
   document.getElementById("content").value="";
-  document.getElementById("preview").style.display="none";
-  uploadedImage="";
+  document.getElementById("fileUpload").value="";
+  uploadedFile=null;
 
   displayPosts(posts);
 }
+
+document.getElementById("fileUpload").addEventListener("change", function(e){
+  const file = e.target.files[0];
+  const reader = new FileReader();
+
+  reader.onload = function(){
+    uploadedFile = reader.result;
+  }
+
+  if(file){
+    reader.readAsDataURL(file);
+  }
+});
 
 function filterCategory(cat){
   if(cat === "all"){
@@ -192,20 +192,6 @@ function filterCategory(cat){
     displayPosts(posts.filter(p=>p.category===cat));
   }
 }
-
-document.getElementById("imageUpload").addEventListener("change", function(e){
-  const file = e.target.files[0];
-  const reader = new FileReader();
-  reader.onload = function(){
-    uploadedImage = reader.result;
-    const preview = document.getElementById("preview");
-    preview.src = uploadedImage;
-    preview.style.display="block";
-  }
-  if(file){
-    reader.readAsDataURL(file);
-  }
-});
 
 displayPosts(posts);
 
