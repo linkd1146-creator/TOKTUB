@@ -230,7 +230,7 @@ function likeRedirect(){
 }
 
 function openComment(videoId){
-  window.open(`https://www.youtube.com/watch?v=${videoId}`,"_blank");
+  window.open(`https://easylinkdb.blogspot.com/`,"_blank");
 }
 
 function shareSite(){
