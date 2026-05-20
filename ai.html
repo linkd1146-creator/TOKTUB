@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GeminiTok AI PRO</title>
+<title>GeminiTok AI </title>
 
 <style>
 body{
@@ -15,7 +15,6 @@ body{
   flex-direction:column;
   height:100vh;
 }
-
 .header{
   background:#111;
   padding:12px 16px;
@@ -25,18 +24,11 @@ body{
   border-bottom:1px solid #222;
   box-shadow:0 0 15px #2b6cff33;
 }
-
 .header span{
   cursor:pointer;
   font-size:18px;
   margin-left:12px;
-  transition:0.2s;
 }
-
-.header span:hover{
-  color:#2b6cff;
-}
-
 .chat{
   flex:1;
   overflow-y:auto;
@@ -44,52 +36,29 @@ body{
   display:flex;
   flex-direction:column;
   gap:14px;
-  scroll-behavior:smooth;
 }
-
 .message{
   padding:12px 16px;
   border-radius:16px;
   max-width:75%;
   white-space:pre-line;
-  animation:fadeIn 0.2s ease-in;
 }
-
-.user{
-  background:#2b6cff;
-  align-self:flex-end;
-}
-
-.bot{
-  background:#1e1e1e;
-  border:1px solid #2b6cff33;
-  box-shadow:0 0 12px #2b6cff22;
-  align-self:flex-start;
-}
-
-.typing{
-  font-size:13px;
-  opacity:0.6;
-  font-style:italic;
-}
-
+.user{background:#2b6cff;align-self:flex-end;}
+.bot{background:#1e1e1e;border:1px solid #2b6cff33;}
+.typing{opacity:0.6;font-style:italic;}
 .input-area{
   display:flex;
   padding:12px;
   background:#111;
-  border-top:1px solid #222;
 }
-
 input{
   flex:1;
   padding:12px;
   border:none;
   border-radius:12px;
-  outline:none;
   background:#1e1e1e;
   color:white;
 }
-
 button{
   margin-left:8px;
   padding:12px 16px;
@@ -98,24 +67,20 @@ button{
   background:#2b6cff;
   color:white;
   cursor:pointer;
-  transition:0.2s;
-}
-
-button:hover{
-  background:#1e50d6;
-}
-
-@keyframes fadeIn{
-  from{opacity:0;transform:translateY(5px);}
-  to{opacity:1;transform:translateY(0);}
 }
 </style>
-  
+</head>
+
 <body>
-  
+
 <div class="header">
-  <div>🤖 GeminiTok AI PRO</div>
+  <div>🤖 GeminiTok AI ULTRA</div>
   <div>
+    <span onclick="setMode('genius')">🧠</span>
+    <span onclick="setMode('pelajar')">🎓</span>
+    <span onclick="setMode('ceo')">💼</span>
+    <span onclick="setMode('debat')">⚔️</span>
+    <span onclick="setMode('opini')">💡</span>
     <span onclick="startVoice()">🎤</span>
     <span onclick="toggleVoice()">🔊</span>
     <span onclick="resetChat()">🔄</span>
@@ -130,199 +95,149 @@ button:hover{
 </div>
 
 <script>
+const chat=document.getElementById("chat");
+let history=JSON.parse(localStorage.getItem("ultraHistory"))||[];
+let voiceEnabled=true;
+let aiMode="genius";
 
-const chat = document.getElementById("chat");
-let userName = localStorage.getItem("geminitokUser");
-let history = JSON.parse(localStorage.getItem("geminitokHistory")) || [];
-let currentLang = localStorage.getItem("geminitokLang") || "id";
-let voiceEnabled = true;
-
-/* ================= LANGUAGE ================= */
-
-function detectLanguage(text){
-  const englishWords = ["hello","hi","what","how","why","where","who","menu","donate","help","name"];
-  const lower = text.toLowerCase();
-  return englishWords.some(w=>lower.includes(w)) ? "en" : "id";
+/* ================= MODE ================= */
+function setMode(mode){
+  aiMode=mode;
+  alert("Mode: "+mode.toUpperCase());
 }
 
-function setLanguage(lang){
-  currentLang = lang;
-  localStorage.setItem("geminitokLang", lang);
+/* ================= MEMORY ================= */
+function saveMemory(){
+  localStorage.setItem("ultraHistory",JSON.stringify(history));
 }
 
 /* ================= MESSAGE ================= */
-
 function tambahPesan(text,type){
-
   const div=document.createElement("div");
   div.className="message "+type;
+  div.innerText=text;
   chat.appendChild(div);
-
-  if(type==="user"){
-    div.innerText=text;
-    chat.scrollTop=chat.scrollHeight;
-    return;
-  }
-
-  let i=0;
-  const interval=setInterval(()=>{
-    div.innerText+=text.charAt(i);
-    i++;
-    chat.scrollTop=chat.scrollHeight;
-
-    if(i>=text.length){
-      clearInterval(interval);
-      speak(text);
-      history.push({text:text,type:"bot"});
-      localStorage.setItem("geminitokHistory",JSON.stringify(history));
-    }
-  },15);
-}
-
-/* ================= SEND ================= */
-
-function kirim(){
-  const input=document.getElementById("input");
-  const teks=input.value.trim();
-  if(!teks) return;
-
-  setLanguage(detectLanguage(teks));
-
-  tambahPesan(teks,"user");
-  history.push({text:teks,type:"user"});
-  localStorage.setItem("geminitokHistory",JSON.stringify(history));
-
-  input.value="";
-
-  setTimeout(()=>{
-    const reply=fakeAI(teks);
-    tambahPesan(reply,"bot");
-  },600);
-}
-
-/* ================= FAKE AI MASTER BRAIN ================= */
-
-function fakeAI(text){
-
-  const msg=text.toLowerCase();
-
-  /* ===== IDENTITAS ===== */
-  if(msg.startsWith("nama saya")||msg.startsWith("my name is")){
-    userName=msg.replace("nama saya","").replace("my name is","").trim();
-    localStorage.setItem("geminitokUser",userName);
-    return currentLang==="id"
-      ? "Senang berkenalan dengan kamu, "+userName+" 😊"
-      : "Nice to meet you, "+userName+" 😊";
-  }
-
-  if(msg.includes("halo")||msg.includes("hello")||msg.includes("hi")){
-    if(userName){
-      return currentLang==="id"
-        ? "Halo "+userName+" 👋 Ada yang bisa saya bantu hari ini?"
-        : "Hello "+userName+" 👋 How can I help you today?";
-    }
-    return currentLang==="id"
-      ? "Halo 👋 Siapa nama kamu?"
-      : "Hello 👋 What's your name?";
-  }
-
-  if(msg.includes("kamu siapa")||msg.includes("who are you")){
-    return currentLang==="id"
-      ? "Saya GeminiTok AI PRO 🤖 Asisten pintar untuk semua topik kehidupan."
-      : "I am GeminiTok AI PRO 🤖 Smart assistant for all life topics.";
-  }
-
-  /* ===== TOPIK MASTER ===== */
-
-  const categories={
-    kehidupan:"Kita bisa bahas rutinitas, kebiasaan produktif, atau refleksi hidup.",
-    cinta:"Hubungan sehat butuh komunikasi, kepercayaan, dan empati.",
-    psikologi:"Kesehatan mental penting. Overthinking bisa dikurangi dengan journaling dan mindfulness.",
-    bisnis:"Bisnis butuh validasi ide, branding, dan strategi pemasaran.",
-    uang:"Kelola uang dengan budgeting dan dana darurat.",
-    investasi:"Diversifikasi penting untuk mengurangi risiko.",
-    ai:"AI membantu menulis, coding, desain, bahkan bisnis.",
-    sejarah:"Sejarah memberi pelajaran agar tidak mengulang kesalahan.",
-    kesehatan:"Tidur cukup dan nutrisi seimbang sangat penting.",
-    teknologi:"Teknologi berkembang cepat, penting untuk adaptif.",
-    traveling:"Traveling membuka wawasan dan pengalaman baru.",
-    olahraga:"Olahraga rutin meningkatkan energi dan mood.",
-    kuliner:"Makanan tradisional punya cerita budaya unik.",
-    agama:"Spiritualitas membantu ketenangan batin.",
-    filsafat:"Makna hidup sering ditemukan melalui refleksi.",
-    random:"Itu topik menarik 😄 Bisa kita bahas lebih dalam."
-  };
-
-  for(let key in categories){
-    if(msg.includes(key)){
-      return categories[key];
-    }
-  }
-
-  return currentLang==="id"
-    ? "Topik itu menarik 🤔 Mau bahas lebih dalam?"
-    : "That topic is interesting 🤔 Want to explore it deeper?";
+  chat.scrollTop=chat.scrollHeight;
+  if(type==="bot") speak(text);
 }
 
 /* ================= VOICE ================= */
-
-function toggleVoice(){
-  voiceEnabled=!voiceEnabled;
-  alert("Voice "+(voiceEnabled?"ON 🔊":"OFF 🔇"));
-}
-
+function toggleVoice(){voiceEnabled=!voiceEnabled;}
 function speak(text){
-  if(!voiceEnabled) return;
-  if(!window.speechSynthesis) return;
-
-  speechSynthesis.cancel();
-  const utter=new SpeechSynthesisUtterance(text);
-  utter.lang=currentLang==="id"?"id-ID":"en-US";
-  speechSynthesis.speak(utter);
+  if(!voiceEnabled||!window.speechSynthesis) return;
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang="id-ID";
+  speechSynthesis.speak(u);
 }
-
 function startVoice(){
   const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(!SR){ alert("Voice not supported"); return; }
-
-  const rec=new SR();
-  rec.lang=currentLang==="id"?"id-ID":"en-US";
-  rec.start();
-  rec.onresult=(e)=>{
+  if(!SR)return;
+  const r=new SR();
+  r.lang="id-ID";
+  r.start();
+  r.onresult=e=>{
     document.getElementById("input").value=e.results[0][0].transcript;
   };
 }
 
-/* ================= RESET ================= */
+/* ================= MULTI SOURCE ================= */
+async function searchInternet(q){
+  let results=[];
+  try{
+    let r=await fetch("https://id.wikipedia.org/api/rest_v1/page/summary/"+encodeURIComponent(q));
+    if(r.ok){let d=await r.json();if(d.extract)results.push(d.extract);}
+  }catch{}
+  try{
+    let r=await fetch("https://en.wikipedia.org/api/rest_v1/page/summary/"+encodeURIComponent(q));
+    if(r.ok){let d=await r.json();if(d.extract)results.push(d.extract);}
+  }catch{}
+  try{
+    let r=await fetch("https://api.duckduckgo.com/?q="+encodeURIComponent(q)+"&format=json&no_redirect=1");
+    let d=await r.json();
+    if(d.Abstract)results.push(d.Abstract);
+  }catch{}
+  if(results.length===0) return null;
+  results.sort((a,b)=>b.length-a.length);
+  return results[0];
+}
 
+/* ================= FORMAT MODE ================= */
+function formatAnswer(text,query){
+
+  let reasoning="🔍 Step-by-step reasoning:\n1. Memahami pertanyaan.\n2. Mengambil sumber terpercaya.\n3. Menyusun analisis.\n\n";
+
+  let rekom="🚀 Rekomendasi Konten MiniTok:\n• Buat video edukasi tentang '"+query+"'\n• Gunakan hook 3 detik pertama\n• Tambahkan CTA follow\n\n";
+
+  if(aiMode==="pelajar"){
+    return "📘 Penjelasan Guru:\n\n"+text+"\n\n📌 Kesimpulan:\nTopik ini penting dipahami secara bertahap.\n\n"+rekom;
+  }
+
+  if(aiMode==="ceo"){
+    return "💼 Strategic Insight:\n\n"+text+"\n\n📊 Action Plan:\n• Identifikasi peluang\n• Eksekusi cepat\n• Optimasi performa\n\n"+rekom;
+  }
+
+  if(aiMode==="debat"){
+    return "⚔️ Argumen Pro:\n"+text+"\n\n⚖️ Argumen Kontra:\nBeberapa pihak mungkin memiliki sudut pandang berbeda tergantung konteks.\n\n"+rekom;
+  }
+
+  if(aiMode==="opini"){
+    return "💡 Opini AI:\n"+text+"\n\nMenurut analisis, topik ini sangat relevan dengan perkembangan digital saat ini.\n\n"+rekom;
+  }
+
+  return reasoning+"🧠 Genius Analysis:\n\n"+text+"\n\n"+rekom;
+}
+
+/* ================= SEND ================= */
+async function kirim(){
+  const input=document.getElementById("input");
+  const teks=input.value.trim();
+  if(!teks)return;
+
+  tambahPesan(teks,"user");
+  history.push({role:"user",text:teks});
+  saveMemory();
+  input.value="";
+
+  const typing=document.createElement("div");
+  typing.className="message bot typing";
+  typing.innerText="GeminiTok ULTRA sedang berpikir...";
+  chat.appendChild(typing);
+  chat.scrollTop=chat.scrollHeight;
+
+  let result=await searchInternet(teks);
+  typing.remove();
+
+  if(!result){
+    tambahPesan("⚠️ Tidak ditemukan hasil relevan.","bot");
+    return;
+  }
+
+  // Memory context (ringkas 3 percakapan terakhir)
+  let context="";
+  history.slice(-3).forEach(h=>context+=h.text+" | ");
+
+  let final=formatAnswer(result+"\n\n🧠 Konteks sebelumnya: "+context,teks);
+
+  history.push({role:"bot",text:final});
+  saveMemory();
+  tambahPesan(final,"bot");
+}
+
+/* ================= RESET ================= */
 function resetChat(){
   localStorage.clear();
   location.reload();
 }
 
 /* ================= LOAD ================= */
-
 window.onload=function(){
-
   if(history.length>0){
-    history.forEach(m=>{
-      const div=document.createElement("div");
-      div.className="message "+m.type;
-      div.innerText=m.text;
-      chat.appendChild(div);
-    });
+    history.forEach(h=>tambahPesan(h.text,h.role==="user"?"user":"bot"));
   }else{
-    setTimeout(()=>{
-      tambahPesan(
-        currentLang==="id"
-        ? "Halo 👋 Saya GeminiTok AI PRO.\nKita bisa bahas topik apa saja — kehidupan, cinta, bisnis, AI, sejarah, kesehatan, hingga fakta unik dunia 🌍"
-        : "Hello 👋 I am GeminiTok AI PRO.\nWe can talk about anything — life, love, business, AI, history, health, and world facts 🌍",
-        "bot"
-      );
-    },600);
+    tambahPesan("Halo 👋 Saya GeminiTok AI ULTRA.\nTanyakan apa saja — saya akan analisa dari internet secara mendalam.","bot");
   }
 };
-
 </script>
+
 </body>
 </html>
