@@ -3,322 +3,223 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MiniTok Creator PRO</title>
+
+<title>Blog MiniTok - Tips Kreator & Tren Digital</title>
+<meta name="description" content="Blog resmi MiniTok berisi tips kreator, strategi viral, monetisasi konten, dan tren video digital terbaru 2026.">
+
+<script type="application/ld+json">
+{
+ "@context":"https://schema.org",
+ "@type":"Blog",
+ "name":"MiniTok Blog",
+ "url":"https://minitok.fun/blog.html",
+ "description":"Tips kreator, strategi viral, dan monetisasi konten digital."
+}
+</script>
 
 <style>
-body{
-margin:0;
-font-family:'Segoe UI',sans-serif;
-background:#0f0f0f;
-color:white;
-}
-
-header{
-background:linear-gradient(90deg,#ff0050,#ff7a00);
-padding:18px;
-text-align:center;
-font-size:22px;
-font-weight:bold;
-}
-
-nav{
-display:flex;
-justify-content:center;
-gap:10px;
-background:#141414;
-padding:10px;
-flex-wrap:wrap;
-}
-
-nav button{
-background:#1c1c1c;
-border:none;
-color:white;
-padding:8px 15px;
-border-radius:20px;
-cursor:pointer;
-}
-
-nav button:hover{
-background:#ff0050;
-}
-
-.section{
-display:none;
-padding:25px;
-max-width:1000px;
-margin:auto;
-}
-
-.grid{
-display:grid;
-grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
-gap:20px;
-}
-
-.card{
-background:#1c1c1c;
-padding:15px;
-border-radius:12px;
-border:1px solid #222;
-}
-
-.card h3{margin-top:0}
-
-button{
-padding:6px 12px;
-border:none;
-border-radius:8px;
-cursor:pointer;
-margin:5px 3px;
-}
-
-.btn-primary{background:#ff0050;color:white;}
-.btn-edit{background:#00c853;color:white;}
-.btn-delete{background:#d50000;color:white;}
-.btn-share{background:#00acee;color:white;}
-
-textarea,input,select{
-width:100%;
-padding:10px;
-margin:8px 0;
-border-radius:8px;
-border:none;
-background:#111;
-color:white;
-}
-
-.viewer{
-position:fixed;
-inset:0;
-background:black;
-overflow:auto;
-padding:20px;
-display:none;
-z-index:999;
-}
-
-.viewer iframe{
-width:100%;
-height:90vh;
-border:none;
-background:white;
-}
-
-.webtoon img{
-width:100%;
-margin-bottom:10px;
-border-radius:12px;
-}
-
-.closeBtn{
-position:absolute;
-top:15px;
-right:25px;
-font-size:26px;
-cursor:pointer;
-}
+body{margin:0;font-family:Segoe UI;background:#0f0f0f;color:white}
+header{background:linear-gradient(90deg,#ff0050,#ff7a00);padding:20px;text-align:center;font-size:22px;font-weight:bold}
+.container{max-width:900px;margin:auto;padding:40px 20px}
+.article-list h2{cursor:pointer;color:#00f2ff;margin-bottom:15px}
+.article-content{display:none;margin-bottom:60px;border-bottom:1px solid #222;padding-bottom:40px}
+p{line-height:1.8;color:#ccc}
+.ad-slot{text-align:center;margin:30px 0}
+.engagement{margin-top:20px}
+button{background:#1c1c1c;border:none;color:white;padding:8px 14px;margin-right:10px;border-radius:20px;cursor:pointer}
+button:hover{background:#ff0050}
+textarea{width:100%;padding:10px;margin-top:10px;background:#111;border:none;color:white;border-radius:8px}
+.comment-box{margin-top:15px}
+.back{display:inline-block;margin-top:40px;padding:10px 18px;background:#333;color:white;border-radius:25px;text-decoration:none}
 </style>
+
+<script>
+function toggleArticle(id){
+document.querySelectorAll('.article-content').forEach(a=>a.style.display="none");
+let el=document.getElementById(id);
+el.style.display="block";
+window.scrollTo({top:el.offsetTop-20,behavior:"smooth"});
+}
+
+function like(btn){
+let count=btn.querySelector("span");
+count.textContent=parseInt(count.textContent)+1;
+}
+
+function share(title){
+let text=encodeURIComponent("Baca artikel ini: "+title+" di MiniTok");
+window.open("https://wa.me/?text="+text);
+}
+</script>
+
 </head>
 
 <body>
 
-<header>MiniTok Creator PRO</header>
+<header>MiniTok Blog</header>
 
-<nav>
-<button onclick="show('artikel')">Artikel</button>
-<button onclick="show('komik')">Komik</button>
-<button onclick="show('ebook')">E-Book</button>
-<button onclick="show('upload')">Upload</button>
-</nav>
+<div class="container">
 
-<div id="artikel" class="section"></div>
-<div id="komik" class="section"></div>
-<div id="ebook" class="section"></div>
+<div class="article-list">
+<h2 onclick="toggleArticle('a1')">1. Cara Video Masuk FYP dan Viral di 2026</h2>
+<h2 onclick="toggleArticle('a2')">2. Strategi Konten Digital untuk Kreator Pemula</h2>
+<h2 onclick="toggleArticle('a3')">3. Algoritma Video Pendek: Cara Kerjanya</h2>
+<h2 onclick="toggleArticle('a4')">4. Waktu Terbaik Upload Video</h2>
+<h2 onclick="toggleArticle('a5')">5. Tips Meningkatkan Engagement</h2>
+<h2 onclick="toggleArticle('a6')">6. Cara Mendapatkan 10.000 Followers</h2>
+<h2 onclick="toggleArticle('a7')">7. Monetisasi Selain AdSense</h2>
+<h2 onclick="toggleArticle('a8')">8. Kesalahan Kreator Pemula</h2>
+<h2 onclick="toggleArticle('a9')">9. Cara Membuat Thumbnail Menarik</h2>
+<h2 onclick="toggleArticle('a10')">10. Bangun Personal Branding Online</h2>
+</div>
 
-<div id="upload" class="section">
+<!-- ARTIKEL 1 -->
+<div id="a1" class="article-content">
+<h1>Cara Video Masuk FYP dan Viral di 2026</h1>
 
-<h3>Upload Konten</h3>
+<h3>🔥 Hook: "Kenapa video orang lain bisa jutaan view, tapi video kamu sepi?"</h3>
+<p>Algoritma video pendek menilai tiga hal utama: hook awal, retensi penonton, dan interaksi. Tanpa tiga elemen ini, video sulit naik ke FYP.</p>
 
-<select id="type">
-<option value="artikel">Artikel</option>
-<option value="komik">Komik</option>
-<option value="ebook">E-Book</option>
-</select>
+<h2>1. Hook 3 Detik Pertama</h2>
+<p>Buka video dengan pertanyaan kuat, fakta mengejutkan, atau visual yang membuat orang berhenti scroll.</p>
 
-<select id="access">
-<option value="free">Free</option>
-<option value="premium">Premium</option>
-</select>
+<h2>2. Retensi Penonton</h2>
+<p>Pastikan tidak ada bagian membosankan. Potong intro panjang dan langsung ke inti.</p>
 
-<input type="text" id="title" placeholder="Judul">
+<h2>3. Interaksi Tinggi</h2>
+<p>Ajak penonton komentar dan share untuk memperkuat distribusi algoritma.</p>
 
-<textarea id="articleText" placeholder="Isi artikel (khusus artikel)"></textarea>
+<div class="ad-slot">
+<ins class="adsbygoogle"
+data-ad-client="ca-pub-XXXXXXXX"
+data-ad-slot="1111111111"
+data-ad-format="auto"
+style="display:block"></ins>
+</div>
 
-<input type="file" id="fileInput" multiple>
+<div class="engagement">
+<button onclick="like(this)">👍 Like (<span>0</span>)</button>
+<button onclick="share('Cara Video Masuk FYP dan Viral di 2026')">🔗 Share</button>
+<div class="comment-box">
+<textarea placeholder="Tulis komentar..."></textarea>
+</div>
+</div>
+</div>
 
-<button class="btn-primary" onclick="upload()">Publish</button>
+<!-- ARTIKEL 2 -->
+<div id="a2" class="article-content">
+<h1>Strategi Konten Digital untuk Kreator Pemula</h1>
+<h3>🔥 Hook: "Ingin cepat berkembang tanpa modal besar?"</h3>
+<p>Kreator sukses selalu punya niche yang jelas dan konsisten upload.</p>
+<p>Tentukan topik spesifik seperti edukasi, hiburan, atau review produk.</p>
+<div class="engagement">
+<button onclick="like(this)">👍 Like (<span>0</span>)</button>
+<button onclick="share('Strategi Konten Digital untuk Kreator Pemula')">🔗 Share</button>
+<textarea placeholder="Tulis komentar..."></textarea>
+</div>
+</div>
+
+<!-- ARTIKEL 3 -->
+<div id="a3" class="article-content">
+<h1>Algoritma Video Pendek: Cara Kerjanya</h1>
+<h3>🔥 Hook: "Algoritma bukan musuh, tapi sistem yang bisa kamu kuasai."</h3>
+<p>Watch time adalah indikator utama. Semakin lama orang menonton, semakin besar distribusi.</p>
+<p>Like, share, dan save mempercepat pertumbuhan.</p>
+<div class="engagement">
+<button onclick="like(this)">👍 Like (<span>0</span>)</button>
+<button onclick="share('Algoritma Video Pendek')">🔗 Share</button>
+<textarea placeholder="Tulis komentar..."></textarea>
+</div>
+</div>
+
+<!-- ARTIKEL 4 -->
+<div id="a4" class="article-content">
+<h1>Waktu Terbaik Upload Video</h1>
+<h3>🔥 Hook: "Upload jam salah bisa bikin video tenggelam."</h3>
+<p>Prime time umumnya pukul 12–13 dan 19–22 malam.</p>
+<p>Uji selama 7 hari dan analisa insight.</p>
+<div class="engagement">
+<button onclick="like(this)">👍 Like (<span>0</span>)</button>
+<button onclick="share('Waktu Terbaik Upload Video')">🔗 Share</button>
+<textarea placeholder="Komentar..."></textarea>
+</div>
+</div>
+
+<!-- ARTIKEL 5-10 (ringkas tapi tetap edukatif) -->
+
+<div id="a5" class="article-content">
+<h1>Tips Meningkatkan Engagement</h1>
+<h3>🔥 Hook: "View banyak tapi interaksi rendah?"</h3>
+<p>Buat pertanyaan di akhir video dan pin komentar penting.</p>
+<div class="engagement">
+<button onclick="like(this)">👍 Like (<span>0</span>)</button>
+<button onclick="share('Tips Engagement')">🔗 Share</button>
+<textarea placeholder="Komentar..."></textarea>
+</div>
+</div>
+
+<div id="a6" class="article-content">
+<h1>Cara Mendapatkan 10.000 Followers</h1>
+<h3>🔥 Hook: "10K followers bukan mustahil dalam 30 hari."</h3>
+<p>Konsisten upload dan kolaborasi dengan kreator lain.</p>
+<div class="engagement">
+<button onclick="like(this)">👍 Like (<span>0</span>)</button>
+<button onclick="share('10K Followers')">🔗 Share</button>
+<textarea placeholder="Komentar..."></textarea>
+</div>
+</div>
+
+<div id="a7" class="article-content">
+<h1>Monetisasi Selain AdSense</h1>
+<h3>🔥 Hook: "Jangan hanya mengandalkan satu sumber penghasilan."</h3>
+<p>Affiliate marketing, sponsor, dan produk digital bisa jadi alternatif.</p>
+<div class="engagement">
+<button onclick="like(this)">👍 Like (<span>0</span>)</button>
+<button onclick="share('Monetisasi Konten')">🔗 Share</button>
+<textarea placeholder="Komentar..."></textarea>
+</div>
+</div>
+
+<div id="a8" class="article-content">
+<h1>Kesalahan Kreator Pemula</h1>
+<h3>🔥 Hook: "Kesalahan kecil bisa menghambat pertumbuhan."</h3>
+<p>Tidak konsisten dan kualitas audio buruk sering jadi masalah utama.</p>
+<div class="engagement">
+<button onclick="like(this)">👍 Like (<span>0</span>)</button>
+<button onclick="share('Kesalahan Kreator')">🔗 Share</button>
+<textarea placeholder="Komentar..."></textarea>
+</div>
+</div>
+
+<div id="a9" class="article-content">
+<h1>Cara Membuat Thumbnail Menarik</h1>
+<h3>🔥 Hook: "Thumbnail menentukan klik pertama."</h3>
+<p>Gunakan warna kontras dan ekspresi wajah kuat.</p>
+<div class="engagement">
+<button onclick="like(this)">👍 Like (<span>0</span>)</button>
+<button onclick="share('Thumbnail Menarik')">🔗 Share</button>
+<textarea placeholder="Komentar..."></textarea>
+</div>
+</div>
+
+<div id="a10" class="article-content">
+<h1>Bangun Personal Branding Online</h1>
+<h3>🔥 Hook: "Orang follow kamu karena identitas unik."</h3>
+<p>Tentukan value unik dan konsisten dalam gaya komunikasi.</p>
+<div class="engagement">
+<button onclick="like(this)">👍 Like (<span>0</span>)</button>
+<button onclick="share('Personal Branding')">🔗 Share</button>
+<textarea placeholder="Komentar..."></textarea>
+</div>
+</div>
+
+<a href="index.html" class="back">⬅ Kembali ke Beranda</a>
 
 </div>
 
-<div id="viewer" class="viewer">
-<span class="closeBtn" onclick="closeViewer()">✖</span>
-<div id="viewerContent"></div>
-</div>
-
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <script>
-
-let db = JSON.parse(localStorage.getItem("minitokDB")) || {
-artikel:[],
-komik:[],
-ebook:[]
-};
-
-function save(){
-localStorage.setItem("minitokDB",JSON.stringify(db));
-}
-
-function show(type){
-document.querySelectorAll(".section").forEach(s=>s.style.display="none");
-document.getElementById(type).style.display="block";
-if(type!=="upload") render(type);
-}
-
-function upload(){
-let type=document.getElementById("type").value;
-let title=document.getElementById("title").value;
-let access=document.getElementById("access").value;
-let articleText=document.getElementById("articleText").value;
-let files=document.getElementById("fileInput").files;
-
-if(!title){alert("Judul wajib diisi");return;}
-
-if(type==="artikel"){
-if(!articleText){alert("Isi artikel wajib");return;}
-db.artikel.push({title,content:articleText,access});
-save();
-alert("Artikel publish!");
-}
-
-if(type==="komik"){
-if(files.length===0){alert("Upload gambar komik!");return;}
-let images=[];
-let loaded=0;
-for(let file of files){
-let reader=new FileReader();
-reader.onload=e=>{
-images.push(e.target.result);
-loaded++;
-if(loaded===files.length){
-db.komik.push({title,images,access});
-save();
-alert("Komik publish!");
-}
-}
-reader.readAsDataURL(file);
-}
-}
-
-if(type==="ebook"){
-if(files.length===0){alert("Upload file PDF/Word");return;}
-let file=files[0];
-let reader=new FileReader();
-reader.onload=e=>{
-db.ebook.push({
-title,
-file:e.target.result,
-fileType:file.type,
-access
-});
-save();
-alert("E-book publish!");
-}
-reader.readAsDataURL(file);
-}
-}
-
-function render(type){
-let container=document.getElementById(type);
-container.innerHTML="<div class='grid'></div>";
-let grid=container.querySelector(".grid");
-
-db[type].forEach((item,i)=>{
-grid.innerHTML+=`
-<div class="card">
-<h3>${item.title}</h3>
-<p>${item.access==="premium"?"⭐ Premium":"Free"}</p>
-<button class="btn-primary" onclick="openContent('${type}',${i})">Baca</button>
-<button class="btn-edit" onclick="editContent('${type}',${i})">Edit</button>
-<button class="btn-delete" onclick="deleteContent('${type}',${i})">Hapus</button>
-<button class="btn-share" onclick="shareContent('${type}',${i})">Share</button>
-</div>`;
-});
-}
-
-function openContent(type,i){
-let item=db[type][i];
-
-if(item.access==="premium"){
-window.location.href="https://minitok.fun/donasi.html";
-return;
-}
-
-let viewer=document.getElementById("viewer");
-let content=document.getElementById("viewerContent");
-
-if(type==="artikel"){
-content.innerHTML=`<h2>${item.title}</h2><p style="white-space:pre-line;">${item.content}</p>`;
-}
-
-if(type==="komik"){
-content.innerHTML="<div class='webtoon'>"+
-item.images.map(img=>`<img src="${img}">`).join("")+
-"</div>";
-}
-
-if(type==="ebook"){
-if(item.fileType.includes("pdf")){
-content.innerHTML=`<iframe src="${item.file}"></iframe>`;
-}else{
-content.innerHTML=`<h2>${item.title}</h2>
-<p>File Word tidak bisa dibaca langsung.</p>
-<a href="${item.file}" download style="background:#ff0050;padding:10px 20px;border-radius:10px;color:white;text-decoration:none;">Download File</a>`;
-}
-}
-
-viewer.style.display="block";
-}
-
-function closeViewer(){
-document.getElementById("viewer").style.display="none";
-}
-
-function deleteContent(type,i){
-if(confirm("Yakin hapus?")){
-db[type].splice(i,1);
-save();
-render(type);
-}
-}
-
-function editContent(type,i){
-let item=db[type][i];
-let newTitle=prompt("Edit Judul:",item.title);
-if(newTitle){
-item.title=newTitle;
-save();
-render(type);
-}
-}
-
-function shareContent(type,i){
-let item=db[type][i];
-let text=encodeURIComponent("Baca "+item.title+" di MiniTok!");
-window.open("https://wa.me/?text="+text);
-}
-
-show("artikel");
-
+(adsbygoogle = window.adsbygoogle || []).push({});
 </script>
 
 </body>
