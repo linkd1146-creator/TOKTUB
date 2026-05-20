@@ -3,249 +3,174 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MiniTok Creator PRO</title>
+
+<title>Tentang Kami & Kontak - MiniTok</title>
+<meta name="description" content="Halaman resmi tentang MiniTok dan cara menghubungi tim kami untuk kerja sama, pertanyaan, atau dukungan.">
+
+<!-- Schema Organization -->
+<script type="application/ld+json">
+{
+ "@context":"https://schema.org",
+ "@type":"Organization",
+ "name":"MiniTok",
+ "url":"https://minitok.fun",
+ "logo":"https://minitok.fun/logo.png",
+ "sameAs":[
+   "https://instagram.com/",
+   "https://youtube.com/"
+ ]
+}
+</script>
 
 <style>
-body{margin:0;font-family:Segoe UI;background:#0f0f0f;color:white;}
-header{background:#141414;padding:15px 30px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #222;}
-.logo{font-weight:bold;color:#00f2ff;}
-nav button{background:none;border:none;color:white;margin:0 8px;font-weight:600;cursor:pointer;}
-nav button:hover{color:#00f2ff;}
-.container{padding:30px;}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:20px;}
-.card{background:#1c1c1c;padding:15px;border-radius:12px;border:1px solid #222;}
-button{padding:6px 10px;border:none;border-radius:6px;font-weight:bold;cursor:pointer;margin-top:5px;}
-.btn-primary{background:#00f2ff;color:black;}
-.btn-danger{background:red;color:white;}
-input,select,textarea{width:100%;padding:8px;margin:5px 0;background:#111;border:1px solid #333;color:white;border-radius:6px;}
-.viewer{margin-top:20px;border:1px solid #333;border-radius:10px;padding:15px;background:black;max-height:600px;overflow:auto;}
-.viewer img{width:100%;margin-bottom:10px;}
-.hidden{display:none;}
-.premium{color:gold;font-weight:bold;}
+body{
+    margin:0;
+    font-family:Segoe UI;
+    background:#0f0f0f;
+    color:white;
+}
+header{
+    background:linear-gradient(90deg,#ff0050,#ff7a00);
+    padding:25px;
+    text-align:center;
+    font-size:24px;
+    font-weight:bold;
+}
+.container{
+    max-width:900px;
+    margin:auto;
+    padding:40px 20px;
+}
+.section{
+    margin-bottom:60px;
+}
+h1,h2{
+    color:#00f2ff;
+}
+p{
+    line-height:1.8;
+    color:#ccc;
+}
+.card{
+    background:#1a1a1a;
+    padding:25px;
+    border-radius:12px;
+    margin-top:20px;
+}
+input,textarea{
+    width:100%;
+    padding:12px;
+    margin:10px 0;
+    border-radius:8px;
+    border:none;
+    background:#222;
+    color:white;
+}
+button{
+    background:linear-gradient(90deg,#ff0050,#ff7a00);
+    border:none;
+    padding:12px 20px;
+    border-radius:30px;
+    color:white;
+    font-weight:bold;
+    cursor:pointer;
+}
+button:hover{
+    opacity:0.8;
+}
+.social a{
+    display:inline-block;
+    margin:10px 15px 0 0;
+    padding:8px 14px;
+    background:#222;
+    border-radius:20px;
+    text-decoration:none;
+    color:white;
+}
+.footer{
+    text-align:center;
+    padding:20px;
+    border-top:1px solid #222;
+    color:#777;
+    font-size:14px;
+}
+.back{
+    display:inline-block;
+    margin-top:30px;
+    padding:10px 18px;
+    background:#333;
+    border-radius:25px;
+    text-decoration:none;
+    color:white;
+}
 </style>
 </head>
 
 <body>
 
-<header>
-<div class="logo">MiniTok Creator PRO</div>
-<nav>
-<button onclick="showPage('artikel')">Artikel</button>
-<button onclick="showPage('komik')">Komik</button>
-<button onclick="showPage('ebook')">E-Book</button>
-<button onclick="showPage('upload')">Upload</button>
-</nav>
-</header>
+<header>Tentang MiniTok & Kontak</header>
 
 <div class="container">
 
-<!-- UPLOAD -->
-<div id="uploadPage" class="hidden">
-<h2 id="formTitle">Upload Konten</h2>
-<input type="hidden" id="editIndex">
-<input type="text" id="judul" placeholder="Judul">
-<select id="kategori" onchange="toggleUpload()">
-<option value="artikel">Artikel</option>
-<option value="komik">Komik</option>
-<option value="ebook">E-Book</option>
-</select>
-<select id="akses">
-<option value="free">Free</option>
-<option value="premium">Premium</option>
-</select>
+<!-- ABOUT -->
+<div class="section">
+<h1>🚀 Tentang MiniTok</h1>
+<p><strong>MiniTok</strong> adalah platform video pendek dan komunitas kreator digital yang berfokus pada kreativitas, edukasi, dan monetisasi konten di era digital 2026.</p>
 
-<div id="artikelInput">
-<textarea id="artikelText" placeholder="Tulis artikel..."></textarea>
+<div class="card">
+<h2>Misi Kami</h2>
+<p>Membantu kreator pemula maupun profesional untuk berkembang, viral, dan menghasilkan pendapatan dari konten digital mereka secara legal dan berkelanjutan.</p>
+
+<h2>Visi Kami</h2>
+<p>Menjadi ekosistem kreator digital terbaik di Indonesia dengan sistem ranking AI, monetisasi transparan, dan komunitas aktif.</p>
+
+<h2>Kenapa MiniTok?</h2>
+<ul style="color:#ccc; line-height:1.8;">
+<li>✔ Sistem Explore & Viral Ranking</li>
+<li>✔ AI Engagement Score</li>
+<li>✔ Dukungan Monetisasi</li>
+<li>✔ Komunitas Kreator Aktif</li>
+</ul>
+</div>
 </div>
 
-<div id="komikInput" class="hidden">
-<input type="file" id="komikImages" accept="image/*" multiple>
+<!-- CONTACT -->
+<div class="section">
+<h1>📩 Hubungi Kami</h1>
+<p>Punya pertanyaan, kerja sama brand, atau ingin menjadi partner MiniTok? Kirim pesan melalui form di bawah ini.</p>
+
+<div class="card">
+<form onsubmit="sendMessage(event)">
+<input type="text" placeholder="Nama Lengkap" required>
+<input type="email" placeholder="Email Aktif" required>
+<textarea rows="5" placeholder="Tulis pesan Anda..." required></textarea>
+<button type="submit">Kirim Pesan</button>
+</form>
+<p id="successMsg" style="color:#00ff99; display:none; margin-top:15px;">
+Pesan berhasil dikirim! Kami akan membalas secepatnya.
+</p>
 </div>
 
-<div id="ebookInput" class="hidden">
-<input type="file" id="ebookFile" accept=".pdf,.doc,.docx">
+<div class="social">
+<h2>🌐 Sosial Media</h2>
+<a href="#">Instagram</a>
+<a href="#">YouTube</a>
+<a href="#">TikTok</a>
 </div>
 
-<button class="btn-primary" onclick="saveContent()">Simpan</button>
+<a href="index.html" class="back">⬅ Kembali ke Beranda</a>
 </div>
 
-<!-- LIST -->
-<div id="artikelPage"><h2>Artikel</h2><div id="artikelList" class="grid"></div></div>
-<div id="komikPage" class="hidden"><h2>Komik</h2><div id="komikList" class="grid"></div></div>
-<div id="ebookPage" class="hidden"><h2>E-Book</h2><div id="ebookList" class="grid"></div></div>
-
-<!-- VIEWER -->
-<div id="viewerContainer" class="hidden">
-<h2 id="viewerTitle"></h2>
-<div class="viewer" id="viewerContent"></div>
-</div>
-
+<div class="footer">
+© 2026 MiniTok.fun - All Rights Reserved
 </div>
 
 <script>
-
-let db = JSON.parse(localStorage.getItem("miniTokDB")) || [];
-
-function saveDB(){
-localStorage.setItem("miniTokDB", JSON.stringify(db));
+function sendMessage(e){
+    e.preventDefault();
+    document.getElementById("successMsg").style.display="block";
+    e.target.reset();
 }
-
-function showPage(page){
-["artikel","komik","ebook","upload"].forEach(p=>{
-document.getElementById(p+"Page")?.classList.add("hidden");
-});
-document.getElementById(page+"Page").classList.remove("hidden");
-document.getElementById("viewerContainer").classList.add("hidden");
-render();
-}
-
-function toggleUpload(){
-let k=document.getElementById("kategori").value;
-artikelInput.classList.add("hidden");
-komikInput.classList.add("hidden");
-ebookInput.classList.add("hidden");
-if(k=="artikel") artikelInput.classList.remove("hidden");
-if(k=="komik") komikInput.classList.remove("hidden");
-if(k=="ebook") ebookInput.classList.remove("hidden");
-}
-
-function saveContent(){
-let index=document.getElementById("editIndex").value;
-let judul=document.getElementById("judul").value;
-let kategori=document.getElementById("kategori").value;
-let akses=document.getElementById("akses").value;
-
-if(!judul){alert("Judul wajib!");return;}
-
-if(kategori=="artikel"){
-let text=document.getElementById("artikelText").value;
-let data={judul,kategori,akses,text};
-if(index===""){
-db.unshift(data);
-}else{
-db[index]=data;
-}
-saveDB();render();showPage("artikel");
-return;
-}
-
-if(kategori=="komik"){
-let files=document.getElementById("komikImages").files;
-let images=[];
-if(files.length==0 && index!==""){
-images=db[index].images;
-db[index]={judul,kategori,akses,images};
-saveDB();render();showPage("komik");
-return;
-}
-for(let file of files){
-let reader=new FileReader();
-reader.onload=function(){
-images.push(reader.result);
-if(images.length==files.length){
-let data={judul,kategori,akses,images};
-if(index==="") db.unshift(data);
-else db[index]=data;
-saveDB();render();showPage("komik");
-}
-}
-reader.readAsDataURL(file);
-}
-return;
-}
-
-if(kategori=="ebook"){
-let file=document.getElementById("ebookFile").files[0];
-if(!file && index!==""){
-db[index]={...db[index],judul,akses};
-saveDB();render();showPage("ebook");
-return;
-}
-let reader=new FileReader();
-reader.onload=function(){
-let data={judul,kategori,akses,file:reader.result,name:file.name};
-if(index==="") db.unshift(data);
-else db[index]=data;
-saveDB();render();showPage("ebook");
-}
-reader.readAsDataURL(file);
-}
-}
-
-function render(){
-["artikel","komik","ebook"].forEach(type=>{
-let list=document.getElementById(type+"List");
-list.innerHTML="";
-db.forEach((item,i)=>{
-if(item.kategori==type){
-list.innerHTML+=`
-<div class="card">
-<h3>${item.judul}</h3>
-<p>${item.akses=="premium"?"<span class='premium'>Premium</span>":"Free"}</p>
-<button class="btn-primary" onclick="openContent(${i})">Baca</button>
-<button onclick="editContent(${i})">Edit</button>
-<button class="btn-danger" onclick="deleteContent(${i})">Hapus</button>
-</div>`;
-}
-});
-});
-}
-
-function openContent(i){
-let item=db[i];
-if(item.akses=="premium"){
-window.location.href="https://minitok.fun/donasi.html";
-return;
-}
-viewerContainer.classList.remove("hidden");
-viewerTitle.innerText=item.judul;
-viewerContent.innerHTML="";
-
-if(item.kategori=="artikel"){
-viewerContent.innerHTML=item.text.replace(/\n/g,"<br>");
-}
-
-if(item.kategori=="komik"){
-item.images.forEach(img=>{
-viewerContent.innerHTML+=`<img src="${img}">`;
-});
-}
-
-if(item.kategori=="ebook"){
-if(item.file.startsWith("data:application/pdf")){
-viewerContent.innerHTML=`<iframe src="${item.file}" style="width:100%;height:600px;"></iframe>`;
-}else{
-viewerContent.innerHTML=`
-<iframe src="https://docs.google.com/gview?embedded=1&url=${item.file}" style="width:100%;height:600px;"></iframe>
-<p><a href="${item.file}" download style="color:#00f2ff;">Download File</a></p>`;
-}
-}
-}
-
-function editContent(i){
-let item=db[i];
-showPage("upload");
-formTitle.innerText="Edit Konten";
-editIndex.value=i;
-judul.value=item.judul;
-kategori.value=item.kategori;
-akses.value=item.akses;
-toggleUpload();
-if(item.kategori=="artikel"){
-artikelText.value=item.text;
-}
-}
-
-function deleteContent(i){
-if(confirm("Yakin hapus?")){
-db.splice(i,1);
-saveDB();
-render();
-}
-}
-
-render();
-
 </script>
 
 </body>
