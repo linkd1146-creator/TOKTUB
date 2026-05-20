@@ -74,7 +74,7 @@ button{
 <body>
 
 <div class="header">
-  <div>🤖 GeminiTok AI ULTRA</div>
+  <div>🤖 GeminiTok AI </div>
   <div>
     <span onclick="setMode('genius')">🧠</span>
     <span onclick="setMode('pelajar')">🎓</span>
@@ -200,7 +200,7 @@ async function kirim(){
 
   const typing=document.createElement("div");
   typing.className="message bot typing";
-  typing.innerText="GeminiTok ULTRA sedang berpikir...";
+  typing.innerText="GeminiTok AI sedang berpikir...";
   chat.appendChild(typing);
   chat.scrollTop=chat.scrollHeight;
 
@@ -234,7 +234,7 @@ window.onload=function(){
   if(history.length>0){
     history.forEach(h=>tambahPesan(h.text,h.role==="user"?"user":"bot"));
   }else{
-    tambahPesan("Halo 👋 Saya GeminiTok AI ULTRA.\nTanyakan apa saja — saya akan analisa dari internet secara mendalam.","bot");
+    tambahPesan("Halo 👋 Saya GeminiTok AI.\nSelamat Datang Wahai Manusia Ada Yang Bisa Saya Bantu.","bot");
   }
 };
 </script>
