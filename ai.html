@@ -472,92 +472,126 @@ function fakeAI(text){
 }
 
 
-/* ================== PENJELASAN PANJANG ================== */
+let aiMode = "genius"; // genius | pelajar | ceo
 
-function generateLongExplanation(topic){
+/* ================= MODE SWITCH ================= */
 
-  const explanations = {
-
-    politik: "Politik adalah sistem pengelolaan kekuasaan dalam suatu negara atau masyarakat. Ia menentukan bagaimana keputusan dibuat, bagaimana hukum dijalankan, dan bagaimana sumber daya dibagi. Politik tidak selalu soal partai atau pemilu, tetapi juga tentang kebijakan publik, keadilan sosial, dan hak warga negara. Dalam memahami politik, penting untuk melihat dari berbagai sudut pandang agar tidak terjebak pada satu opini saja.",
-
-    ai: "Artificial Intelligence (AI) adalah teknologi yang memungkinkan mesin meniru kecerdasan manusia seperti berpikir, belajar, dan mengambil keputusan. AI digunakan dalam banyak bidang seperti kesehatan, bisnis, pendidikan, hingga hiburan. Contohnya adalah chatbot, sistem rekomendasi, mobil otonom, dan analisis data. Di masa depan, AI diprediksi akan semakin terintegrasi dalam kehidupan sehari-hari.",
-
-    bisnis: "Bisnis adalah aktivitas menciptakan nilai melalui produk atau jasa untuk mendapatkan keuntungan. Bisnis yang sukses membutuhkan strategi, pemahaman pasar, manajemen keuangan, dan kemampuan adaptasi. Di era digital, bisnis juga sangat bergantung pada branding, pemasaran online, dan inovasi teknologi.",
-
-    psikologi: "Psikologi mempelajari perilaku dan proses mental manusia. Ini mencakup emosi, motivasi, kepribadian, hingga gangguan mental. Memahami psikologi membantu kita mengenali diri sendiri dan orang lain secara lebih dalam.",
-
-    agama: "Agama adalah sistem kepercayaan yang membimbing manusia dalam memahami makna hidup, moralitas, dan hubungan dengan Tuhan atau kekuatan yang lebih tinggi. Selain aspek spiritual, agama juga berperan dalam membentuk budaya dan nilai sosial.",
-
-    filsafat: "Filsafat adalah studi tentang pertanyaan mendasar kehidupan seperti apa itu kebenaran, makna hidup, moralitas, dan realitas. Filsafat melatih cara berpikir kritis dan reflektif.",
-
-    ekonomi: "Ekonomi mempelajari bagaimana sumber daya yang terbatas dikelola untuk memenuhi kebutuhan manusia. Ini mencakup produksi, distribusi, konsumsi, serta kebijakan fiskal dan moneter.",
-
-    teknologi: "Teknologi adalah penerapan ilmu pengetahuan untuk memecahkan masalah praktis. Perkembangannya sangat cepat dan mempengaruhi hampir semua aspek kehidupan modern.",
-
-    kesehatan: "Kesehatan mencakup kondisi fisik, mental, dan sosial yang seimbang. Menjaga kesehatan berarti memperhatikan pola makan, olahraga, istirahat, dan manajemen stres.",
-
-    cinta: "Cinta adalah emosi yang melibatkan kasih sayang, perhatian, dan komitmen. Dalam hubungan sehat, cinta dibangun atas dasar komunikasi, kepercayaan, dan saling menghargai."
-  };
-
-  return explanations[topic] || "Topik ini menarik dan bisa dibahas dari banyak sudut pandang. Mau fokus ke aspek mana?";
-}
-
-
-/* ================== JAWAB KONTEKSTUAL ================== */
-
-function generateContextualAnswer(text){
-
-  if(text.includes("apa itu")){
-    return "Secara sederhana, itu adalah konsep atau hal yang memiliki makna tergantung konteksnya. Jika kamu mau, sebutkan topiknya lebih spesifik supaya bisa saya jelaskan detail.";
-  }
-
-  if(text.includes("bagaimana cara")){
-    return "Langkah dasarnya adalah memahami tujuan terlebih dahulu, lalu membuat strategi bertahap dan konsisten. Kalau kamu beri detail situasinya, saya bisa jelaskan lebih rinci.";
-  }
-
-  if(text.includes("kenapa")){
-    return "Biasanya hal itu terjadi karena kombinasi faktor internal dan eksternal. Kalau kamu jelaskan konteksnya, saya bantu analisis penyebabnya satu per satu.";
-  }
-
-  return "Pertanyaan yang menarik 🤔 Bisa jelaskan sedikit lebih detail supaya saya bisa jawab lebih tepat?";
-}
-  
-  <script>
-const chat=document.getElementById("chat");
-let history=JSON.parse(localStorage.getItem("ultraHistory"))||[];
-let voiceEnabled=true;
-let aiMode="genius";
-
-/* ================= MODE ================= */
 function setMode(mode){
-  aiMode=mode;
-  alert("Mode: "+mode.toUpperCase());
+  aiMode = mode;
+  alert("Mode AI: " + mode.toUpperCase());
 }
 
-/* ================= MEMORY ================= */
-function saveMemory(){
-  localStorage.setItem("ultraHistory",JSON.stringify(history));
+/* ================= SMART FORMATTER ================= */
+
+function formatResponse(text){
+
+  if(aiMode==="pelajar"){
+    return "📘 Penjelasan:\n\n" + text +
+           "\n\n📌 Kesimpulan:\nTopik ini penting untuk dipahami secara bertahap.";
+  }
+
+  if(aiMode==="ceo"){
+    return "💼 Strategic Insight:\n\n" + text +
+           "\n\n📊 Action Plan:\n• Analisa peluang\n• Eksekusi cepat\n• Evaluasi hasil";
+  }
+
+  // genius default
+  return "🧠 Genius Analysis:\n\n" + text +
+         "\n\n🔎 Breakdown Penting:\n• Definisi\n• Dampak\n• Insight tambahan";
 }
 
-/* ================= MESSAGE ================= */
-function tambahPesan(text,type){
-  const div=document.createElement("div");
-  div.className="message "+type;
-  div.innerText=text;
-  chat.appendChild(div);
+/* ================= AUTO TRANSLATE ================= */
+
+async function translateToID(text){
+  try{
+    const res = await fetch("https://api.mymemory.translated.net/get?q="
+      + encodeURIComponent(text) + "&langpair=en|id");
+    const data = await res.json();
+    return data.responseData.translatedText;
+  }catch{
+    return text;
+  }
+}
+
+/* ================= MULTI SOURCE SEARCH ================= */
+
+async function searchInternet(query){
+
+  let results = [];
+
+  // Wikipedia ID
+  try{
+    const wikiID = await fetch(
+      "https://id.wikipedia.org/api/rest_v1/page/summary/" + encodeURIComponent(query)
+    );
+    if(wikiID.ok){
+      const data = await wikiID.json();
+      if(data.extract) results.push(data.extract);
+    }
+  }catch{}
+
+  // Wikipedia EN
+  try{
+    const wikiEN = await fetch(
+      "https://en.wikipedia.org/api/rest_v1/page/summary/" + encodeURIComponent(query)
+    );
+    if(wikiEN.ok){
+      const data = await wikiEN.json();
+      if(data.extract) results.push(data.extract);
+    }
+  }catch{}
+
+  // DuckDuckGo
+  try{
+    const ddg = await fetch(
+      "https://api.duckduckgo.com/?q=" + encodeURIComponent(query) + "&format=json&no_redirect=1"
+    );
+    const data = await ddg.json();
+    if(data.Abstract) results.push(data.Abstract);
+  }catch{}
+
+  if(results.length===0) return null;
+
+  // Ranking: pilih jawaban terpanjang
+  results.sort((a,b)=>b.length - a.length);
+  return results[0];
+}
+
+/* ================= GENIUS AI SEND ================= */
+
+async function kirim(){
+
+  const input=document.getElementById("input");
+  const teks=input.value.trim();
+  if(!teks) return;
+
+  setLanguage(detectLanguage(teks));
+  tambahPesan(teks,"user");
+  input.value="";
+
+  const typing=document.createElement("div");
+  typing.className="message bot typing";
+  typing.innerText="GeminiTok Genius AI sedang menganalisa internet...";
+  chat.appendChild(typing);
   chat.scrollTop=chat.scrollHeight;
-  if(type==="bot") speak(text);
-}
 
-/* ================= VOICE ================= */
-function toggleVoice(){voiceEnabled=!voiceEnabled;}
-function speak(text){
-  if(!voiceEnabled||!window.speechSynthesis) return;
-  const u=new SpeechSynthesisUtterance(text);
-  u.lang="id-ID";
-  speechSynthesis.speak(u);
-}
+  let result = await searchInternet(teks);
 
+  typing.remove();
+
+  if(!result){
+    tambahPesan("⚠️ Tidak ditemukan hasil relevan. Coba gunakan kata kunci lebih spesifik.","bot");
+    return;
+  }
+
+  // Auto translate jika bahasa ID
+  if(currentLang==="id"){
+    result = await translateToID(result);
+  }
+
+  const finalAnswer = formatResponse(result);
+  tambahPesan(finalAnswer,"bot");
+}
 /* ================= SAPAAN NATURAL ================= */
 function humanGreeting(text){
   const lower=text.toLowerCase();
