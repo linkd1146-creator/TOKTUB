@@ -8,25 +8,28 @@
 <style>
 body{
 margin:0;
-font-family:Arial, sans-serif;
+font-family:'Segoe UI',sans-serif;
 background:#0f0f0f;
 color:white;
 }
 
+/* HEADER */
 header{
-background:linear-gradient(90deg,#ff004f,#ff7a00);
-padding:15px;
+background:linear-gradient(90deg,#ff0050,#ff7a00);
+padding:18px;
 text-align:center;
-font-size:20px;
+font-size:22px;
 font-weight:bold;
+letter-spacing:1px;
 }
 
+/* NAV */
 nav{
 display:flex;
 justify-content:center;
 gap:15px;
-background:#111;
-padding:10px;
+background:#141414;
+padding:12px;
 flex-wrap:wrap;
 }
 
@@ -34,40 +37,69 @@ nav button{
 background:#1c1c1c;
 border:none;
 color:white;
-padding:8px 14px;
+padding:8px 18px;
 border-radius:20px;
 cursor:pointer;
+transition:0.3s;
+font-weight:600;
 }
 
 nav button:hover{
-background:#ff004f;
+background:#ff0050;
 }
 
+/* SECTION */
 .section{
 display:none;
-padding:20px;
-max-width:900px;
+padding:25px;
+max-width:1000px;
 margin:auto;
 }
 
+/* CARD NETFLIX STYLE */
 .card{
 background:#1c1c1c;
-padding:15px;
-margin-bottom:15px;
-border-radius:15px;
-box-shadow:0 0 10px rgba(0,0,0,0.5);
+padding:18px;
+margin-bottom:18px;
+border-radius:16px;
+transition:0.3s;
+box-shadow:0 0 15px rgba(0,0,0,0.4);
+}
+
+.card:hover{
+transform:scale(1.02);
 }
 
 .card button{
 margin:5px 5px 0 0;
-padding:7px 12px;
+padding:7px 14px;
 border:none;
-border-radius:8px;
+border-radius:10px;
 cursor:pointer;
-background:#ff004f;
+background:#ff0050;
+color:white;
+font-weight:bold;
+}
+
+/* UPLOAD */
+.uploadBox{
+background:#1c1c1c;
+padding:20px;
+border-radius:18px;
+margin-bottom:25px;
+}
+
+input,textarea,select{
+width:100%;
+padding:10px;
+margin-bottom:12px;
+border-radius:10px;
+border:none;
+background:#111;
 color:white;
 }
 
+/* VIEWER */
 .viewer{
 display:none;
 position:fixed;
@@ -83,38 +115,23 @@ z-index:999;
 
 .viewer iframe{
 width:100%;
-height:80vh;
+height:85vh;
 border:none;
 background:white;
 }
 
-.closeBtn{
-position:absolute;
-top:10px;
-right:20px;
-font-size:22px;
-cursor:pointer;
-}
-
 .webtoon img{
 width:100%;
-margin-bottom:10px;
-border-radius:10px;
+margin-bottom:12px;
+border-radius:12px;
 }
 
-input, textarea, select{
-width:100%;
-padding:10px;
-margin-bottom:10px;
-border-radius:8px;
-border:none;
-}
-
-.uploadBox{
-background:#1c1c1c;
-padding:15px;
-border-radius:15px;
-margin-bottom:20px;
+.closeBtn{
+position:absolute;
+top:15px;
+right:25px;
+font-size:26px;
+cursor:pointer;
 }
 </style>
 </head>
@@ -177,7 +194,7 @@ if(type==="creator") renderCreator();
 }
 
 function render(type){
-let container = document.getElementById(type);
+let container=document.getElementById(type);
 container.innerHTML="";
 data[type].forEach((item,index)=>{
 container.innerHTML+=`
@@ -185,12 +202,12 @@ container.innerHTML+=`
 <h3>${item.title}</h3>
 <p>${item.desc}</p>
 
-<button onclick="openContent('${type}',${index})">Buka</button>
+<button onclick="openContent('${type}',${index})">Baca</button>
 
 <button onclick="shareContent('${item.title}')">Share</button>
 
 ${type==="ebook" ? 
-`<button onclick="window.location.href='https://minitok.fun/donasi.html'">
+`<button onclick="window.location.href='donasi.html'">
 Download Premium
 </button>` : ""}
 </div>
@@ -199,16 +216,20 @@ Download Premium
 }
 
 function openContent(type,index){
-let item = data[type][index];
-let viewer = document.getElementById("viewer");
-let content = document.getElementById("viewerContent");
+let item=data[type][index];
+let viewer=document.getElementById("viewer");
+let content=document.getElementById("viewerContent");
 
 if(type==="komik"){
 content.innerHTML="<div class='webtoon'>"+
 item.images.map(img=>`<img src="${img}">`).join("")+
 "</div>";
 }else{
+if(item.fileType.includes("pdf")){
 content.innerHTML=`<iframe src="${item.file}"></iframe>`;
+}else{
+content.innerHTML=`<iframe src="https://docs.google.com/gview?embedded=1&url=${item.file}"></iframe>`;
+}
 }
 
 viewer.style.display="block";
@@ -219,18 +240,19 @@ document.getElementById("viewer").style.display="none";
 }
 
 function shareContent(title){
-let url = encodeURIComponent(window.location.href);
-let text = encodeURIComponent("Baca di MiniTok: "+title);
+let url=encodeURIComponent(window.location.href);
+let text=encodeURIComponent("Baca di MiniTok: "+title);
+
 window.open(`https://wa.me/?text=${text}%20${url}`,'_blank');
 }
 
 function upload(){
-let type = document.getElementById("type").value;
-let title = document.getElementById("title").value;
-let desc = document.getElementById("desc").value;
-let files = document.getElementById("fileInput").files;
+let type=document.getElementById("type").value;
+let title=document.getElementById("title").value;
+let desc=document.getElementById("desc").value;
+let files=document.getElementById("fileInput").files;
 
-if(!title || files.length===0){
+if(!title||files.length===0){
 alert("Judul dan file wajib diisi");
 return;
 }
@@ -249,7 +271,7 @@ save();
 reader.readAsDataURL(file);
 }
 }else{
-let file = files[0];
+let file=files[0];
 let reader=new FileReader();
 reader.onload=function(e){
 data[type].push({
