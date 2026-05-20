@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GeminiTok AI </title>
+<title>GeminiTok AI</title>
 
 <style>
 body{
@@ -74,7 +74,7 @@ button{
 <body>
 
 <div class="header">
-  <div>🤖 GeminiTok AI </div>
+  <div>🤖 GeminiTok AI</div>
   <div>
     <span onclick="setMode('genius')">🧠</span>
     <span onclick="setMode('pelajar')">🎓</span>
@@ -123,12 +123,14 @@ function tambahPesan(text,type){
 
 /* ================= VOICE ================= */
 function toggleVoice(){voiceEnabled=!voiceEnabled;}
+
 function speak(text){
   if(!voiceEnabled||!window.speechSynthesis) return;
   const u=new SpeechSynthesisUtterance(text);
   u.lang="id-ID";
   speechSynthesis.speak(u);
 }
+
 function startVoice(){
   const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
   if(!SR)return;
@@ -140,149 +142,12 @@ function startVoice(){
   };
 }
 
-/* ================= MULTI SOURCE ================= */
-async function searchInternet(q){
-  let results=[];
-  try{
-    let r=await fetch("https://id.wikipedia.org/api/rest_v1/page/summary/"+encodeURIComponent(q));
-    if(r.ok){let d=await r.json();if(d.extract)results.push(d.extract);}
-  }catch{}
-  try{
-    let r=await fetch("https://en.wikipedia.org/api/rest_v1/page/summary/"+encodeURIComponent(q));
-    if(r.ok){let d=await r.json();if(d.extract)results.push(d.extract);}
-  }catch{}
-  try{
-    let r=await fetch("https://api.duckduckgo.com/?q="+encodeURIComponent(q)+"&format=json&no_redirect=1");
-    let d=await r.json();
-    if(d.Abstract)results.push(d.Abstract);
-  }catch{}
-  if(results.length===0) return null;
-  results.sort((a,b)=>b.length-a.length);
-  return results[0];
-}
-
-/* ================= FORMAT MODE ================= */
-function formatAnswer(text,query){
-
-  let reasoning="🔍 Step-by-step reasoning:\n1. Memahami pertanyaan.\n2. Mengambil sumber terpercaya.\n3. Menyusun analisis.\n\n";
-
-  let rekom="🚀 Rekomendasi Konten MiniTok:\n• Buat video edukasi tentang '"+query+"'\n• Gunakan hook 3 detik pertama\n• Tambahkan CTA follow\n\n";
-
-  if(aiMode==="pelajar"){
-    return "📘 Penjelasan Guru:\n\n"+text+"\n\n📌 Kesimpulan:\nTopik ini penting dipahami secara bertahap.\n\n"+rekom;
-  }
-
-  if(aiMode==="ceo"){
-    return "💼 Strategic Insight:\n\n"+text+"\n\n📊 Action Plan:\n• Identifikasi peluang\n• Eksekusi cepat\n• Optimasi performa\n\n"+rekom;
-  }
-
-  if(aiMode==="debat"){
-    return "⚔️ Argumen Pro:\n"+text+"\n\n⚖️ Argumen Kontra:\nBeberapa pihak mungkin memiliki sudut pandang berbeda tergantung konteks.\n\n"+rekom;
-  }
-
-  if(aiMode==="opini"){
-    return "💡 Opini AI:\n"+text+"\n\nMenurut analisis, topik ini sangat relevan dengan perkembangan digital saat ini.\n\n"+rekom;
-  }
-
-  return reasoning+"🧠 Genius Analysis:\n\n"+text+"\n\n"+rekom;
-}
-
-/* ================= SEND ================= */
-async function kirim(){
-  const input=document.getElementById("input");
-  const teks=input.value.trim();
-  if(!teks)return;
-
-  tambahPesan(teks,"user");
-  history.push({role:"user",text:teks});
-  saveMemory();
-  input.value="";
-
-  const typing=document.createElement("div");
-  typing.className="message bot typing";
-  typing.innerText="GeminiTok AI sedang berpikir...";
-  chat.appendChild(typing);
-  chat.scrollTop=chat.scrollHeight;
-
-  let result=await searchInternet(teks);
-  typing.remove();
-
-  if(!result){
-    tambahPesan("⚠️ Tidak ditemukan hasil relevan.","bot");
-    return;
-  }
-
-  // Memory context (ringkas 3 percakapan terakhir)
-  let context="";
-  history.slice(-3).forEach(h=>context+=h.text+" | ");
-
-  let final=formatAnswer(result+"\n\n🧠 Konteks sebelumnya: "+context,teks);
-
-  history.push({role:"bot",text:final});
-  saveMemory();
-  tambahPesan(final,"bot");
-}
-
-/* ================= RESET ================= */
-function resetChat(){
-  localStorage.clear();
-  location.reload();
-}
-
-/* ================= LOAD ================= */
-window.onload=function(){
-  if(history.length>0){
-    history.forEach(h=>tambahPesan(h.text,h.role==="user"?"user":"bot"));
-  }else{
-    tambahPesan("Halo 👋 Saya GeminiTok AI.\nSelamat Datang Wahai Manusia Ada Yang Bisa Saya Bantu.","bot");
-  }
-};
-</script>
-<script>
-const chat=document.getElementById("chat");
-let history=JSON.parse(localStorage.getItem("ultraHistory"))||[];
-let voiceEnabled=true;
-let aiMode="genius";
-
-/* ================= MODE ================= */
-function setMode(mode){
-  aiMode=mode;
-  alert("Mode: "+mode.toUpperCase());
-}
-
-/* ================= MEMORY ================= */
-function saveMemory(){
-  localStorage.setItem("ultraHistory",JSON.stringify(history));
-}
-
-/* ================= MESSAGE ================= */
-function tambahPesan(text,type){
-  const div=document.createElement("div");
-  div.className="message "+type;
-  div.innerText=text;
-  chat.appendChild(div);
-  chat.scrollTop=chat.scrollHeight;
-  if(type==="bot") speak(text);
-}
-
-/* ================= VOICE ================= */
-function toggleVoice(){voiceEnabled=!voiceEnabled;}
-function speak(text){
-  if(!voiceEnabled||!window.speechSynthesis) return;
-  const u=new SpeechSynthesisUtterance(text);
-  u.lang="id-ID";
-  speechSynthesis.speak(u);
-}
-
-/* ================= IDENTIFIKASI ================= */
+/* ================= INTENT DETECTION ================= */
 function detectIntent(text){
   const lower=text.toLowerCase();
 
   if(["halo","hai","hi","hello","pagi","malam","assalamualaikum"].includes(lower))
     return "greeting";
-
-  if(lower.includes("?"))
-    return "question";
 
   if(lower.includes("sedih")||lower.includes("capek")||lower.includes("lelah"))
     return "emotion";
@@ -290,53 +155,36 @@ function detectIntent(text){
   if(text.trim().split(" ").length===1)
     return "keyword";
 
-  return "statement";
+  if(lower.includes("?"))
+    return "question";
+
+  return "general";
 }
 
-/* ================= INTERNAL KNOWLEDGE ================= */
-function internalAnswer(text){
+/* ================= KNOWLEDGE ENGINE ================= */
+function generateSmartAnswer(text){
+
   const lower=text.toLowerCase();
 
   if(lower.includes("politik"))
-    return "Politik adalah sistem pengelolaan kekuasaan dan kebijakan publik dalam suatu negara. Ia menentukan arah hukum, ekonomi, dan kesejahteraan masyarakat.";
+    return "Politik adalah sistem pengelolaan kekuasaan dalam suatu negara. Ia menentukan kebijakan publik, hukum, dan arah pembangunan masyarakat.";
 
   if(lower.includes("ai"))
-    return "AI adalah teknologi yang memungkinkan mesin belajar dari data dan mengambil keputusan seperti manusia. Digunakan di kesehatan, bisnis, hingga media sosial.";
+    return "AI adalah teknologi yang memungkinkan mesin belajar dari data dan mengambil keputusan seperti manusia. Digunakan di bisnis, kesehatan, dan media sosial.";
+
+  if(lower.includes("bisnis"))
+    return "Bisnis adalah proses menciptakan nilai melalui produk atau jasa dengan tujuan mendapatkan keuntungan dan pertumbuhan.";
 
   if(lower.includes("cinta"))
     return "Cinta adalah kombinasi emosi, komitmen, dan rasa saling peduli. Hubungan sehat dibangun lewat komunikasi dan kepercayaan.";
 
-  if(lower.includes("bisnis"))
-    return "Bisnis adalah proses menciptakan nilai melalui produk atau jasa dengan tujuan memperoleh keuntungan dan pertumbuhan.";
+  if(lower.includes("bagaimana cara"))
+    return "Langkah awalnya adalah memahami tujuan, lalu membuat strategi bertahap dan konsisten dalam eksekusinya.";
 
-  if(lower.includes("sejarah"))
-    return "Sejarah adalah catatan peristiwa masa lalu yang membentuk dunia saat ini dan menjadi pelajaran untuk masa depan.";
+  if(lower.includes("kenapa"))
+    return "Biasanya hal itu terjadi karena kombinasi faktor internal dan eksternal yang saling mempengaruhi.";
 
-  return "Secara umum, topik itu bisa dipahami dengan melihat konteks, tujuan, dan dampaknya terhadap kehidupan nyata.";
-}
-
-/* ================= INTERNET SEARCH 5 DETIK ================= */
-async function searchInternet(q){
-
-  function timeout(ms){
-    return new Promise(resolve=>setTimeout(()=>resolve(null),ms));
-  }
-
-  async function wikiSearch(){
-    try{
-      let r=await fetch("https://id.wikipedia.org/api/rest_v1/page/summary/"+encodeURIComponent(q));
-      if(r.ok){
-        let d=await r.json();
-        if(d.extract) return d.extract;
-      }
-    }catch{}
-    return null;
-  }
-
-  return await Promise.race([
-    wikiSearch(),
-    timeout(5000) // maksimal 5 detik
-  ]);
+  return "Topik itu menarik dan bisa dilihat dari berbagai sudut pandang. Jika kamu beri detail tambahan, aku bisa jelaskan lebih spesifik.";
 }
 
 /* ================= FORMAT MODE ================= */
@@ -346,10 +194,10 @@ function formatAnswer(text){
     return "📘 Penjelasan:\n\n"+text;
 
   if(aiMode==="ceo")
-    return "💼 Insight Strategis:\n\n"+text+"\n\n👉 Fokus pada eksekusi.";
+    return "💼 Insight Strategis:\n\n"+text+"\n\n👉 Fokus pada eksekusi nyata.";
 
   if(aiMode==="debat")
-    return "⚔️ Argumen:\n"+text+"\n\n⚖️ Perspektif lain mungkin berbeda tergantung konteks.";
+    return "⚔️ Perspektif Utama:\n"+text+"\n\n⚖️ Perspektif Lain:\nBisa berbeda tergantung konteks sosial dan budaya.";
 
   if(aiMode==="opini")
     return "💡 Opini:\n"+text+"\n\nTopik ini relevan dengan perkembangan zaman.";
@@ -357,29 +205,24 @@ function formatAnswer(text){
   return text;
 }
 
-/* ================= SMART BRAIN ================= */
+/* ================= SMART REPLY ================= */
 async function smartReply(text){
 
   let intent=detectIntent(text);
 
   if(intent==="greeting"){
-    return "Halo juga 👋 Lagi pengen ngobrol apa hari ini?";
+    if(text.toLowerCase()==="assalamualaikum")
+      return "Waalaikumsalam 🤍 Semoga harimu berkah.";
+    return "Halo juga 👋 Ada yang ingin kamu bahas?";
   }
 
   if(intent==="emotion"){
-    return "Aku bisa merasakan itu berat ya 😔 Kalau mau cerita, aku dengerin.";
+    return "Aku bisa merasakan itu berat ya 😔 Kalau mau cerita lebih dalam, aku siap dengar.";
   }
 
-  // Coba cari internet maksimal 5 detik
-  let online=await searchInternet(text);
+  let baseAnswer=generateSmartAnswer(text);
 
-  if(online){
-    return formatAnswer(online);
-  }
-
-  // Jika internet gagal → tetap jawab
-  let internal=internalAnswer(text);
-  return formatAnswer(internal);
+  return formatAnswer(baseAnswer);
 }
 
 /* ================= SEND ================= */
@@ -395,7 +238,7 @@ async function kirim(){
 
   const typing=document.createElement("div");
   typing.className="message bot typing";
-  typing.innerText="GeminiTok ULTRA menganalisis...";
+  typing.innerText="GeminiTok AI menganalisis...";
   chat.appendChild(typing);
   chat.scrollTop=chat.scrollHeight;
 
@@ -418,289 +261,10 @@ window.onload=function(){
   if(history.length>0){
     history.forEach(h=>tambahPesan(h.text,h.role==="user"?"user":"bot"));
   }else{
-    tambahPesan("Halo 👋 Aku GeminiTok AI ULTRA.\nTanya apa saja, aku jawab.","bot");
+    tambahPesan("Halo 👋 Aku GeminiTok AI.\nTanya apa saja, aku jawab.","bot");
   }
 };
 </script>
-function fakeAI(text){
 
-  const msg = text.trim();
-  const lower = msg.toLowerCase();
-
-  /* ================== 1. SAPAAN SINGKAT ================== */
-  const shortGreetings = ["halo","hai","hi","hello","pagi","siang","malam","assalamualaikum"];
-
-  if(shortGreetings.includes(lower)){
-    if(lower === "assalamualaikum"){
-      return "Waalaikumsalam 🤍 Semoga harimu penuh kebaikan.";
-    }
-    return "Halo juga 👋 Ada yang bisa saya bantu?";
-  }
-
-  /* ================== 2. JAWAB SATU KATA SESUAI KONTEKS ================== */
-  if(msg.split(" ").length === 1){
-
-    const longTopics = [
-      "politik","ai","bisnis","investasi","sejarah",
-      "psikologi","agama","filsafat","ekonomi",
-      "teknologi","kesehatan","cinta"
-    ];
-
-    if(longTopics.includes(lower)){
-      return generateLongExplanation(lower);
-    }
-
-    return lower.charAt(0).toUpperCase()+lower.slice(1)+" juga menarik 🙂 Mau bahas lebih dalam?";
-  }
-
-  /* ================== 3. PERTANYAAN UMUM ================== */
-  if(lower.includes("?")){
-    return generateContextualAnswer(lower);
-  }
-
-  /* ================== 4. KALIMAT BIASA / CURHAT ================== */
-  if(lower.includes("sedih") || lower.includes("capek") || lower.includes("lelah")){
-    return "Saya bisa merasakan itu berat 😔 Kadang hidup memang melelahkan. Mau cerita lebih detail supaya saya bisa bantu?";
-  }
-
-  if(lower.includes("senang") || lower.includes("bahagia")){
-    return "Itu kabar baik 😊 Ceritakan dong apa yang membuatmu merasa seperti itu.";
-  }
-
-  /* ================== 5. DEFAULT Cerdas ================== */
-  return generateContextualAnswer(lower);
-}
-
-
-/* ================== PENJELASAN PANJANG ================== */
-
-function generateLongExplanation(topic){
-
-  const explanations = {
-
-    politik: "Politik adalah sistem pengelolaan kekuasaan dalam suatu negara atau masyarakat. Ia menentukan bagaimana keputusan dibuat, bagaimana hukum dijalankan, dan bagaimana sumber daya dibagi. Politik tidak selalu soal partai atau pemilu, tetapi juga tentang kebijakan publik, keadilan sosial, dan hak warga negara. Dalam memahami politik, penting untuk melihat dari berbagai sudut pandang agar tidak terjebak pada satu opini saja.",
-
-    ai: "Artificial Intelligence (AI) adalah teknologi yang memungkinkan mesin meniru kecerdasan manusia seperti berpikir, belajar, dan mengambil keputusan. AI digunakan dalam banyak bidang seperti kesehatan, bisnis, pendidikan, hingga hiburan. Contohnya adalah chatbot, sistem rekomendasi, mobil otonom, dan analisis data. Di masa depan, AI diprediksi akan semakin terintegrasi dalam kehidupan sehari-hari.",
-
-    bisnis: "Bisnis adalah aktivitas menciptakan nilai melalui produk atau jasa untuk mendapatkan keuntungan. Bisnis yang sukses membutuhkan strategi, pemahaman pasar, manajemen keuangan, dan kemampuan adaptasi. Di era digital, bisnis juga sangat bergantung pada branding, pemasaran online, dan inovasi teknologi.",
-
-    psikologi: "Psikologi mempelajari perilaku dan proses mental manusia. Ini mencakup emosi, motivasi, kepribadian, hingga gangguan mental. Memahami psikologi membantu kita mengenali diri sendiri dan orang lain secara lebih dalam.",
-
-    agama: "Agama adalah sistem kepercayaan yang membimbing manusia dalam memahami makna hidup, moralitas, dan hubungan dengan Tuhan atau kekuatan yang lebih tinggi. Selain aspek spiritual, agama juga berperan dalam membentuk budaya dan nilai sosial.",
-
-    filsafat: "Filsafat adalah studi tentang pertanyaan mendasar kehidupan seperti apa itu kebenaran, makna hidup, moralitas, dan realitas. Filsafat melatih cara berpikir kritis dan reflektif.",
-
-    ekonomi: "Ekonomi mempelajari bagaimana sumber daya yang terbatas dikelola untuk memenuhi kebutuhan manusia. Ini mencakup produksi, distribusi, konsumsi, serta kebijakan fiskal dan moneter.",
-
-    teknologi: "Teknologi adalah penerapan ilmu pengetahuan untuk memecahkan masalah praktis. Perkembangannya sangat cepat dan mempengaruhi hampir semua aspek kehidupan modern.",
-
-    kesehatan: "Kesehatan mencakup kondisi fisik, mental, dan sosial yang seimbang. Menjaga kesehatan berarti memperhatikan pola makan, olahraga, istirahat, dan manajemen stres.",
-
-    cinta: "Cinta adalah emosi yang melibatkan kasih sayang, perhatian, dan komitmen. Dalam hubungan sehat, cinta dibangun atas dasar komunikasi, kepercayaan, dan saling menghargai."
-  };
-
-  return explanations[topic] || "Topik ini menarik dan bisa dibahas dari banyak sudut pandang. Mau fokus ke aspek mana?";
-}
-
-
-/* ================== JAWAB KONTEKSTUAL ================== */
-
-function generateContextualAnswer(text){
-
-  if(text.includes("apa itu")){
-    return "Secara sederhana, itu adalah konsep atau hal yang memiliki makna tergantung konteksnya. Jika kamu mau, sebutkan topiknya lebih spesifik supaya bisa saya jelaskan detail.";
-  }
-
-  if(text.includes("bagaimana cara")){
-    return "Langkah dasarnya adalah memahami tujuan terlebih dahulu, lalu membuat strategi bertahap dan konsisten. Kalau kamu beri detail situasinya, saya bisa jelaskan lebih rinci.";
-  }
-
-  if(text.includes("kenapa")){
-    return "Biasanya hal itu terjadi karena kombinasi faktor internal dan eksternal. Kalau kamu jelaskan konteksnya, saya bantu analisis penyebabnya satu per satu.";
-  }
-
-  return "Pertanyaan yang menarik 🤔 Bisa jelaskan sedikit lebih detail supaya saya bisa jawab lebih tepat?";
-}
-  
-  <script>
-const chat=document.getElementById("chat");
-let history=JSON.parse(localStorage.getItem("ultraHistory"))||[];
-let voiceEnabled=true;
-let aiMode="genius";
-
-/* ================= MODE ================= */
-function setMode(mode){
-  aiMode=mode;
-  alert("Mode: "+mode.toUpperCase());
-}
-
-/* ================= MEMORY ================= */
-function saveMemory(){
-  localStorage.setItem("ultraHistory",JSON.stringify(history));
-}
-
-/* ================= MESSAGE ================= */
-function tambahPesan(text,type){
-  const div=document.createElement("div");
-  div.className="message "+type;
-  div.innerText=text;
-  chat.appendChild(div);
-  chat.scrollTop=chat.scrollHeight;
-  if(type==="bot") speak(text);
-}
-
-/* ================= VOICE ================= */
-function toggleVoice(){voiceEnabled=!voiceEnabled;}
-function speak(text){
-  if(!voiceEnabled||!window.speechSynthesis) return;
-  const u=new SpeechSynthesisUtterance(text);
-  u.lang="id-ID";
-  speechSynthesis.speak(u);
-}
-
-/* ================= SAPAAN NATURAL ================= */
-function humanGreeting(text){
-  const lower=text.toLowerCase();
-
-  if(["halo","hai","hi","hello"].includes(lower))
-    return "Halo juga 👋 Lagi pengen bahas apa nih?";
-
-  if(lower==="pagi") return "Selamat pagi ☀️ Semoga harimu lancar ya!";
-  if(lower==="malam") return "Selamat malam 🌙 Jangan lupa istirahat juga ya.";
-  if(lower==="assalamualaikum") return "Waalaikumsalam 🤍 Semoga harimu berkah.";
-
-  return null;
-}
-
-/* ================= INTERNAL BRAIN ================= */
-function internalBrain(text){
-
-  const lower=text.toLowerCase();
-
-  if(lower.includes("sedih")||lower.includes("capek"))
-    return "Kedengarannya kamu lagi berat ya 😔 Mau cerita sedikit? Aku dengerin.";
-
-  if(lower.includes("cinta"))
-    return "Cinta itu soal rasa dan komitmen. Kadang indah, kadang rumit. Kamu lagi di fase yang mana?";
-
-  if(lower.includes("politik"))
-    return "Politik itu soal kekuasaan dan kebijakan publik. Mau bahas dari sisi sistem negara, tokoh, atau dampaknya ke masyarakat?";
-
-  if(lower.includes("ai"))
-    return "AI adalah teknologi yang membuat mesin bisa belajar dan mengambil keputusan seperti manusia. Sekarang dipakai di kesehatan, bisnis, sampai media sosial.";
-
-  if(lower.includes("bisnis"))
-    return "Bisnis bukan cuma soal jualan, tapi tentang menciptakan nilai. Kamu lagi mau mulai usaha atau scale up?";
-
-  return null;
-}
-
-/* ================= INTERNET SEARCH ================= */
-async function searchInternet(q){
-  let results=[];
-  try{
-    let r=await fetch("https://id.wikipedia.org/api/rest_v1/page/summary/"+encodeURIComponent(q));
-    if(r.ok){let d=await r.json();if(d.extract)results.push(d.extract);}
-  }catch{}
-  try{
-    let r=await fetch("https://en.wikipedia.org/api/rest_v1/page/summary/"+encodeURIComponent(q));
-    if(r.ok){let d=await r.json();if(d.extract)results.push(d.extract);}
-  }catch{}
-  if(results.length===0) return null;
-  results.sort((a,b)=>b.length-a.length);
-  return results[0];
-}
-
-/* ================= FORMAT MODE ================= */
-function formatAnswer(text,query){
-
-  if(aiMode==="pelajar"){
-    return "📘 Penjelasan Sederhana:\n\n"+text+"\n\nKalau masih bingung, tanya lagi ya.";
-  }
-
-  if(aiMode==="ceo"){
-    return "💼 Insight Strategis:\n\n"+text+"\n\n👉 Fokus pada peluang & eksekusi cepat.";
-  }
-
-  if(aiMode==="debat"){
-    return "⚔️ Sudut Pandang 1:\n"+text+
-           "\n\n⚖️ Sudut Pandang Lain:\nTergantung perspektif dan konteks sosialnya.";
-  }
-
-  if(aiMode==="opini"){
-    return "💡 Menurut saya:\n"+text+
-           "\n\nTopik ini menarik kalau dikaitkan dengan tren digital sekarang.";
-  }
-
-  return text;
-}
-
-/* ================= SMART RESPONSE ================= */
-async function smartReply(text){
-
-  // 1. Sapa singkat
-  let greet=humanGreeting(text);
-  if(greet) return greet;
-
-  // 2. Jika satu kata panjang → jelaskan
-  if(text.trim().split(" ").length===1){
-    let deep=internalBrain(text);
-    if(deep) return deep;
-  }
-
-  // 3. Coba ambil dari internet
-  let net=await searchInternet(text);
-  if(net){
-    return formatAnswer(net,text);
-  }
-
-  // 4. Fallback ke internal brain
-  let brain=internalBrain(text);
-  if(brain) return brain;
-
-  // 5. Default natural
-  return "Menarik juga 🤔 Bisa jelaskan sedikit lebih detail supaya aku jawab lebih tepat?";
-}
-
-/* ================= SEND ================= */
-async function kirim(){
-  const input=document.getElementById("input");
-  const teks=input.value.trim();
-  if(!teks)return;
-
-  tambahPesan(teks,"user");
-  history.push({role:"user",text:teks});
-  saveMemory();
-  input.value="";
-
-  const typing=document.createElement("div");
-  typing.className="message bot typing";
-  typing.innerText="GeminiTok ULTRA sedang berpikir...";
-  chat.appendChild(typing);
-  chat.scrollTop=chat.scrollHeight;
-
-  let final=await smartReply(teks);
-
-  typing.remove();
-  history.push({role:"bot",text:final});
-  saveMemory();
-  tambahPesan(final,"bot");
-}
-
-/* ================= RESET ================= */
-function resetChat(){
-  localStorage.clear();
-  location.reload();
-}
-
-/* ================= LOAD ================= */
-window.onload=function(){
-  if(history.length>0){
-    history.forEach(h=>tambahPesan(h.text,h.role==="user"?"user":"bot"));
-  }else{
-    tambahPesan("Halo 👋 Aku GeminiTok AI ULTRA.\nNgobrol santai aja ya. Mau bahas apa hari ini?","bot");
-  }
-};
-</script>
 </body>
 </html>
