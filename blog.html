@@ -35,15 +35,12 @@ color:white;
 margin:0 10px;
 cursor:pointer;
 font-weight:600;
+cursor:pointer;
 }
 
-nav button:hover{
-color:#00f2ff;
-}
+nav button:hover{color:#00f2ff;}
 
-.container{
-padding:30px;
-}
+.container{padding:30px;}
 
 .grid{
 display:grid;
@@ -60,7 +57,7 @@ transition:0.3s;
 }
 
 .card:hover{
-transform:scale(1.05);
+transform:scale(1.03);
 border-color:#00f2ff;
 }
 
@@ -72,17 +69,10 @@ cursor:pointer;
 font-weight:bold;
 }
 
-.btn-primary{
-background:#00f2ff;
-color:black;
-}
+.btn-primary{background:#00f2ff;color:black;}
+.btn-gold{background:gold;color:black;}
 
-.btn-gold{
-background:gold;
-color:black;
-}
-
-input, select{
+input, select, textarea{
 width:100%;
 padding:10px;
 margin:5px 0;
@@ -94,26 +84,21 @@ border-radius:6px;
 
 .viewer{
 margin-top:20px;
-height:500px;
+max-height:600px;
+overflow:auto;
 border:1px solid #333;
 border-radius:10px;
-overflow:hidden;
+padding:15px;
+background:black;
 }
 
-iframe{
+.viewer img{
 width:100%;
-height:100%;
-border:none;
+margin-bottom:10px;
 }
 
-.hidden{
-display:none;
-}
-
-.premium-badge{
-color:gold;
-font-weight:bold;
-}
+.hidden{display:none;}
+.premium-badge{color:gold;font-weight:bold;}
 </style>
 </head>
 
@@ -126,7 +111,7 @@ font-weight:bold;
 <button onclick="showPage('komik')">Komik</button>
 <button onclick="showPage('ebook')">E-Book</button>
 <button onclick="showPage('upload')">Upload</button>
-<button onclick="activatePremium()">Upgrade Premium</button>
+<button onclick="goPremium()">Premium</button>
 </nav>
 </header>
 
@@ -142,21 +127,36 @@ font-weight:bold;
 <!-- UPLOAD -->
 <div id="uploadPage" class="hidden">
 <h2>Upload Konten</h2>
+
 <input type="text" id="judul" placeholder="Judul">
-<select id="kategori">
+
+<select id="kategori" onchange="toggleUpload()">
 <option value="artikel">Artikel</option>
 <option value="komik">Komik</option>
 <option value="ebook">E-Book</option>
 </select>
+
 <select id="akses">
 <option value="free">Free</option>
 <option value="premium">Premium</option>
 </select>
-<input type="file" id="fileUpload" accept=".pdf,.doc,.docx">
-<button class="btn-primary" onclick="uploadContent()">Upload</button>
+
+<div id="artikelInput">
+<textarea id="artikelText" placeholder="Tulis artikel di sini..."></textarea>
 </div>
 
-<!-- KONTEN -->
+<div id="komikInput" class="hidden">
+<input type="file" id="komikImages" accept="image/*" multiple>
+</div>
+
+<div id="ebookInput" class="hidden">
+<input type="file" id="ebookFile" accept=".pdf,.doc,.docx">
+</div>
+
+<button class="btn-primary" onclick="uploadContent()">Publish</button>
+</div>
+
+<!-- LIST PAGE -->
 <div id="artikelPage" class="hidden">
 <h2>Artikel</h2>
 <div id="artikelList" class="grid"></div>
@@ -172,28 +172,26 @@ font-weight:bold;
 <div id="ebookList" class="grid"></div>
 </div>
 
+<!-- VIEWER -->
 <div id="viewerContainer" class="hidden">
 <h2 id="viewerTitle"></h2>
-<div class="viewer">
-<iframe id="viewerFrame"></iframe>
-</div>
-<button id="downloadBtn" class="btn-primary hidden">Download File</button>
+<div class="viewer" id="viewerContent"></div>
 </div>
 
 </div>
 
 <script>
 
-let database=[];
-let currentUser=null;
-let isPremium=false;
+let database = JSON.parse(localStorage.getItem("miniTokDB")) || [];
+let currentUser = null;
+
+function saveDB(){
+localStorage.setItem("miniTokDB", JSON.stringify(database));
+}
 
 function login(){
 let name=document.getElementById("username").value;
-if(!name){
-alert("Masukkan nama dulu!");
-return;
-}
+if(!name){alert("Masukkan nama!");return;}
 currentUser=name;
 document.getElementById("loginPage").style.display="none";
 showPage("artikel");
@@ -205,74 +203,126 @@ document.getElementById(p+"Page").classList.add("hidden");
 });
 document.getElementById(page+"Page").classList.remove("hidden");
 document.getElementById("viewerContainer").classList.add("hidden");
+renderContent();
 }
 
-function activatePremium(){
-alert("Untuk akses Premium silakan donasi seikhlasnya 🙏");
+function goPremium(){
 window.location.href="https://minitok.fun/donasi.html";
+}
+
+function toggleUpload(){
+let kategori=document.getElementById("kategori").value;
+document.getElementById("artikelInput").classList.add("hidden");
+document.getElementById("komikInput").classList.add("hidden");
+document.getElementById("ebookInput").classList.add("hidden");
+
+if(kategori=="artikel")
+document.getElementById("artikelInput").classList.remove("hidden");
+if(kategori=="komik")
+document.getElementById("komikInput").classList.remove("hidden");
+if(kategori=="ebook")
+document.getElementById("ebookInput").classList.remove("hidden");
 }
 
 function uploadContent(){
 let judul=document.getElementById("judul").value;
 let kategori=document.getElementById("kategori").value;
 let akses=document.getElementById("akses").value;
-let file=document.getElementById("fileUpload").files[0];
 
-if(!judul || !file){
-alert("Isi semua data!");
+if(!judul){alert("Judul wajib!");return;}
+
+if(kategori=="artikel"){
+let text=document.getElementById("artikelText").value;
+database.unshift({judul,kategori,akses,text});
+}
+
+if(kategori=="komik"){
+let files=document.getElementById("komikImages").files;
+let images=[];
+for(let file of files){
+let reader=new FileReader();
+reader.onload=function(){
+images.push(reader.result);
+if(images.length===files.length){
+database.unshift({judul,kategori,akses,images});
+saveDB();
+renderContent();
+}
+}
+reader.readAsDataURL(file);
+}
 return;
 }
 
-let fileURL=URL.createObjectURL(file);
-
-database.push({judul,kategori,akses,fileURL,file});
-
+if(kategori=="ebook"){
+let file=document.getElementById("ebookFile").files[0];
+let reader=new FileReader();
+reader.onload=function(){
+database.unshift({judul,kategori,akses,file:reader.result});
+saveDB();
 renderContent();
-alert("Upload berhasil!");
+}
+reader.readAsDataURL(file);
+return;
+}
+
+saveDB();
+renderContent();
+alert("Berhasil publish!");
 }
 
 function renderContent(){
-document.getElementById("artikelList").innerHTML="";
-document.getElementById("komikList").innerHTML="";
-document.getElementById("ebookList").innerHTML="";
-
-database.forEach((item,index)=>{
+["artikel","komik","ebook"].forEach(type=>{
+let list=document.getElementById(type+"List");
+list.innerHTML="";
+database.filter(x=>x.kategori==type).forEach((item,index)=>{
 let card=document.createElement("div");
 card.className="card";
 card.innerHTML=`
 <h3>${item.judul}</h3>
 <p>${item.akses=="premium"?"<span class='premium-badge'>Premium</span>":"Free"}</p>
-<button class="btn-primary" onclick="openContent(${index})">Buka</button>
+<button class="btn-primary" onclick="openContent(${database.indexOf(item)})">Baca</button>
 `;
-document.getElementById(item.kategori+"List").appendChild(card);
+list.appendChild(card);
+});
 });
 }
 
 function openContent(index){
 let item=database[index];
 
-if(item.akses=="premium" && !isPremium){
+if(item.akses=="premium"){
 window.location.href="https://minitok.fun/donasi.html";
 return;
 }
 
+let viewer=document.getElementById("viewerContent");
+viewer.innerHTML="";
 document.getElementById("viewerContainer").classList.remove("hidden");
 document.getElementById("viewerTitle").innerText=item.judul;
-document.getElementById("viewerFrame").src=item.fileURL;
 
-let downloadBtn=document.getElementById("downloadBtn");
-downloadBtn.classList.remove("hidden");
-downloadBtn.onclick=function(){
-let a=document.createElement("a");
-a.href=item.fileURL;
-a.download=item.judul;
-a.click();
-};
-
-window.scrollTo(0,document.body.scrollHeight);
+if(item.kategori=="artikel"){
+viewer.innerHTML=`<p>${item.text.replace(/\n/g,"<br>")}</p>`;
 }
 
-</script>
+if(item.kategori=="komik"){
+item.images.forEach(img=>{
+viewer.innerHTML+=`<img src="${img}">`;
+});
+}
 
+if(item.kategori=="ebook"){
+if(item.file.startsWith("data:application/pdf")){
+viewer.innerHTML=`<iframe src="${item.file}" style="width:100%;height:600px;border:none;"></iframe>`;
+}else{
+viewer.innerHTML=`<p>File Word tidak bisa ditampilkan langsung.<br>
+<a href="${item.file}" download style="color:#00f2ff;">Download untuk membaca</a></p>`;
+}
+}
+}
+
+renderContent();
+
+</script>
 </body>
 </html>
