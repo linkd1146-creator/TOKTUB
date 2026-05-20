@@ -13,23 +13,20 @@ background:#0f0f0f;
 color:white;
 }
 
-/* HEADER */
 header{
 background:linear-gradient(90deg,#ff0050,#ff7a00);
 padding:18px;
 text-align:center;
 font-size:22px;
 font-weight:bold;
-letter-spacing:1px;
 }
 
-/* NAV */
 nav{
 display:flex;
 justify-content:center;
-gap:15px;
+gap:10px;
 background:#141414;
-padding:12px;
+padding:10px;
 flex-wrap:wrap;
 }
 
@@ -37,69 +34,49 @@ nav button{
 background:#1c1c1c;
 border:none;
 color:white;
-padding:8px 18px;
+padding:8px 15px;
 border-radius:20px;
 cursor:pointer;
-transition:0.3s;
-font-weight:600;
 }
 
 nav button:hover{
 background:#ff0050;
 }
 
-/* SECTION */
 .section{
 display:none;
-padding:25px;
-max-width:1000px;
+padding:20px;
+max-width:900px;
 margin:auto;
 }
 
-/* CARD NETFLIX STYLE */
 .card{
 background:#1c1c1c;
-padding:18px;
-margin-bottom:18px;
-border-radius:16px;
-transition:0.3s;
-box-shadow:0 0 15px rgba(0,0,0,0.4);
-}
-
-.card:hover{
-transform:scale(1.02);
+padding:15px;
+margin-bottom:15px;
+border-radius:12px;
 }
 
 .card button{
 margin:5px 5px 0 0;
-padding:7px 14px;
+padding:6px 12px;
 border:none;
-border-radius:10px;
+border-radius:8px;
 cursor:pointer;
 background:#ff0050;
 color:white;
-font-weight:bold;
-}
-
-/* UPLOAD */
-.uploadBox{
-background:#1c1c1c;
-padding:20px;
-border-radius:18px;
-margin-bottom:25px;
 }
 
 input,textarea,select{
 width:100%;
 padding:10px;
-margin-bottom:12px;
-border-radius:10px;
+margin-bottom:10px;
+border-radius:8px;
 border:none;
 background:#111;
 color:white;
 }
 
-/* VIEWER */
 .viewer{
 display:none;
 position:fixed;
@@ -115,15 +92,15 @@ z-index:999;
 
 .viewer iframe{
 width:100%;
-height:85vh;
+height:90vh;
 border:none;
 background:white;
 }
 
 .webtoon img{
 width:100%;
-margin-bottom:12px;
-border-radius:12px;
+margin-bottom:10px;
+border-radius:10px;
 }
 
 .closeBtn{
@@ -153,7 +130,6 @@ cursor:pointer;
 
 <div id="creator" class="section">
 
-<div class="uploadBox">
 <h3>Upload Konten</h3>
 
 <select id="type">
@@ -163,12 +139,14 @@ cursor:pointer;
 </select>
 
 <input type="text" id="title" placeholder="Judul">
-<textarea id="desc" placeholder="Deskripsi"></textarea>
+
+<textarea id="articleText" placeholder="Tulis isi artikel di sini..."></textarea>
+
 <input type="file" id="fileInput" multiple>
 
 <button onclick="upload()">Publish</button>
-</div>
 
+<hr>
 <h3>Konten Saya</h3>
 <div id="list"></div>
 
@@ -180,6 +158,7 @@ cursor:pointer;
 </div>
 
 <script>
+
 let data = JSON.parse(localStorage.getItem("blogData")) || {
 artikel:[],
 komik:[],
@@ -193,6 +172,68 @@ if(type!=="creator") render(type);
 if(type==="creator") renderCreator();
 }
 
+function upload(){
+let type=document.getElementById("type").value;
+let title=document.getElementById("title").value;
+let articleText=document.getElementById("articleText").value;
+let files=document.getElementById("fileInput").files;
+
+if(!title){
+alert("Judul wajib diisi!");
+return;
+}
+
+if(type==="artikel"){
+if(!articleText){
+alert("Isi artikel wajib diisi!");
+return;
+}
+data.artikel.push({title,content:articleText});
+save();
+return;
+}
+
+if(type==="komik"){
+if(files.length===0){
+alert("Upload gambar komik!");
+return;
+}
+let images=[];
+let loaded=0;
+for(let file of files){
+let reader=new FileReader();
+reader.onload=function(e){
+images.push(e.target.result);
+loaded++;
+if(loaded===files.length){
+data.komik.push({title,images});
+save();
+}
+}
+reader.readAsDataURL(file);
+}
+return;
+}
+
+if(type==="ebook"){
+if(files.length===0){
+alert("Upload file PDF atau Word!");
+return;
+}
+let file=files[0];
+let reader=new FileReader();
+reader.onload=function(e){
+data.ebook.push({
+title,
+file:e.target.result,
+fileType:file.type
+});
+save();
+}
+reader.readAsDataURL(file);
+}
+}
+
 function render(type){
 let container=document.getElementById(type);
 container.innerHTML="";
@@ -200,16 +241,8 @@ data[type].forEach((item,index)=>{
 container.innerHTML+=`
 <div class="card">
 <h3>${item.title}</h3>
-<p>${item.desc}</p>
-
 <button onclick="openContent('${type}',${index})">Baca</button>
-
-<button onclick="shareContent('${item.title}')">Share</button>
-
-${type==="ebook" ? 
-`<button onclick="window.location.href='donasi.html'">
-Download Premium
-</button>` : ""}
+<button onclick="hapus('${type}',${index})">Hapus</button>
 </div>
 `;
 });
@@ -220,76 +253,50 @@ let item=data[type][index];
 let viewer=document.getElementById("viewer");
 let content=document.getElementById("viewerContent");
 
+if(type==="artikel"){
+content.innerHTML=`<div style="max-width:800px;margin:auto;">
+<h2>${item.title}</h2>
+<p style="white-space:pre-line;">${item.content}</p>
+</div>`;
+}
+
 if(type==="komik"){
 content.innerHTML="<div class='webtoon'>"+
 item.images.map(img=>`<img src="${img}">`).join("")+
 "</div>";
-}else{
+}
+
+if(type==="ebook"){
 if(item.fileType.includes("pdf")){
 content.innerHTML=`<iframe src="${item.file}"></iframe>`;
 }else{
-content.innerHTML=`<iframe src="https://docs.google.com/gview?embedded=1&url=${item.file}"></iframe>`;
+content.innerHTML=`
+<div style="text-align:center;margin-top:100px;">
+<h2>${item.title}</h2>
+<p>File Word tidak bisa dibaca langsung di browser.</p>
+<button onclick="downloadFile(${index})" style="padding:10px 20px;background:#ff0050;border:none;border-radius:10px;color:white;">
+Download File
+</button>
+</div>`;
 }
 }
 
 viewer.style.display="block";
 }
 
-function closeViewer(){
-document.getElementById("viewer").style.display="none";
+function downloadFile(index){
+let item=data.ebook[index];
+let a=document.createElement("a");
+a.href=item.file;
+a.download=item.title;
+a.click();
 }
 
-function shareContent(title){
-let url=encodeURIComponent(window.location.href);
-let text=encodeURIComponent("Baca di MiniTok: "+title);
-
-window.open(`https://wa.me/?text=${text}%20${url}`,'_blank');
-}
-
-function upload(){
-let type=document.getElementById("type").value;
-let title=document.getElementById("title").value;
-let desc=document.getElementById("desc").value;
-let files=document.getElementById("fileInput").files;
-
-if(!title||files.length===0){
-alert("Judul dan file wajib diisi");
-return;
-}
-
-if(type==="komik"){
-let images=[];
-for(let file of files){
-let reader=new FileReader();
-reader.onload=function(e){
-images.push(e.target.result);
-if(images.length===files.length){
-data[type].push({title,desc,images});
+function hapus(type,index){
+if(confirm("Yakin hapus?")){
+data[type].splice(index,1);
 save();
 }
-}
-reader.readAsDataURL(file);
-}
-}else{
-let file=files[0];
-let reader=new FileReader();
-reader.onload=function(e){
-data[type].push({
-title,
-desc,
-file:e.target.result,
-fileType:file.type
-});
-save();
-}
-reader.readAsDataURL(file);
-}
-}
-
-function save(){
-localStorage.setItem("blogData",JSON.stringify(data));
-alert("Berhasil Publish!");
-location.reload();
 }
 
 function renderCreator(){
@@ -299,8 +306,6 @@ data[type].forEach((item,index)=>{
 html+=`
 <div class="card">
 <b>${item.title}</b>
-<br>
-<button onclick="edit('${type}',${index})">Edit</button>
 <button onclick="hapus('${type}',${index})">Hapus</button>
 </div>
 `;
@@ -309,21 +314,18 @@ html+=`
 document.getElementById("list").innerHTML=html;
 }
 
-function hapus(type,index){
-data[type].splice(index,1);
-save();
+function save(){
+localStorage.setItem("blogData",JSON.stringify(data));
+alert("Berhasil Publish!");
+location.reload();
 }
 
-function edit(type,index){
-let item=data[type][index];
-document.getElementById("type").value=type;
-document.getElementById("title").value=item.title;
-document.getElementById("desc").value=item.desc;
-data[type].splice(index,1);
-save();
+function closeViewer(){
+document.getElementById("viewer").style.display="none";
 }
 
 showSection("artikel");
+
 </script>
 
 </body>
