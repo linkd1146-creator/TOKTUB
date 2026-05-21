@@ -1,34 +1,63 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GeminiTok AI </title>
-<span onclick="exportChat()">📄</span>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>GeminiTok AI Ultra</title>
+
 <style>
-body{
+*{
   margin:0;
-  font-family:Arial, sans-serif;
+  padding:0;
+  box-sizing:border-box;
+}
+
+body{
   background:#0f0f0f;
   color:white;
+  font-family:Arial,sans-serif;
+  height:100vh;
   display:flex;
   flex-direction:column;
-  height:100vh;
 }
+
+body.rtl{
+  direction:rtl;
+  text-align:right;
+}
+
 .header{
   background:#111;
-  padding:12px 16px;
+  padding:14px;
   display:flex;
   justify-content:space-between;
   align-items:center;
   border-bottom:1px solid #222;
-  box-shadow:0 0 15px #2b6cff33;
+  box-shadow:0 0 15px rgba(43,108,255,.2);
 }
-.header span{
-  cursor:pointer;
+
+.logo{
   font-size:18px;
-  margin-left:12px;
+  font-weight:bold;
 }
+
+.menu{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+.menu span,
+.menu select{
+  cursor:pointer;
+  background:#1e1e1e;
+  border:none;
+  color:white;
+  padding:8px;
+  border-radius:10px;
+}
+
 .chat{
   flex:1;
   overflow-y:auto;
@@ -37,36 +66,61 @@ body{
   flex-direction:column;
   gap:14px;
 }
+
 .message{
-  padding:12px 16px;
-  border-radius:16px;
-  max-width:75%;
+  padding:14px;
+  border-radius:18px;
+  max-width:80%;
   white-space:pre-line;
+  line-height:1.5;
 }
-.user{background:#2b6cff;align-self:flex-end;}
-.bot{background:#1e1e1e;border:1px solid #2b6cff33;}
-.typing{opacity:0.6;font-style:italic;}
+
+.user{
+  background:#2b6cff;
+  align-self:flex-end;
+}
+
+.bot{
+  background:#1a1a1a;
+  border:1px solid rgba(43,108,255,.2);
+  align-self:flex-start;
+}
+
+.typing{
+  opacity:.6;
+  font-style:italic;
+}
+
 .input-area{
   display:flex;
+  gap:10px;
   padding:12px;
   background:#111;
+  border-top:1px solid #222;
 }
+
 input{
   flex:1;
-  padding:12px;
-  border:none;
-  border-radius:12px;
   background:#1e1e1e;
-  color:white;
-}
-button{
-  margin-left:8px;
-  padding:12px 16px;
   border:none;
-  border-radius:12px;
-  background:#2b6cff;
   color:white;
+  padding:14px;
+  border-radius:14px;
+  outline:none;
+}
+
+button{
+  background:#2b6cff;
+  border:none;
+  color:white;
+  padding:14px 18px;
+  border-radius:14px;
   cursor:pointer;
+  font-weight:bold;
+}
+
+button:hover{
+  opacity:.9;
 }
 </style>
 </head>
@@ -74,797 +128,594 @@ button{
 <body>
 
 <div class="header">
-  <div>🤖 GeminiTok AI </div>
-  <div>
+
+  <div class="logo">🤖 GeminiTok AI Ultra</div>
+
+  <div class="menu">
+
+    <select onchange="setLanguage(this.value)">
+      <option value="auto">🌍 Auto</option>
+      <option value="id">🇮🇩 ID</option>
+      <option value="en">🇺🇸 EN</option>
+      <option value="ar">🇸🇦 AR</option>
+      <option value="jp">🇯🇵 JP</option>
+    </select>
+
     <span onclick="setMode('genius')">🧠</span>
     <span onclick="setMode('pelajar')">🎓</span>
     <span onclick="setMode('ceo')">💼</span>
     <span onclick="setMode('debat')">⚔️</span>
     <span onclick="setMode('opini')">💡</span>
+
     <span onclick="startVoice()">🎤</span>
     <span onclick="toggleVoice()">🔊</span>
+    <span onclick="exportChat()">📄</span>
     <span onclick="resetChat()">🔄</span>
+
   </div>
 </div>
 
 <div class="chat" id="chat"></div>
 
 <div class="input-area">
-  <input type="text" id="input" placeholder="Ketik pesan..." onkeydown="if(event.key==='Enter') kirim()">
+  <input
+    type="text"
+    id="input"
+    placeholder="Ketik pesan..."
+    onkeydown="if(event.key==='Enter') kirim()"
+  />
   <button onclick="kirim()">Kirim</button>
 </div>
 
 <script>
-const chat=document.getElementById("chat");
-let history=JSON.parse(localStorage.getItem("ultraHistory"))||[];
-let voiceEnabled=true;
-let aiMode="genius";
 
-/* ================= MODE ================= */
-function setMode(mode){
-  aiMode=mode;
-  alert("Mode: "+mode.toUpperCase());
-}
+/* ================= ELEMENT ================= */
 
-/* ================= MEMORY ================= */
-function saveMemory(){
-  localStorage.setItem("ultraHistory",JSON.stringify(history));
-}
+const chat = document.getElementById("chat");
+const input = document.getElementById("input");
 
-/* ================= MESSAGE ================= */
-function tambahPesan(text,type){
-  const div=document.createElement("div");
-  div.className="message "+type;
-  div.innerText=text;
-  chat.appendChild(div);
-  chat.scrollTop=chat.scrollHeight;
-  if(type==="bot") speak(text);
-}
+/* ================= STORAGE ================= */
 
-/* ================= VOICE ================= */
-function toggleVoice(){voiceEnabled=!voiceEnabled;}
-function speak(text){
-  if(!voiceEnabled||!window.speechSynthesis) return;
-  const u=new SpeechSynthesisUtterance(text);
-  u.lang="id-ID";
-  speechSynthesis.speak(u);
-}
-function startVoice(){
-  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(!SR)return;
-  const r=new SR();
-  r.lang="id-ID";
-  r.start();
-  r.onresult=e=>{
-    document.getElementById("input").value=e.results[0][0].transcript;
-  };
-}
+let history = JSON.parse(localStorage.getItem("ultraHistory")) || [];
 
-/* ================= MULTI SOURCE ================= */
-async function searchInternet(q){
-  let results=[];
-  try{
-    let r=await fetch("https://id.wikipedia.org/api/rest_v1/page/summary/"+encodeURIComponent(q));
-    if(r.ok){let d=await r.json();if(d.extract)results.push(d.extract);}
-  }catch{}
-  try{
-    let r=await fetch("https://en.wikipedia.org/api/rest_v1/page/summary/"+encodeURIComponent(q));
-    if(r.ok){let d=await r.json();if(d.extract)results.push(d.extract);}
-  }catch{}
-  try{
-    let r=await fetch("https://api.duckduckgo.com/?q="+encodeURIComponent(q)+"&format=json&no_redirect=1");
-    let d=await r.json();
-    if(d.Abstract)results.push(d.Abstract);
-  }catch{}
-  if(results.length===0) return null;
-  results.sort((a,b)=>b.length-a.length);
-  return results[0];
-}
+let memoryContext =
+JSON.parse(localStorage.getItem("aiContext")) || {};
 
-/* ================= FORMAT MODE ================= */
-function formatAnswer(text,query){
+let voiceEnabled = true;
 
-  let reasoning="🔍 Step-by-step reasoning:\n1. Memahami pertanyaan.\n2. Mengambil sumber terpercaya.\n3. Menyusun analisis.\n\n";
+let aiMode = localStorage.getItem("aiMode") || "genius";
 
-  if(aiMode==="pelajar"){
-    return "📘 Penjelasan Guru:\n\n"+text+"\n\n📌 Kesimpulan:\nTopik ini penting dipahami secara bertahap.\n\n"+rekom;
-  }
-
-  if(aiMode==="ceo"){
-    return "💼 Strategic Insight:\n\n"+text+"\n\n📊 Action Plan:\n• Identifikasi peluang\n• Eksekusi cepat\n• Optimasi performa\n\n"+rekom;
-  }
-
-  if(aiMode==="debat"){
-    return "⚔️ Argumen Pro:\n"+text+"\n\n⚖️ Argumen Kontra:\nBeberapa pihak mungkin memiliki sudut pandang berbeda tergantung konteks.\n\n"+rekom;
-  }
-
-  if(aiMode==="opini"){
-    return "💡 Opini AI:\n"+text+"\n\nMenurut analisis, topik ini sangat relevan dengan perkembangan digital saat ini.\n\n"+rekom;
-  }
-
-  return reasoning+"🧠 Genius Analysis:\n\n"+text+"\n\n"+rekom;
-}
-
-/* ================= SEND ================= */
-async function kirim(){
-  const input=document.getElementById("input");
-  const teks=input.value.trim();
-  if(!teks)return;
-
-  tambahPesan(teks,"user");
-  history.push({role:"user",text:teks});
-  saveMemory();
-  input.value="";
-
-  const typing=document.createElement("div");
-  typing.className="message bot typing";
-  typing.innerText="GeminiTok AI sedang berpikir...";
-  chat.appendChild(typing);
-  chat.scrollTop=chat.scrollHeight;
-
-  // Memory context (ringkas 3 percakapan terakhir)
-  let context="";
-  history.slice(-3).forEach(h=>context+=h.text+" | ");
-
-  let final=formatAnswer(result+"\n\n🧠 Konteks sebelumnya: "+context,teks);
-
-  history.push({role:"bot",text:final});
-  saveMemory();
-  tambahPesan(final,"bot");
-}
-
-/* ================= RESET ================= */
-function resetChat(){
-  localStorage.clear();
-  location.reload();
-}
-
-/* ================= LOAD ================= */
-window.onload=function(){
-  if(history.length>0){
-    history.forEach(h=>tambahPesan(h.text,h.role==="user"?"user":"bot"));
-  }else{
-    tambahPesan("Halo 👋 Saya GeminiTok AI.\nSelamat Datang Wahai Manusia Ada Yang Bisa Saya Bantu.","bot");
-  }
-};
-</script>
-<script>
-const chat=document.getElementById("chat");
-let history=JSON.parse(localStorage.getItem("ultraHistory"))||[];
-let voiceEnabled=true;
-let aiMode="genius";
-
-/* ================= MODE ================= */
-function setMode(mode){
-  aiMode=mode;
-  alert("Mode: "+mode.toUpperCase());
-}
-
-/* ================= MEMORY ================= */
-function saveMemory(){
-  localStorage.setItem("ultraHistory",JSON.stringify(history));
-}
-
-/* ================= MESSAGE ================= */
-function tambahPesan(text,type){
-  const div=document.createElement("div");
-  div.className="message "+type;
-  div.innerText=text;
-  chat.appendChild(div);
-  chat.scrollTop=chat.scrollHeight;
-  if(type==="bot") speak(text);
-}
-
-/* ================= VOICE ================= */
-function toggleVoice(){voiceEnabled=!voiceEnabled;}
-function speak(text){
-  if(!voiceEnabled||!window.speechSynthesis) return;
-  const u=new SpeechSynthesisUtterance(text);
-  u.lang="id-ID";
-  speechSynthesis.speak(u);
-}
-
-/* ================= IDENTIFIKASI ================= */
-function detectIntent(text){
-  const lower=text.toLowerCase();
-
-  if(["halo","hai","hi","hello","pagi","malam","assalamualaikum"].includes(lower))
-    return "greeting";
-
-  if(lower.includes("?"))
-    return "question";
-
-  if(lower.includes("sedih")||lower.includes("capek")||lower.includes("lelah"))
-    return "emotion";
-
-  if(text.trim().split(" ").length===1)
-    return "keyword";
-
-  return "statement";
-}
-
-/* ================= INTERNAL KNOWLEDGE ================= */
-function internalAnswer(text){
-  const lower=text.toLowerCase();
-
-  if(lower.includes("politik"))
-    return "Politik adalah sistem pengelolaan kekuasaan dan kebijakan publik dalam suatu negara. Ia menentukan arah hukum, ekonomi, dan kesejahteraan masyarakat.";
-
-  if(lower.includes("ai"))
-    return "AI adalah teknologi yang memungkinkan mesin belajar dari data dan mengambil keputusan seperti manusia. Digunakan di kesehatan, bisnis, hingga media sosial.";
-
-  if(lower.includes("cinta"))
-    return "Cinta adalah kombinasi emosi, komitmen, dan rasa saling peduli. Hubungan sehat dibangun lewat komunikasi dan kepercayaan.";
-
-  if(lower.includes("bisnis"))
-    return "Bisnis adalah proses menciptakan nilai melalui produk atau jasa dengan tujuan memperoleh keuntungan dan pertumbuhan.";
-
-  if(lower.includes("sejarah"))
-    return "Sejarah adalah catatan peristiwa masa lalu yang membentuk dunia saat ini dan menjadi pelajaran untuk masa depan.";
-
-  return "Secara umum, topik itu bisa dipahami dengan melihat konteks, tujuan, dan dampaknya terhadap kehidupan nyata.";
-}
-
-/* ================= INTERNET SEARCH 5 DETIK ================= */
-async function searchInternet(q){
-
-  function timeout(ms){
-    return new Promise(resolve=>setTimeout(()=>resolve(null),ms));
-  }
-
-  async function wikiSearch(){
-    try{
-      let r=await fetch("https://id.wikipedia.org/api/rest_v1/page/summary/"+encodeURIComponent(q));
-      if(r.ok){
-        let d=await r.json();
-        if(d.extract) return d.extract;
-      }
-    }catch{}
-    return null;
-  }
-
-  return await Promise.race([
-    wikiSearch(),
-    timeout(5000) // maksimal 5 detik
-  ]);
-}
-
-/* ================= FORMAT MODE ================= */
-function formatAnswer(text){
-
-  if(aiMode==="pelajar")
-    return "📘 Penjelasan:\n\n"+text;
-
-  if(aiMode==="ceo")
-    return "💼 Insight Strategis:\n\n"+text+"\n\n👉 Fokus pada eksekusi.";
-
-  if(aiMode==="debat")
-    return "⚔️ Argumen:\n"+text+"\n\n⚖️ Perspektif lain mungkin berbeda tergantung konteks.";
-
-  if(aiMode==="opini")
-    return "💡 Opini:\n"+text+"\n\nTopik ini relevan dengan perkembangan zaman.";
-
-  return text;
-}
-
-/* ================= SMART BRAIN ================= */
-async function smartReply(text){
-
-  let intent=detectIntent(text);
-
-  if(intent==="greeting"){
-    return "Halo juga 👋 Lagi pengen ngobrol apa hari ini?";
-  }
-
-  if(intent==="emotion"){
-    return "Aku bisa merasakan itu berat ya 😔 Kalau mau cerita, aku dengerin.";
-  }
-
-  // Coba cari internet maksimal 5 detik
-  let online=await searchInternet(text);
-
-  if(online){
-    return formatAnswer(online);
-  }
-
-  // Jika internet gagal → tetap jawab
-  let internal=internalAnswer(text);
-  return formatAnswer(internal);
-}
-
-/* ================= SEND ================= */
-async function kirim(){
-  const input=document.getElementById("input");
-  const teks=input.value.trim();
-  if(!teks)return;
-
-  tambahPesan(teks,"user");
-  history.push({role:"user",text:teks});
-  saveMemory();
-  input.value="";
-
-  const typing=document.createElement("div");
-  typing.className="message bot typing";
-  typing.innerText="GeminiTok ULTRA menganalisis...";
-  chat.appendChild(typing);
-  chat.scrollTop=chat.scrollHeight;
-
-  let final=await smartReply(teks);
-
-  typing.remove();
-  history.push({role:"bot",text:final});
-  saveMemory();
-  tambahPesan(final,"bot");
-}
-
-/* ================= RESET ================= */
-function resetChat(){
-  localStorage.clear();
-  location.reload();
-}
-
-/* ================= LOAD ================= */
-window.onload=function(){
-  if(history.length>0){
-    history.forEach(h=>tambahPesan(h.text,h.role==="user"?"user":"bot"));
-  }else{
-    tambahPesan("Halo 👋 Aku GeminiTok AI ULTRA.\nTanya apa saja, aku jawab.","bot");
-  }
-};
-/* ================= QUESTION SCORE ================= */
-
-function scoreQuestion(text){
-  let length=text.split(" ").length;
-
-  if(length<=2) return "⭐ Basic";
-  if(length<=6) return "⭐⭐ Good";
-  if(length<=12) return "⭐⭐⭐ Deep Thinking";
-  if(length<=20) return "⭐⭐⭐⭐ Strategic";
-  return "⭐⭐⭐⭐⭐ Genius Level";
-}
- // Personality influence
-if(aiProfile.personality==="strategic")
-  result+="\n\n📈 Saya melihat kamu sering bahas strategi.";
-
-if(aiProfile.personality==="philosophical")
-  result+="\n\n🧠 Kamu cenderung berpikir mendalam.";
-
-if(aiProfile.personality==="empathetic")
-  result+="\n\n🤍 Aku akan jawab dengan lebih empatik.";
-  learnFromUser(teks);
-
-let rating = scoreQuestion(teks);
-tambahPesan("📊 AI Score: "+rating,"bot");
-  function exportChat(){
-  let content="";
-  history.forEach(h=>{
-    content+=h.role.toUpperCase()+": "+h.text+"\n\n";
-  });
-
-  let blob=new Blob([content],{type:"text/plain"});
-  let a=document.createElement("a");
-  a.href=URL.createObjectURL(blob);
-  a.download="GeminiTok_Chat.txt";
-  a.click();
-}
-<script>
-const chat=document.getElementById("chat");
-
-let history=JSON.parse(localStorage.getItem("ultraHistory"))||[];
-let memoryContext=JSON.parse(localStorage.getItem("aiContext"))||{};
-let voiceEnabled=true;
-let aiMode="genius";
-let currentLang=localStorage.getItem("aiLang")||"auto";
+let currentLang =
+localStorage.getItem("aiLang") || "auto";
 
 /* ================= SAVE ================= */
+
 function saveAll(){
-  localStorage.setItem("ultraHistory",JSON.stringify(history));
-  localStorage.setItem("aiContext",JSON.stringify(memoryContext));
-  localStorage.setItem("aiLang",currentLang);
+
+  localStorage.setItem(
+    "ultraHistory",
+    JSON.stringify(history)
+  );
+
+  localStorage.setItem(
+    "aiContext",
+    JSON.stringify(memoryContext)
+  );
+
+  localStorage.setItem(
+    "aiLang",
+    currentLang
+  );
+
+  localStorage.setItem(
+    "aiMode",
+    aiMode
+  );
 }
 
 /* ================= LANGUAGE ================= */
+
 function detectLanguage(text){
+
   if(/[ء-ي]/.test(text)) return "ar";
+
   if(/[ぁ-んァ-ン]/.test(text)) return "jp";
-  if(text.match(/[a-zA-Z]/)){
-    if(text.toLowerCase().includes("the")||text.toLowerCase().includes("what")) return "en";
+
+  if(
+    text.toLowerCase().includes("the") ||
+    text.toLowerCase().includes("what")
+  ){
+    return "en";
   }
+
   return "id";
 }
 
 function setLanguage(lang){
-  currentLang=lang;
+
+  currentLang = lang;
+
   saveAll();
 }
 
 function applyRTL(lang){
-  if(lang==="ar") document.body.classList.add("rtl");
-  else document.body.classList.remove("rtl");
-}
 
-/* ================= MESSAGE ================= */
-function tambahPesan(text,type){
-  const div=document.createElement("div");
-  div.className="message "+type;
-  div.innerText=text;
-  chat.appendChild(div);
-  chat.scrollTop=chat.scrollHeight;
-  if(type==="bot") speak(text);
-}
-
-/* ================= VOICE ================= */
-function toggleVoice(){voiceEnabled=!voiceEnabled;}
-
-function speak(text){
-  if(!voiceEnabled||!window.speechSynthesis) return;
-  const u=new SpeechSynthesisUtterance(text);
-  u.lang=currentLang==="en"?"en-US":
-        currentLang==="ar"?"ar-SA":
-        currentLang==="jp"?"ja-JP":"id-ID";
-  speechSynthesis.speak(u);
+  if(lang==="ar"){
+    document.body.classList.add("rtl");
+  }else{
+    document.body.classList.remove("rtl");
+  }
 }
 
 /* ================= MODE ================= */
+
 function setMode(mode){
-  aiMode=mode;
-  alert("Mode: "+mode.toUpperCase());
+
+  aiMode = mode;
+
+  saveAll();
+
+  tambahPesan(
+    "🤖 Mode diubah ke: " + mode.toUpperCase(),
+    "bot"
+  );
+}
+
+/* ================= MESSAGE ================= */
+
+function tambahPesan(text,type){
+
+  const div = document.createElement("div");
+
+  div.className = "message " + type;
+
+  div.innerText = text;
+
+  chat.appendChild(div);
+
+  chat.scrollTop = chat.scrollHeight;
+
+  if(type==="bot"){
+    speak(text);
+  }
+}
+
+/* ================= VOICE ================= */
+
+function toggleVoice(){
+
+  voiceEnabled = !voiceEnabled;
+
+  tambahPesan(
+    voiceEnabled ?
+    "🔊 Voice diaktifkan" :
+    "🔇 Voice dimatikan",
+    "bot"
+  );
+}
+
+function speak(text){
+
+  if(!voiceEnabled) return;
+
+  if(!window.speechSynthesis) return;
+
+  const utter = new SpeechSynthesisUtterance(text);
+
+  utter.lang =
+    currentLang==="en" ? "en-US" :
+    currentLang==="ar" ? "ar-SA" :
+    currentLang==="jp" ? "ja-JP" :
+    "id-ID";
+
+  speechSynthesis.speak(utter);
+}
+
+function startVoice(){
+
+  const SR =
+    window.SpeechRecognition ||
+    window.webkitSpeechRecognition;
+
+  if(!SR){
+    alert("Speech Recognition tidak didukung.");
+    return;
+  }
+
+  const recog = new SR();
+
+  recog.lang = "id-ID";
+
+  recog.start();
+
+  recog.onresult = (e)=>{
+    input.value = e.results[0][0].transcript;
+  };
 }
 
 /* ================= INTENT ================= */
+
 function analyze(text){
-  const lower=text.toLowerCase();
 
-  if(["halo","hai","hi","hello","assalamualaikum"].includes(lower))
+  const lower = text.toLowerCase();
+
+  if(
+    ["halo","hai","hi","hello","assalamualaikum"]
+    .includes(lower)
+  ){
     return "greeting";
+  }
 
-  if(lower.includes("sedih")||lower.includes("capek")||lower.includes("lelah"))
+  if(
+    lower.includes("sedih") ||
+    lower.includes("capek") ||
+    lower.includes("lelah")
+  ){
     return "emotion";
+  }
 
-  if(lower.includes("cara")||lower.includes("bagaimana"))
+  if(
+    lower.includes("cara") ||
+    lower.includes("bagaimana")
+  ){
     return "how";
+  }
 
-  if(lower.includes("kenapa"))
+  if(lower.includes("kenapa")){
     return "why";
+  }
 
-  if(text.trim().split(" ").length===1)
-    return "single";
-
-  if(lower.includes("?"))
+  if(text.includes("?")){
     return "question";
+  }
 
   return "general";
 }
 
 /* ================= KNOWLEDGE ================= */
-const knowledgeDB={
-  politik:"Politik adalah sistem pengelolaan kekuasaan dalam negara yang menentukan arah kebijakan publik.",
-  ekonomi:"Ekonomi mempelajari produksi, distribusi, dan konsumsi sumber daya.",
-  bisnis:"Bisnis adalah proses menciptakan nilai melalui produk atau jasa untuk memperoleh keuntungan.",
-  ai:"Artificial Intelligence adalah teknologi yang memungkinkan mesin belajar dan mengambil keputusan otomatis.",
-  cinta:"Cinta adalah kombinasi emosi, komitmen, dan kepercayaan.",
-  teknologi:"Teknologi adalah penerapan ilmu untuk memecahkan masalah dan meningkatkan efisiensi.",
-  kesehatan:"Kesehatan adalah kondisi fisik dan mental yang seimbang."
+
+const knowledgeDB = {
+
+  politik:
+  "Politik adalah sistem pengelolaan kekuasaan dan kebijakan publik dalam negara.",
+
+  ai:
+  "Artificial Intelligence adalah teknologi yang memungkinkan mesin belajar dan mengambil keputusan otomatis.",
+
+  bisnis:
+  "Bisnis adalah proses menciptakan nilai melalui produk atau jasa untuk memperoleh keuntungan.",
+
+  ekonomi:
+  "Ekonomi mempelajari produksi, distribusi, dan konsumsi sumber daya.",
+
+  cinta:
+  "Cinta adalah kombinasi emosi, komitmen, dan kepercayaan.",
+
+  sejarah:
+  "Sejarah adalah catatan peristiwa masa lalu yang membentuk dunia saat ini.",
+
+  teknologi:
+  "Teknologi adalah penerapan ilmu pengetahuan untuk menyelesaikan masalah manusia.",
+
+  kesehatan:
+  "Kesehatan adalah kondisi fisik dan mental yang seimbang."
 };
 
+/* ================= KNOWLEDGE SEARCH ================= */
+
 function searchKnowledge(text){
+
   for(const key in knowledgeDB){
+
     if(text.toLowerCase().includes(key)){
-      memoryContext.lastTopic=key;
+
+      memoryContext.lastTopic = key;
+
       return knowledgeDB[key];
     }
   }
+
   return null;
 }
 
-/* ================= REASONING ================= */
-function reasoningAnswer(text,intent){
+/* ================= INTERNET SEARCH ================= */
 
-  let base=searchKnowledge(text);
+async function searchInternet(query){
 
-  if(!base && memoryContext.lastTopic){
-    base="Melanjutkan tentang "+memoryContext.lastTopic+
-         ", topik ini berkaitan dengan perkembangan sosial dan zaman.";
+  try{
+
+    const res = await fetch(
+      "https://id.wikipedia.org/api/rest_v1/page/summary/" +
+      encodeURIComponent(query)
+    );
+
+    if(res.ok){
+
+      const data = await res.json();
+
+      if(data.extract){
+        return data.extract;
+      }
+    }
+
+  }catch(err){
+    console.log(err);
   }
 
-  if(!base){
-    base="Topik ini dapat dijelaskan dari berbagai sudut pandang tergantung konteksnya.";
-  }
-
-  if(intent==="how"){
-    return "Langkah-langkahnya:\n1. Pahami konsep dasar.\n2. Tentukan tujuan.\n3. Susun strategi.\n4. Evaluasi hasil.\n\n"+base;
-  }
-
-  if(intent==="why"){
-    return "Hal tersebut biasanya dipengaruhi oleh faktor internal dan eksternal.\n\n"+base;
-  }
-
-  if(intent==="single"){
-    return base;
-  }
-
-  if(intent==="question"){
-    return base+"\n\nJika ingin, aku bisa jelaskan lebih detail bagian tertentu.";
-  }
-
-  return base;
+  return null;
 }
 
-/* ================= FORMAT MODE ================= */
-function formatAnswer(text){
+/* ================= QUESTION SCORE ================= */
 
-  if(aiMode==="pelajar")
-    return "📘 Penjelasan:\n\n"+text;
+function scoreQuestion(text){
 
-  if(aiMode==="ceo")
-    return "💼 Insight Strategis:\n\n"+text+"\n\n👉 Fokus pada eksekusi dan peluang.";
+  const length = text.split(" ").length;
 
-  if(aiMode==="debat")
-    return "⚔️ Argumen:\n"+text+
-           "\n\n⚖️ Perspektif Lain:\nPandangan bisa berbeda tergantung nilai dan konteks.";
+  if(length <= 2) return "⭐ Basic";
+  if(length <= 6) return "⭐⭐ Good";
+  if(length <= 12) return "⭐⭐⭐ Deep";
+  if(length <= 20) return "⭐⭐⭐⭐ Strategic";
 
-  if(aiMode==="opini")
-    return "💡 Opini:\n"+text+
-           "\n\nPandangan ini bisa berkembang sesuai situasi.";
-
-  return text;
-}
-
-/* ================= SMART REPLY ================= */
-async function smartReply(text){
-
-  let lang=currentLang==="auto"?detectLanguage(text):currentLang;
-  currentLang=lang;
-  applyRTL(lang);
-
-  const intent=analyze(text);
-
-  if(intent==="greeting"){
-    if(text.toLowerCase()==="assalamualaikum")
-      return "Waalaikumsalam 🤍 Semoga harimu penuh kebaikan.";
-    return lang==="en"?"Hello 👋 What would you like to discuss?"
-         :"Halo 👋 Ada yang ingin kamu bahas?";
-  }
-
-  if(intent==="emotion"){
-    return "Kedengarannya berat ya 😔 Kamu boleh cerita lebih detail, aku siap dengar.";
-  }
-
-  let result=reasoningAnswer(text,intent);
-
-  return formatAnswer(result);
-}
-
-/* ================= SEND ================= */
-async function kirim(){
-  const input=document.getElementById("input");
-  const teks=input.value.trim();
-  if(!teks)return;
-
-  tambahPesan(teks,"user");
-  history.push({role:"user",text:teks});
-  saveAll();
-  input.value="";
-
-  const typing=document.createElement("div");
-  typing.className="message bot typing";
-  typing.innerText="GeminiTok AI menganalisis...";
-  chat.appendChild(typing);
-
-  setTimeout(async()=>{
-    typing.remove();
-    let final=await smartReply(teks);
-    history.push({role:"bot",text:final});
-    saveAll();
-    tambahPesan(final,"bot");
-  },800);
-}
-
-/* ================= RESET ================= */
-function resetChat(){
-  localStorage.clear();
-  location.reload();
-}
-
-/* ================= LOAD ================= */
-window.onload=function(){
-  if(history.length>0){
-    history.forEach(h=>tambahPesan(h.text,h.role==="user"?"user":"bot"));
-  }else{
-    tambahPesan("Halo 👋 Aku GeminiTok AI Ultra.\nTanya apa saja, aku jawab dengan analisis & konteks.","bot");
-  }
-};<script>
-const chat=document.getElementById("chat");
-let history=JSON.parse(localStorage.getItem("ultraHistory"))||[];
-let voiceEnabled=true;
-let aiMode="genius";
-let currentLang=localStorage.getItem("aiLang")||"auto";
-
-/* ================= LANGUAGE ================= */
-function detectLanguage(text){
-  if(/[ء-ي]/.test(text)) return "ar";
-  if(/[ぁ-んァ-ン]/.test(text)) return "jp";
-  if(text.match(/[a-zA-Z]/)){
-    if(text.toLowerCase().includes("the")||text.toLowerCase().includes("what"))
-      return "en";
-  }
-  return "id";
-}
-
-function setLanguage(lang){
-  currentLang=lang;
-  localStorage.setItem("aiLang",lang);
-}
-
-/* ================= RTL ================= */
-function applyRTL(lang){
-  if(lang==="ar") document.body.classList.add("rtl");
-  else document.body.classList.remove("rtl");
-}
-
-/* ================= MODE ================= */
-function setMode(mode){
-  aiMode=mode;
-  alert("Mode: "+mode.toUpperCase());
-}
-
-/* ================= MEMORY ================= */
-function saveMemory(){
-  localStorage.setItem("ultraHistory",JSON.stringify(history));
-}
-
-/* ================= MESSAGE ================= */
-function tambahPesan(text,type){
-  const div=document.createElement("div");
-  div.className="message "+type;
-  div.innerText=text;
-  chat.appendChild(div);
-  chat.scrollTop=chat.scrollHeight;
-  if(type==="bot") speak(text);
-}
-
-/* ================= VOICE ================= */
-function toggleVoice(){voiceEnabled=!voiceEnabled;}
-
-function speak(text){
-  if(!voiceEnabled||!window.speechSynthesis) return;
-  const u=new SpeechSynthesisUtterance(text);
-  u.lang=currentLang==="en"?"en-US":
-        currentLang==="ar"?"ar-SA":
-        currentLang==="jp"?"ja-JP":
-        currentLang==="es"?"es-ES":"id-ID";
-  speechSynthesis.speak(u);
-}
-
-function startVoice(){
-  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(!SR)return;
-  const r=new SR();
-  r.lang="id-ID";
-  r.start();
-  r.onresult=e=>{
-    document.getElementById("input").value=e.results[0][0].transcript;
-  };
-}
-
-/* ================= INTENT ================= */
-function detectIntent(text){
-  const lower=text.toLowerCase();
-
-  if(["halo","hai","hi","hello","assalamualaikum"].includes(lower))
-    return "greeting";
-
-  if(lower.includes("sedih")||lower.includes("lelah")||lower.includes("capek"))
-    return "emotion";
-
-  if(text.trim().split(" ").length===1)
-    return "keyword";
-
-  if(lower.includes("?"))
-    return "question";
-
-  return "general";
-}
-
-/* ================= KNOWLEDGE CORE ================= */
-function knowledgeBase(text){
-
-  const t=text.toLowerCase();
-
-  if(t.includes("politik"))
-    return "Politik adalah sistem pengelolaan kekuasaan dalam negara yang menentukan arah kebijakan, hukum, dan pembangunan masyarakat.";
-
-  if(t.includes("ai"))
-    return "Artificial Intelligence (AI) adalah teknologi yang memungkinkan mesin belajar dari data dan membuat keputusan otomatis.";
-
-  if(t.includes("bisnis"))
-    return "Bisnis adalah aktivitas menciptakan nilai melalui produk atau jasa dengan tujuan menghasilkan keuntungan dan pertumbuhan.";
-
-  if(t.includes("cinta"))
-    return "Cinta adalah kombinasi emosi, komitmen, dan kepedulian yang dibangun melalui komunikasi dan kepercayaan.";
-
-  if(t.includes("bagaimana"))
-    return "Untuk memulainya, pahami tujuan utama, buat strategi bertahap, lalu eksekusi dengan konsisten.";
-
-  if(t.includes("kenapa"))
-    return "Biasanya terjadi karena kombinasi faktor internal dan eksternal yang saling mempengaruhi.";
-
-  return "Topik ini menarik. Jika kamu beri detail tambahan, aku bisa jelaskan lebih spesifik dan mendalam.";
+  return "⭐⭐⭐⭐⭐ Genius";
 }
 
 /* ================= FORMAT ================= */
+
 function formatAnswer(text){
-  if(aiMode==="pelajar") return "📘 Penjelasan:\n\n"+text;
-  if(aiMode==="ceo") return "💼 Insight Strategis:\n\n"+text+"\n\n👉 Fokus pada implementasi nyata.";
-  if(aiMode==="debat") return "⚔️ Argumen Utama:\n"+text+"\n\n⚖️ Perspektif Alternatif:\nBisa berbeda tergantung konteks.";
-  if(aiMode==="opini") return "💡 Opini:\n"+text+"\n\nPandangan ini bisa berkembang seiring waktu.";
-  return text;
+
+  if(aiMode==="pelajar"){
+
+    return (
+      "📘 Penjelasan:\n\n" +
+      text +
+      "\n\n📚 Fokus pada pemahaman dasar."
+    );
+  }
+
+  if(aiMode==="ceo"){
+
+    return (
+      "💼 Strategic Insight:\n\n" +
+      text +
+      "\n\n📈 Fokus pada peluang & eksekusi."
+    );
+  }
+
+  if(aiMode==="debat"){
+
+    return (
+      "⚔️ Argumen:\n\n" +
+      text +
+      "\n\n⚖️ Perspektif lain bisa berbeda."
+    );
+  }
+
+  if(aiMode==="opini"){
+
+    return (
+      "💡 Opini:\n\n" +
+      text +
+      "\n\n🧠 Pandangan bisa berkembang."
+    );
+  }
+
+  return (
+    "🧠 Genius Analysis:\n\n" + text
+  );
 }
 
 /* ================= SMART REPLY ================= */
+
 async function smartReply(text){
 
-  let lang=currentLang==="auto"?detectLanguage(text):currentLang;
-  currentLang=lang;
+  let lang =
+  currentLang==="auto"
+  ? detectLanguage(text)
+  : currentLang;
+
+  currentLang = lang;
+
   applyRTL(lang);
 
-  let intent=detectIntent(text);
+  const intent = analyze(text);
+
+  /* Greeting */
 
   if(intent==="greeting"){
-    if(text.toLowerCase()==="assalamualaikum")
-      return "Waalaikumsalam 🤍 Semoga harimu penuh kebaikan.";
-    return lang==="en"?"Hello 👋 What would you like to discuss?"
-         :"Halo 👋 Ada yang ingin kamu bahas?";
+
+    if(text.toLowerCase()==="assalamualaikum"){
+
+      return "Waalaikumsalam 🤍 Semoga harimu penuh keberkahan.";
+    }
+
+    return lang==="en"
+    ? "Hello 👋 What would you like to discuss?"
+    : "Halo 👋 Ada yang ingin kamu bahas?";
   }
+
+  /* Emotion */
 
   if(intent==="emotion"){
-    return "Kedengarannya berat ya 😔 Kalau mau cerita lebih dalam, aku siap mendengarkan.";
+
+    return "Aku bisa merasakan itu berat 😔 Kalau mau cerita, aku siap mendengarkan.";
   }
 
-  let base=knowledgeBase(text);
-  return formatAnswer(base);
+  /* Internet */
+
+  const online = await searchInternet(text);
+
+  let finalAnswer = online;
+
+  /* Internal Knowledge */
+
+  if(!finalAnswer){
+
+    finalAnswer = searchKnowledge(text);
+  }
+
+  /* Context Memory */
+
+  if(!finalAnswer && memoryContext.lastTopic){
+
+    finalAnswer =
+    "Melanjutkan topik tentang " +
+    memoryContext.lastTopic +
+    ", hal ini berkaitan dengan perkembangan sosial dan teknologi.";
+  }
+
+  /* Default */
+
+  if(!finalAnswer){
+
+    finalAnswer =
+    "Topik ini dapat dijelaskan dari berbagai sudut pandang tergantung konteks dan tujuan pembahasannya.";
+  }
+
+  /* How */
+
+  if(intent==="how"){
+
+    finalAnswer =
+    "Langkah-langkah:\n" +
+    "1. Pahami dasar konsep.\n" +
+    "2. Tentukan tujuan.\n" +
+    "3. Susun strategi.\n" +
+    "4. Evaluasi hasil.\n\n" +
+    finalAnswer;
+  }
+
+  /* Why */
+
+  if(intent==="why"){
+
+    finalAnswer =
+    "Hal tersebut biasanya dipengaruhi faktor internal dan eksternal.\n\n" +
+    finalAnswer;
+  }
+
+  return formatAnswer(finalAnswer);
 }
 
 /* ================= SEND ================= */
+
 async function kirim(){
-  const input=document.getElementById("input");
-  const teks=input.value.trim();
-  if(!teks)return;
+
+  const teks = input.value.trim();
+
+  if(!teks) return;
 
   tambahPesan(teks,"user");
-  history.push({role:"user",text:teks});
-  saveMemory();
-  input.value="";
 
-  const typing=document.createElement("div");
-  typing.className="message bot typing";
-  typing.innerText="GeminiTok AI menganalisis...";
+  history.push({
+    role:"user",
+    text:teks
+  });
+
+  saveAll();
+
+  input.value = "";
+
+  const typing = document.createElement("div");
+
+  typing.className = "message bot typing";
+
+  typing.innerText =
+  "GeminiTok AI sedang menganalisis...";
+
   chat.appendChild(typing);
 
-  let final=await smartReply(teks);
+  chat.scrollTop = chat.scrollHeight;
+
+  const final =
+  await smartReply(teks);
 
   typing.remove();
-  history.push({role:"bot",text:final});
-  saveMemory();
+
+  history.push({
+    role:"bot",
+    text:final
+  });
+
+  saveAll();
+
   tambahPesan(final,"bot");
+
+  /* AI Score */
+
+  const score = scoreQuestion(teks);
+
+  tambahPesan(
+    "📊 AI Score: " + score,
+    "bot"
+  );
+}
+
+/* ================= EXPORT ================= */
+
+function exportChat(){
+
+  let content = "";
+
+  history.forEach(h=>{
+
+    content +=
+    h.role.toUpperCase() +
+    ":\n" +
+    h.text +
+    "\n\n";
+  });
+
+  const blob = new Blob(
+    [content],
+    {type:"text/plain"}
+  );
+
+  const a = document.createElement("a");
+
+  a.href = URL.createObjectURL(blob);
+
+  a.download = "GeminiTok_Chat.txt";
+
+  a.click();
 }
 
 /* ================= RESET ================= */
+
 function resetChat(){
+
   localStorage.clear();
+
   location.reload();
 }
 
 /* ================= LOAD ================= */
-window.onload=function(){
-  if(history.length>0){
-    history.forEach(h=>tambahPesan(h.text,h.role==="user"?"user":"bot"));
+
+window.onload = ()=>{
+
+  applyRTL(currentLang);
+
+  if(history.length > 0){
+
+    history.forEach(h=>{
+
+      tambahPesan(
+        h.text,
+        h.role==="user"
+        ? "user"
+        : "bot"
+      );
+    });
+
   }else{
-    tambahPesan("Halo 👋 Aku GeminiTok AI Ultra.\nTanya apa saja, aku jawab.","bot");
+
+    tambahPesan(
+      "Halo 👋 Aku GeminiTok AI Ultra.\nTanya apa saja, aku jawab dengan analisis & reasoning.",
+      "bot"
+    );
   }
 };
+
 </script>
 
 </body>
 </html>
-</script>
