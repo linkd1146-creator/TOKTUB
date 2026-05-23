@@ -5,171 +5,385 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Tentang Kami & Kontak - MiniTok</title>
-<meta name="description" content="Halaman resmi tentang MiniTok dan cara menghubungi tim kami untuk kerja sama, pertanyaan, atau dukungan.">
+
+<meta name="description" content="MiniTok adalah platform video pendek dan komunitas kreator digital Indonesia. Hubungi tim MiniTok untuk dukungan, kerja sama, dan pertanyaan lainnya.">
+<meta name="keywords" content="MiniTok, Video Pendek, Kreator Digital, Monetisasi Konten, AI Ranking">
+<meta name="author" content="MiniTok">
+<meta name="robots" content="index,follow">
+
+<!-- Open Graph -->
+<meta property="og:title" content="Tentang MiniTok">
+<meta property="og:description" content="Platform video pendek dan komunitas kreator digital Indonesia.">
+<meta property="og:url" content="https://minitok.fun/about.html">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://minitok.fun/logo.png">
 
 <!-- Schema Organization -->
 <script type="application/ld+json">
 {
- "@context":"https://schema.org",
- "@type":"Organization",
- "name":"MiniTok",
- "url":"https://minitok.fun",
- "logo":"https://minitok.fun/logo.png",
- "sameAs":[
-   "https://instagram.com/",
-   "https://youtube.com/"
- ]
+  "@context":"https://schema.org",
+  "@type":"Organization",
+  "name":"MiniTok",
+  "url":"https://minitok.fun",
+  "logo":"https://minitok.fun/logo.png",
+  "email":"support@minitok.fun"
 }
 </script>
 
 <style>
-body{
+*{
     margin:0;
-    font-family:Segoe UI;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:'Segoe UI',sans-serif;
     background:#0f0f0f;
     color:white;
 }
+
 header{
     background:linear-gradient(90deg,#ff0050,#ff7a00);
-    padding:25px;
+    padding:30px 20px;
     text-align:center;
-    font-size:24px;
-    font-weight:bold;
 }
+
+header h1{
+    font-size:32px;
+    margin-bottom:10px;
+}
+
+header p{
+    color:#fff;
+    opacity:.9;
+}
+
 .container{
-    max-width:900px;
+    max-width:1000px;
     margin:auto;
     padding:40px 20px;
 }
+
 .section{
     margin-bottom:60px;
 }
+
 h1,h2{
     color:#00f2ff;
+    margin-bottom:15px;
 }
+
 p{
-    line-height:1.8;
     color:#ccc;
+    line-height:1.8;
 }
+
 .card{
     background:#1a1a1a;
+    border-radius:16px;
     padding:25px;
+    margin-top:20px;
+    border:1px solid #222;
+}
+
+.features{
+    list-style:none;
+    margin-top:15px;
+}
+
+.features li{
+    padding:10px 0;
+    color:#ddd;
+}
+
+.contact-box{
+    background:#111;
+    padding:20px;
     border-radius:12px;
+    margin-top:15px;
+}
+
+.contact-box a{
+    color:#00f2ff;
+    text-decoration:none;
+    font-weight:bold;
+}
+
+input,
+textarea{
+    width:100%;
+    padding:14px;
+    margin-top:12px;
+    border:none;
+    border-radius:10px;
+    background:#222;
+    color:white;
+    font-size:15px;
+}
+
+input:focus,
+textarea:focus{
+    outline:none;
+    border:1px solid #00f2ff;
+}
+
+button{
+    margin-top:15px;
+    background:linear-gradient(90deg,#ff0050,#ff7a00);
+    color:white;
+    border:none;
+    padding:14px 25px;
+    border-radius:50px;
+    cursor:pointer;
+    font-weight:bold;
+    font-size:15px;
+}
+
+button:hover{
+    opacity:.9;
+}
+
+.social{
     margin-top:20px;
 }
-input,textarea{
-    width:100%;
-    padding:12px;
-    margin:10px 0;
-    border-radius:8px;
-    border:none;
-    background:#222;
-    color:white;
-}
-button{
-    background:linear-gradient(90deg,#ff0050,#ff7a00);
-    border:none;
-    padding:12px 20px;
-    border-radius:30px;
-    color:white;
-    font-weight:bold;
-    cursor:pointer;
-}
-button:hover{
-    opacity:0.8;
-}
+
 .social a{
     display:inline-block;
-    margin:10px 15px 0 0;
-    padding:8px 14px;
+    margin:8px;
+    padding:10px 18px;
+    border-radius:25px;
     background:#222;
-    border-radius:20px;
+    color:white;
+    text-decoration:none;
+    transition:.3s;
+}
+
+.social a:hover{
+    background:#333;
+}
+
+.back{
+    display:inline-block;
+    margin-top:30px;
     text-decoration:none;
     color:white;
+    background:#333;
+    padding:12px 20px;
+    border-radius:30px;
 }
+
+.back:hover{
+    background:#444;
+}
+
+#successMsg{
+    display:none;
+    color:#00ff99;
+    margin-top:15px;
+}
+
 .footer{
+    margin-top:50px;
     text-align:center;
-    padding:20px;
+    padding:25px;
     border-top:1px solid #222;
     color:#777;
     font-size:14px;
 }
-.back{
-    display:inline-block;
-    margin-top:30px;
-    padding:10px 18px;
-    background:#333;
-    border-radius:25px;
-    text-decoration:none;
-    color:white;
+
+@media(max-width:768px){
+    header h1{
+        font-size:26px;
+    }
+
+    .container{
+        padding:25px 15px;
+    }
 }
 </style>
 </head>
 
 <body>
 
-<header>Tentang MiniTok & Kontak</header>
+<header>
+    <h1>🚀 Tentang MiniTok</h1>
+    <p>Platform Video Pendek & Komunitas Kreator Digital Indonesia</p>
+</header>
 
 <div class="container">
 
-<!-- ABOUT -->
-<div class="section">
-<h1>🚀 Tentang MiniTok</h1>
-<p><strong>MiniTok</strong> adalah platform web video pendek dan komunitas kreator digital yang berfokus pada kreativitas, edukasi, dan monetisasi konten di era digital 2026.</p>
+    <!-- ABOUT -->
+    <div class="section">
 
-<div class="card">
-<h2>Misi Kami</h2>
-<p>Membantu kreator pemula maupun profesional untuk berkembang, viral, dan menghasilkan pendapatan dari konten digital mereka secara legal dan berkelanjutan.</p>
+        <h1>Tentang Kami</h1>
 
-<h2>Visi Kami</h2>
-<p>Menjadi ekosistem kreator digital terbaik di Indonesia dengan sistem ranking AI, monetisasi transparan, dan komunitas aktif.</p>
+        <p>
+            <strong>MiniTok</strong> adalah platform video pendek dan komunitas kreator digital
+            yang dirancang untuk membantu kreator berkembang, membangun audiens,
+            dan mendapatkan peluang monetisasi di era digital.
+        </p>
 
-<h2>Kenapa MiniTok?</h2>
-<ul style="color:#ccc; line-height:1.8;">
-<li>✔ Sistem Explore & Viral Ranking</li>
-<li>✔ AI Engagement Score</li>
-<li>✔ Dukungan Monetisasi</li>
-<li>✔ Komunitas Kreator Aktif</li>
-</ul>
-</div>
-</div>
+        <div class="card">
 
-<!-- CONTACT -->
-<div class="section">
-<h1>📩 Hubungi Kami</h1>
-<p>Punya pertanyaan, kerja sama brand, atau ingin menjadi partner MiniTok? Kirim pesan melalui form di bawah ini.</p>
+            <h2>🎯 Misi Kami</h2>
 
-<div class="card">
-<form onsubmit="sendMessage(event)">
-<input type="text" placeholder="Nama Lengkap" required>
-<input type="email" placeholder="Email Aktif" required>
-<textarea rows="5" placeholder="Tulis pesan Anda..." required></textarea>
-<button type="submit">Kirim Pesan</button>
-</form>
-<p id="successMsg" style="color:#00ff99; display:none; margin-top:15px;">
-Pesan berhasil dikirim! Kami akan membalas secepatnya.
-</p>
-</div>
+            <p>
+                Membantu kreator pemula maupun profesional berkembang melalui
+                teknologi AI, sistem ranking yang transparan, serta peluang
+                monetisasi yang adil dan berkelanjutan.
+            </p>
 
-<div class="social">
-<h2>🌐 Sosial Media</h2>
-<a href="#">Instagram</a>
-<a href="#">YouTube</a>
-<a href="#">TikTok</a>
-</div>
+            <br>
 
-<a href="index.html" class="back">⬅ Kembali ke Beranda</a>
+            <h2>🌎 Visi Kami</h2>
+
+            <p>
+                Menjadi ekosistem kreator digital terbaik di Indonesia yang
+                menghubungkan kreativitas, teknologi AI, dan peluang ekonomi digital.
+            </p>
+
+            <br>
+
+            <h2>⭐ Kenapa MiniTok?</h2>
+
+            <ul class="features">
+                <li>✔ Explore & Viral Ranking System</li>
+                <li>✔ AI Engagement Score</li>
+                <li>✔ Dukungan Monetisasi Kreator</li>
+                <li>✔ Komunitas Kreator Aktif</li>
+                <li>✔ Platform Ringan & Mobile Friendly</li>
+            </ul>
+
+        </div>
+
+    </div>
+
+    <!-- CONTACT INFO -->
+    <div class="section">
+
+        <h1>📞 Informasi Kontak</h1>
+
+        <div class="card">
+
+            <div class="contact-box">
+                <h2>📧 Email Support</h2>
+
+                <p>
+                    Untuk bantuan, pertanyaan, laporan bug,
+                    kerja sama bisnis, atau partnership:
+                </p>
+
+                <br>
+
+                <a href="mailto:support@minitok.fun">
+                    support@minitok.fun
+                </a>
+
+                <br><br>
+
+                <p>
+                    Waktu respon normal: 24–48 jam kerja.
+                </p>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- CONTACT FORM -->
+    <div class="section">
+
+        <h1>📩 Kirim Pesan</h1>
+
+        <div class="card">
+
+            <form onsubmit="sendMessage(event)">
+
+                <input
+                    type="text"
+                    id="name"
+                    placeholder="Nama Lengkap"
+                    required>
+
+                <input
+                    type="email"
+                    id="email"
+                    placeholder="Email Aktif"
+                    required>
+
+                <textarea
+                    id="message"
+                    rows="6"
+                    placeholder="Tulis pesan Anda..."
+                    required></textarea>
+
+                <button type="submit">
+                    Kirim Email
+                </button>
+
+            </form>
+
+            <p id="successMsg">
+                Membuka aplikasi email...
+            </p>
+
+        </div>
+
+    </div>
+
+    <!-- SOCIAL -->
+    <div class="section">
+
+        <h1>🌐 Sosial Media</h1>
+
+        <div class="social">
+            <a href="#">Instagram</a>
+            <a href="#">YouTube</a>
+            <a href="#">TikTok</a>
+        </div>
+
+    </div>
+
+    <a href="index.html" class="back">
+        ⬅ Kembali ke Beranda
+    </a>
+
 </div>
 
 <div class="footer">
-© 2026 MiniTok.fun - All Rights Reserved
+    © 2026 MiniTok.fun — All Rights Reserved
 </div>
 
 <script>
 function sendMessage(e){
+
     e.preventDefault();
-    document.getElementById("successMsg").style.display="block";
-    e.target.reset();
+
+    const name =
+    document.getElementById("name").value;
+
+    const email =
+    document.getElementById("email").value;
+
+    const message =
+    document.getElementById("message").value;
+
+    const subject =
+    encodeURIComponent("Pesan dari Pengguna MiniTok");
+
+    const body =
+    encodeURIComponent(
+    "Nama: " + name + "\n" +
+    "Email: " + email + "\n\n" +
+    message
+    );
+
+    window.location.href =
+    `mailto:support@minitok.fun?subject=${subject}&body=${body}`;
+
+    document.getElementById("successMsg").style.display =
+    "block";
 }
 </script>
 
