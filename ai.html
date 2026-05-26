@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>GeminiTok AI Ultra</title>
 
 <style>
+
 *{
   margin:0;
   padding:0;
@@ -19,11 +20,6 @@ body{
   height:100vh;
   display:flex;
   flex-direction:column;
-}
-
-body.rtl{
-  direction:rtl;
-  text-align:right;
 }
 
 .header{
@@ -48,12 +44,9 @@ body.rtl{
   flex-wrap:wrap;
 }
 
-.menu span,
-.menu select{
+.menu span{
   cursor:pointer;
   background:#1e1e1e;
-  border:none;
-  color:white;
   padding:8px;
   border-radius:10px;
 }
@@ -122,6 +115,20 @@ button{
 button:hover{
   opacity:.9;
 }
+
+@media(max-width:700px){
+
+  .message{
+    max-width:100%;
+  }
+
+  .header{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:10px;
+  }
+}
+
 </style>
 </head>
 
@@ -133,38 +140,28 @@ button:hover{
 
   <div class="menu">
 
-    <select onchange="setLanguage(this.value)">
-      <option value="auto">🌍 Auto</option>
-      <option value="id">🇮🇩 ID</option>
-      <option value="en">🇺🇸 EN</option>
-      <option value="ar">🇸🇦 AR</option>
-      <option value="jp">🇯🇵 JP</option>
-    </select>
+    <span onclick="startVoice()">🎤</span>
+    <span onclick="toggleVoice()">🔊</span>
+    <span onclick="readCurrentText()">📖</span>
+    <span onclick="exportChat()">📄</span>
+    <span onclick="resetChat()">🔄</span>
 
-    <span onclick="setMode('genius')">🧠</span>
-    <span onclick="setMode('pelajar')">🎓</span>
-    <span onclick="setMode('ceo')">💼</span>
-    <span onclick="setMode('debat')">⚔️</span>
-    <span onclick="setMode('opini')">💡</span>
-
-   <span onclick="startVoice()">🎤</span>
-<span onclick="toggleVoice()">🔊</span>
-<span onclick="readCurrentText()">📖</span>
-<span onclick="exportChat()">📄</span>
-<span onclick="resetChat()">🔄</span>
   </div>
 </div>
 
 <div class="chat" id="chat"></div>
 
 <div class="input-area">
+
   <input
     type="text"
     id="input"
     placeholder="Ketik pesan..."
     onkeydown="if(event.key==='Enter') kirim()"
-  />
+  >
+
   <button onclick="kirim()">Kirim</button>
+
 </div>
 
 <script>
@@ -176,17 +173,13 @@ const input = document.getElementById("input");
 
 /* ================= STORAGE ================= */
 
-let history = JSON.parse(localStorage.getItem("ultraHistory")) || [];
+let history =
+JSON.parse(localStorage.getItem("ultraHistory")) || [];
 
 let memoryContext =
 JSON.parse(localStorage.getItem("aiContext")) || {};
 
 let voiceEnabled = true;
-
-let aiMode = localStorage.getItem("aiMode") || "genius";
-
-let currentLang =
-localStorage.getItem("aiLang") || "auto";
 
 /* ================= SAVE ================= */
 
@@ -200,64 +193,6 @@ function saveAll(){
   localStorage.setItem(
     "aiContext",
     JSON.stringify(memoryContext)
-  );
-
-  localStorage.setItem(
-    "aiLang",
-    currentLang
-  );
-
-  localStorage.setItem(
-    "aiMode",
-    aiMode
-  );
-}
-
-/* ================= LANGUAGE ================= */
-
-function detectLanguage(text){
-
-  if(/[ء-ي]/.test(text)) return "ar";
-
-  if(/[ぁ-んァ-ン]/.test(text)) return "jp";
-
-  if(
-    text.toLowerCase().includes("the") ||
-    text.toLowerCase().includes("what")
-  ){
-    return "en";
-  }
-
-  return "id";
-}
-
-function setLanguage(lang){
-
-  currentLang = lang;
-
-  saveAll();
-}
-
-function applyRTL(lang){
-
-  if(lang==="ar"){
-    document.body.classList.add("rtl");
-  }else{
-    document.body.classList.remove("rtl");
-  }
-}
-
-/* ================= MODE ================= */
-
-function setMode(mode){
-
-  aiMode = mode;
-
-  saveAll();
-
-  tambahPesan(
-    "🤖 Mode diubah ke: " + mode.toUpperCase(),
-    "bot"
   );
 }
 
@@ -287,9 +222,9 @@ function toggleVoice(){
   voiceEnabled = !voiceEnabled;
 
   tambahPesan(
-    voiceEnabled ?
-    "🔊 Voice diaktifkan" :
-    "🔇 Voice dimatikan",
+    voiceEnabled
+    ? "🔊 Voice diaktifkan"
+    : "🔇 Voice dimatikan",
     "bot"
   );
 }
@@ -300,15 +235,47 @@ function speak(text){
 
   if(!window.speechSynthesis) return;
 
-  const utter = new SpeechSynthesisUtterance(text);
+  speechSynthesis.cancel();
 
-  utter.lang =
-    currentLang==="en" ? "en-US" :
-    currentLang==="ar" ? "ar-SA" :
-    currentLang==="jp" ? "ja-JP" :
-    "id-ID";
+  const utter =
+  new SpeechSynthesisUtterance(text);
+
+  utter.lang = "id-ID";
 
   speechSynthesis.speak(utter);
+}
+
+function readUserText(text){
+
+  if(!voiceEnabled) return;
+
+  if(!window.speechSynthesis) return;
+
+  speechSynthesis.cancel();
+
+  const utter =
+  new SpeechSynthesisUtterance(text);
+
+  utter.lang = "id-ID";
+
+  utter.rate = 1;
+  utter.pitch = 1;
+  utter.volume = 1;
+
+  speechSynthesis.speak(utter);
+}
+
+function readCurrentText(){
+
+  const teks = input.value.trim();
+
+  if(!teks){
+
+    alert("Masukkan teks terlebih dahulu");
+    return;
+  }
+
+  readUserText(teks);
 }
 
 function startVoice(){
@@ -318,7 +285,8 @@ function startVoice(){
     window.webkitSpeechRecognition;
 
   if(!SR){
-    alert("Speech Recognition tidak didukung.");
+
+    alert("Speech Recognition tidak didukung browser ini.");
     return;
   }
 
@@ -329,7 +297,9 @@ function startVoice(){
   recog.start();
 
   recog.onresult = (e)=>{
-    input.value = e.results[0][0].transcript;
+
+    input.value =
+    e.results[0][0].transcript;
   };
 }
 
@@ -407,7 +377,9 @@ function searchKnowledge(text){
 
   for(const key in knowledgeDB){
 
-    if(text.toLowerCase().includes(key)){
+    if(
+      text.toLowerCase().includes(key)
+    ){
 
       memoryContext.lastTopic = key;
 
@@ -439,123 +411,78 @@ async function searchInternet(query){
     }
 
   }catch(err){
+
     console.log(err);
   }
 
   return null;
 }
 
-/* ================= QUESTION SCORE ================= */
-
-function scoreQuestion(text){
-
-  const length = text.split(" ").length;
-
-  if(length <= 2) return "⭐ Basic";
-  if(length <= 6) return "⭐⭐ Good";
-  if(length <= 12) return "⭐⭐⭐ Deep";
-  if(length <= 20) return "⭐⭐⭐⭐ Strategic";
-
-  return "⭐⭐⭐⭐⭐ Genius";
-}
-
-/* ================= FORMAT ================= */
-
-function formatAnswer(text){
-
-  if(aiMode==="pelajar"){
-
-    return (
-      "📘 Penjelasan:\n\n" +
-      text +
-      "\n\n📚 Fokus pada pemahaman dasar."
-    );
-  }
-
-  if(aiMode==="ceo"){
-
-    return (
-      "💼 Strategic Insight:\n\n" +
-      text +
-      "\n\n📈 Fokus pada peluang & eksekusi."
-    );
-  }
-
-  if(aiMode==="debat"){
-
-    return (
-      "⚔️ Argumen:\n\n" +
-      text +
-      "\n\n⚖️ Perspektif lain bisa berbeda."
-    );
-  }
-
-  if(aiMode==="opini"){
-
-    return (
-      "💡 Opini:\n\n" +
-      text +
-      "\n\n🧠 Pandangan bisa berkembang."
-    );
-  }
-
-  return (
-    "🧠 Genius Analysis:\n\n" + text
-  );
-}
-
 /* ================= SMART REPLY ================= */
 
 async function smartReply(text){
 
-  let lang =
-  currentLang==="auto"
-  ? detectLanguage(text)
-  : currentLang;
+  /* COMMAND BACA */
 
-  currentLang = lang;
+  if(
+    text.toLowerCase().startsWith("bacakan ") ||
+    text.toLowerCase().startsWith("baca ")
+  ){
 
-  applyRTL(lang);
+    const isi = text
+      .replace(/^bacakan\s+/i,"")
+      .replace(/^baca\s+/i,"");
+
+    readUserText(isi);
+
+    return "🔊 Sedang membacakan:\n\n" + isi;
+  }
 
   const intent = analyze(text);
 
-  /* Greeting */
+  /* GREETING */
 
   if(intent==="greeting"){
 
-    if(text.toLowerCase()==="assalamualaikum"){
+    if(
+      text.toLowerCase() ===
+      "assalamualaikum"
+    ){
 
       return "Waalaikumsalam 🤍 Semoga harimu penuh keberkahan.";
     }
 
-    return lang==="en"
-    ? "Hello 👋 What would you like to discuss?"
-    : "Halo 👋 Ada yang ingin kamu bahas?";
+    return "Halo 👋 Ada yang ingin kamu bahas?";
   }
 
-  /* Emotion */
+  /* EMOTION */
 
   if(intent==="emotion"){
 
     return "Aku bisa merasakan itu berat 😔 Kalau mau cerita, aku siap mendengarkan.";
   }
 
-  /* Internet */
+  /* INTERNET */
 
-  const online = await searchInternet(text);
+  const online =
+  await searchInternet(text);
 
   let finalAnswer = online;
 
-  /* Internal Knowledge */
+  /* INTERNAL KNOWLEDGE */
 
   if(!finalAnswer){
 
-    finalAnswer = searchKnowledge(text);
+    finalAnswer =
+    searchKnowledge(text);
   }
 
-  /* Context Memory */
+  /* CONTEXT */
 
-  if(!finalAnswer && memoryContext.lastTopic){
+  if(
+    !finalAnswer &&
+    memoryContext.lastTopic
+  ){
 
     finalAnswer =
     "Melanjutkan topik tentang " +
@@ -563,7 +490,7 @@ async function smartReply(text){
     ", hal ini berkaitan dengan perkembangan sosial dan teknologi.";
   }
 
-  /* Default */
+  /* DEFAULT */
 
   if(!finalAnswer){
 
@@ -571,7 +498,7 @@ async function smartReply(text){
     "Topik ini dapat dijelaskan dari berbagai sudut pandang tergantung konteks dan tujuan pembahasannya.";
   }
 
-  /* How */
+  /* HOW */
 
   if(intent==="how"){
 
@@ -584,7 +511,7 @@ async function smartReply(text){
     finalAnswer;
   }
 
-  /* Why */
+  /* WHY */
 
   if(intent==="why"){
 
@@ -593,14 +520,15 @@ async function smartReply(text){
     finalAnswer;
   }
 
-  return formatAnswer(finalAnswer);
+  return "🧠 AI Response:\n\n" + finalAnswer;
 }
 
 /* ================= SEND ================= */
 
 async function kirim(){
 
-  const teks = input.value.trim();
+  const teks =
+  input.value.trim();
 
   if(!teks) return;
 
@@ -615,16 +543,19 @@ async function kirim(){
 
   input.value = "";
 
-  const typing = document.createElement("div");
+  const typing =
+  document.createElement("div");
 
-  typing.className = "message bot typing";
+  typing.className =
+  "message bot typing";
 
   typing.innerText =
   "GeminiTok AI sedang menganalisis...";
 
   chat.appendChild(typing);
 
-  chat.scrollTop = chat.scrollHeight;
+  chat.scrollTop =
+  chat.scrollHeight;
 
   const final =
   await smartReply(teks);
@@ -639,15 +570,6 @@ async function kirim(){
   saveAll();
 
   tambahPesan(final,"bot");
-
-  /* AI Score */
-
-  const score = scoreQuestion(teks);
-
-  tambahPesan(
-    "📊 AI Score: " + score,
-    "bot"
-  );
 }
 
 /* ================= EXPORT ================= */
@@ -665,16 +587,20 @@ function exportChat(){
     "\n\n";
   });
 
-  const blob = new Blob(
+  const blob =
+  new Blob(
     [content],
     {type:"text/plain"}
   );
 
-  const a = document.createElement("a");
+  const a =
+  document.createElement("a");
 
-  a.href = URL.createObjectURL(blob);
+  a.href =
+  URL.createObjectURL(blob);
 
-  a.download = "GeminiTok_Chat.txt";
+  a.download =
+  "GeminiTok_Chat.txt";
 
   a.click();
 }
@@ -692,8 +618,6 @@ function resetChat(){
 
 window.onload = ()=>{
 
-  applyRTL(currentLang);
-
   if(history.length > 0){
 
     history.forEach(h=>{
@@ -709,65 +633,12 @@ window.onload = ()=>{
   }else{
 
     tambahPesan(
-      "Halo 👋 Aku GeminiTok AI Ultra.\nTanya apa saja dengan satu kata, aku jawab dengan analisis & reasoning.",
+      "Halo 👋 Aku GeminiTok AI Ultra.\nTanya apa saja dan aku akan menjawab.",
       "bot"
     );
   }
 };
 
-  /* ================= READ USER TEXT ================= */
-
-function readUserText(text){
-
-  if(!voiceEnabled) return;
-
-  if(!window.speechSynthesis) return;
-
-  speechSynthesis.cancel();
-
-  const utter = new SpeechSynthesisUtterance(text);
-
-  utter.lang =
-    currentLang==="en" ? "en-US" :
-    currentLang==="ar" ? "ar-SA" :
-    currentLang==="jp" ? "ja-JP" :
-    "id-ID";
-
-  utter.rate = 1;
-  utter.pitch = 1;
-  utter.volume = 1;
-
-  speechSynthesis.speak(utter);
-}
-
-function readCurrentText(){
-
-  const teks = input.value.trim();
-
-  if(!teks){
-    alert("Masukkan teks terlebih dahulu");
-    return;
-  }
-
-  readUserText(teks);
-}
-  async function smartReply(text){  /* ================= BACA TEKS ================= */
-
-  if(
-    text.toLowerCase().startsWith("bacakan ") ||
-    text.toLowerCase().startsWith("baca ")
-  ){
-
-    const isi = text
-      .replace(/^bacakan\s+/i,"")
-      .replace(/^baca\s+/i,"");
-
-    readUserText(isi);
-
-    return "🔊 Sedang membacakan:\n\n" + isi;
-  }
-
-    
 </script>
 
 </body>
