@@ -147,11 +147,11 @@ button:hover{
     <span onclick="setMode('debat')">⚔️</span>
     <span onclick="setMode('opini')">💡</span>
 
-    <span onclick="startVoice()">🎤</span>
-    <span onclick="toggleVoice()">🔊</span>
-    <span onclick="exportChat()">📄</span>
-    <span onclick="resetChat()">🔄</span>
-
+   <span onclick="startVoice()">🎤</span>
+<span onclick="toggleVoice()">🔊</span>
+<span onclick="readCurrentText()">📖</span>
+<span onclick="exportChat()">📄</span>
+<span onclick="resetChat()">🔄</span>
   </div>
 </div>
 
@@ -715,6 +715,59 @@ window.onload = ()=>{
   }
 };
 
+  /* ================= READ USER TEXT ================= */
+
+function readUserText(text){
+
+  if(!voiceEnabled) return;
+
+  if(!window.speechSynthesis) return;
+
+  speechSynthesis.cancel();
+
+  const utter = new SpeechSynthesisUtterance(text);
+
+  utter.lang =
+    currentLang==="en" ? "en-US" :
+    currentLang==="ar" ? "ar-SA" :
+    currentLang==="jp" ? "ja-JP" :
+    "id-ID";
+
+  utter.rate = 1;
+  utter.pitch = 1;
+  utter.volume = 1;
+
+  speechSynthesis.speak(utter);
+}
+
+function readCurrentText(){
+
+  const teks = input.value.trim();
+
+  if(!teks){
+    alert("Masukkan teks terlebih dahulu");
+    return;
+  }
+
+  readUserText(teks);
+}
+  async function smartReply(text){  /* ================= BACA TEKS ================= */
+
+  if(
+    text.toLowerCase().startsWith("bacakan ") ||
+    text.toLowerCase().startsWith("baca ")
+  ){
+
+    const isi = text
+      .replace(/^bacakan\s+/i,"")
+      .replace(/^baca\s+/i,"");
+
+    readUserText(isi);
+
+    return "🔊 Sedang membacakan:\n\n" + isi;
+  }
+
+    
 </script>
 
 </body>
