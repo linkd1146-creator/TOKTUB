@@ -69,6 +69,7 @@ body{
   border-radius:12px;
   cursor:pointer;
   transition:.2s;
+  user-select:none;
 }
 
 .menu span:hover{
@@ -116,6 +117,7 @@ body{
   line-height:1.7;
   animation:fade .25s ease;
   white-space:pre-wrap;
+  word-wrap:break-word;
 }
 
 .user{
@@ -219,12 +221,8 @@ pre{
   position:relative;
 }
 
-pre button{
-  position:absolute;
-  top:8px;
-  right:8px;
-  padding:5px 10px;
-  font-size:12px;
+code{
+  font-family:monospace;
 }
 
 /* ================= MOBILE ================= */
@@ -245,6 +243,11 @@ pre button{
   .menu{
     width:100%;
     justify-content:center;
+    flex-wrap:wrap;
+  }
+
+  .input-area{
+    padding:10px;
   }
 }
 
@@ -361,6 +364,8 @@ function tambahPesan(text,type){
   chat.scrollTop =
   chat.scrollHeight;
 
+  /* ===== HIGHLIGHT ===== */
+
   setTimeout(()=>{
 
     document
@@ -370,44 +375,48 @@ function tambahPesan(text,type){
       hljs.highlightElement(el);
     });
 
-    document
-    .querySelectorAll("pre")
-    .forEach(pre=>{
-
-      if(pre.querySelector("button"))
-      return;
-
-      const btn =
-      document.createElement("button");
-
-      btn.innerText = "Copy";
-
-      btn.onclick = ()=>{
-
-        navigator.clipboard.writeText(
-          pre.innerText
-        );
-
-        btn.innerText = "Copied";
-
-        setTimeout(()=>{
-          btn.innerText = "Copy";
-        },1500);
-      };
-
-      pre.prepend(btn);
-    });
-
   },50);
 
+  /* ===== AUTO SPEAK BOT ===== */
+
   if(type==="bot"){
+
     speak(
-      div.innerText.substring(0,300)
+      div.innerText
+      .substring(0,500)
     );
   }
 }
 
-/* ================= VOICE ================= */
+/* ================= TEXT TO SPEECH ================= */
+
+function speak(text){
+
+  if(!voiceEnabled) return;
+
+  if(!window.speechSynthesis){
+
+    console.log(
+      "Speech synthesis tidak didukung"
+    );
+
+    return;
+  }
+
+  speechSynthesis.cancel();
+
+  const utter =
+  new SpeechSynthesisUtterance(text);
+
+  utter.lang = "id-ID";
+  utter.rate = 1;
+  utter.pitch = 1;
+  utter.volume = 1;
+
+  speechSynthesis.speak(utter);
+}
+
+/* ================= TOGGLE VOICE ================= */
 
 function toggleVoice(){
 
@@ -421,23 +430,7 @@ function toggleVoice(){
   );
 }
 
-function speak(text){
-
-  if(!voiceEnabled) return;
-
-  if(!window.speechSynthesis) return;
-
-  speechSynthesis.cancel();
-
-  const utter =
-  new SpeechSynthesisUtterance(text);
-
-  utter.lang = "id-ID";
-
-  utter.rate = 1;
-
-  speechSynthesis.speak(utter);
-}
+/* ================= READ INPUT ================= */
 
 function readCurrentText(){
 
@@ -446,14 +439,20 @@ function readCurrentText(){
 
   if(!teks){
 
-    alert(
-      "Masukkan teks dulu"
+    tambahPesan(
+      "⚠️ Masukkan teks yang ingin dibacakan",
+      "bot"
     );
 
     return;
   }
 
   speak(teks);
+
+  tambahPesan(
+    "📖 Membacakan:\n\n" + teks,
+    "bot"
+  );
 }
 
 /* ================= VOICE INPUT ================= */
@@ -466,8 +465,9 @@ function startVoice(){
 
   if(!SR){
 
-    alert(
-      "Speech Recognition tidak didukung browser"
+    tambahPesan(
+      "❌ Browser tidak mendukung voice recognition",
+      "bot"
     );
 
     return;
@@ -478,12 +478,36 @@ function startVoice(){
 
   recog.lang = "id-ID";
 
+  recog.interimResults = false;
+
+  recog.maxAlternatives = 1;
+
   recog.start();
+
+  tambahPesan(
+    "🎤 Mendengarkan suara...",
+    "bot"
+  );
 
   recog.onresult = (e)=>{
 
-    input.value =
+    const text =
     e.results[0][0].transcript;
+
+    input.value = text;
+
+    tambahPesan(
+      "🎤 Voice:\n\n" + text,
+      "user"
+    );
+  };
+
+  recog.onerror = (e)=>{
+
+    tambahPesan(
+      "❌ Voice error: " + e.error,
+      "bot"
+    );
   };
 }
 
@@ -533,10 +557,12 @@ async function searchDuckDuckGo(query){
     const url =
     "https://api.duckduckgo.com/?q=" +
     encodeURIComponent(query) +
-    "&format=json&pretty=1";
+    "&format=json&no_html=1";
 
     const res =
     await fetch(url);
+
+    if(!res.ok) return null;
 
     const data =
     await res.json();
@@ -566,7 +592,7 @@ ${hasil}
   }
 }
 
-/* ================= GEMINI WORKER ================= */
+/* ================= GEMINI ================= */
 
 async function askGemini(prompt){
 
@@ -583,14 +609,14 @@ async function askGemini(prompt){
     const finalPrompt = `
 Kamu adalah GeminiTok AI Ultra.
 
-Tugas:
-- jawab natural
-- jawab lengkap
+Jawab:
+- natural
+- pintar
+- lengkap
 - bahasa Indonesia
 - ramah
-- pintar
 - bantu coding
-- jangan jawab kosong
+- jangan kosong
 
 Riwayat:
 ${context}
@@ -617,24 +643,33 @@ ${prompt}
 
     if(!response.ok){
 
+      console.log("Gemini gagal");
+
       return null;
     }
 
     const data =
     await response.json();
 
-    console.log(data);
+    console.log(
+      "Gemini response:",
+      data
+    );
 
     return (
       data.answer ||
       data.response ||
       data.text ||
+      data.result ||
       null
     );
 
   }catch(err){
 
-    console.log(err);
+    console.log(
+      "Gemini Error:",
+      err
+    );
 
     return null;
   }
@@ -647,6 +682,27 @@ async function AIResponse(userText){
   const lower =
   userText.toLowerCase();
 
+  /* ===== READ COMMAND ===== */
+
+  if(
+    lower.startsWith("bacakan ")
+  ){
+
+    const text =
+    userText.replace(
+      /^bacakan\s+/i,
+      ""
+    );
+
+    speak(text);
+
+    return `
+# 🔊 Membacakan
+
+${text}
+`;
+  }
+
   /* ===== WIKI COMMAND ===== */
 
   if(
@@ -654,7 +710,10 @@ async function AIResponse(userText){
   ){
 
     const q =
-    userText.replace(/^wiki\s+/i,"");
+    userText.replace(
+      /^wiki\s+/i,
+      ""
+    );
 
     const wiki =
     await searchWikipedia(q);
@@ -669,7 +728,10 @@ async function AIResponse(userText){
   ){
 
     const q =
-    userText.replace(/^cari\s+/i,"");
+    userText.replace(
+      /^cari\s+/i,
+      ""
+    );
 
     const ddg =
     await searchDuckDuckGo(q);
@@ -694,7 +756,7 @@ ${gemini}
 `;
   }
 
-  /* ===== FALLBACK WIKI ===== */
+  /* ===== FALLBACK WIKIPEDIA ===== */
 
   const wikiFallback =
   await searchWikipedia(userText);
@@ -714,13 +776,13 @@ ${gemini}
     return ddgFallback;
   }
 
-  /* ===== DEFAULT ===== */
+  /* ===== FINAL ===== */
 
   return `
 # ❌ Jawaban Tidak Ditemukan
 
 Coba:
-- gunakan pertanyaan lebih jelas
+- gunakan kata lebih jelas
 - gunakan "wiki topik"
 - gunakan "cari berita"
 `;
@@ -758,9 +820,9 @@ async function kirim(){
   const loading = [
 
     "🤖 AI sedang berpikir...",
-    "🧠 Menganalisis pertanyaan...",
+    "🧠 Menganalisis...",
     "🌐 Mengakses internet...",
-    "⚡ Membuat jawaban terbaik..."
+    "⚡ Menyusun jawaban..."
 
   ];
 
@@ -901,21 +963,21 @@ window.onload = ()=>{
 
 Aku adalah **GeminiTok AI Ultra**
 
-### Sumber AI:
+### AI Sources:
 - Gemini Worker API
 - Wikipedia API
 - DuckDuckGo API
 
 ### Fitur:
 - AI Chat
-- Coding Assistant
 - Voice AI
+- Text Reader
 - Internet Search
-- Memory Chat
+- Coding Assistant
 - Markdown
-- Syntax Highlight
+- Memory Chat
 `,
-      "bot"
+    "bot"
     );
   }
 };
