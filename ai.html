@@ -300,11 +300,12 @@ img{
 
 </div>
 
+```html
 <script>
 
 /* ================= CONFIG ================= */
 
-const WORKER_API =
+const GEMINI_API =
 "https://geminitok-api.linkd1146.workers.dev/";
 
 /* ================= ELEMENT ================= */
@@ -368,34 +369,6 @@ function tambahPesan(text,type){
       hljs.highlightElement(el);
     });
 
-    document
-    .querySelectorAll("pre")
-    .forEach(pre=>{
-
-      if(pre.querySelector("button"))
-      return;
-
-      const btn =
-      document.createElement("button");
-
-      btn.innerText = "Copy";
-
-      btn.onclick = ()=>{
-
-        navigator.clipboard.writeText(
-          pre.innerText
-        );
-
-        btn.innerText = "Copied";
-
-        setTimeout(()=>{
-          btn.innerText = "Copy";
-        },1500);
-      };
-
-      pre.prepend(btn);
-    });
-
   },50);
 
   if(type==="bot"){
@@ -431,27 +404,11 @@ function speak(text){
   new SpeechSynthesisUtterance(text);
 
   utter.lang = "id-ID";
-  utter.rate = 1;
-  utter.pitch = 1;
 
   speechSynthesis.speak(utter);
 }
 
-function readCurrentText(){
-
-  const teks =
-  input.value.trim();
-
-  if(!teks){
-
-    alert("Masukkan teks dulu");
-    return;
-  }
-
-  speak(teks);
-}
-
-/* ================= SPEECH ================= */
+/* ================= VOICE INPUT ================= */
 
 function startVoice(){
 
@@ -462,7 +419,7 @@ function startVoice(){
   if(!SR){
 
     alert(
-      "Browser tidak mendukung voice recognition"
+      "Speech recognition tidak didukung browser"
     );
 
     return;
@@ -481,23 +438,34 @@ function startVoice(){
   };
 }
 
-/* ================= SEARCH ================= */
+/* ================= WIKIPEDIA ================= */
 
 async function searchWikipedia(query){
 
   try{
 
-    const res = await fetch(
-      "https://id.wikipedia.org/api/rest_v1/page/summary/" +
-      encodeURIComponent(query)
-    );
+    const url =
+    "https://id.wikipedia.org/api/rest_v1/page/summary/" +
+    encodeURIComponent(query);
+
+    const res =
+    await fetch(url);
 
     if(!res.ok) return null;
 
     const data =
     await res.json();
 
-    return data.extract || null;
+    if(data.extract){
+
+      return `
+📚 Wikipedia
+
+${data.extract}
+`;
+    }
+
+    return null;
 
   }catch(err){
 
@@ -507,24 +475,39 @@ async function searchWikipedia(query){
   }
 }
 
-async function duckSearch(query){
+/* ================= DUCKDUCKGO ================= */
+
+async function searchDuckDuckGo(query){
 
   try{
 
-    const res = await fetch(
-      "https://api.duckduckgo.com/?q=" +
-      encodeURIComponent(query) +
-      "&format=json"
-    );
+    const url =
+    "https://api.duckduckgo.com/?q=" +
+    encodeURIComponent(query) +
+    "&format=json&pretty=1";
+
+    const res =
+    await fetch(url);
 
     const data =
     await res.json();
 
-    return (
+    const hasil =
       data.AbstractText ||
       data.RelatedTopics?.[0]?.Text ||
-      null
-    );
+      data.Answer ||
+      null;
+
+    if(hasil){
+
+      return `
+🌐 DuckDuckGo
+
+${hasil}
+`;
+    }
+
+    return null;
 
   }catch(err){
 
@@ -534,15 +517,15 @@ async function duckSearch(query){
   }
 }
 
-/* ================= GEMINI ================= */
+/* ================= GEMINI WORKER ================= */
 
-async function askGemini(userText){
+async function askGemini(prompt){
 
   try{
 
     const context =
     history
-    .slice(-20)
+    .slice(-10)
     .map(h =>
       `${h.role}: ${h.text}`
     )
@@ -551,26 +534,24 @@ async function askGemini(userText){
     const finalPrompt = `
 Kamu adalah GeminiTok AI Ultra.
 
-Tugas:
-- jawab semua pertanyaan user
-- jawab natural
-- jawab lengkap
-- gunakan bahasa Indonesia
-- jika user meminta coding maka buat lengkap
-- jika user curhat maka respon empati
-- jika user bercanda maka santai
-- jangan jawab kosong
+Jawab:
+- natural
+- lengkap
+- bahasa Indonesia
+- ramah
+- pintar
+- jangan kosong
 
 Riwayat:
 ${context}
 
 User:
-${userText}
+${prompt}
 `;
 
     const response =
     await fetch(
-      WORKER_API,
+      GEMINI_API,
       {
         method:"POST",
 
@@ -584,122 +565,113 @@ ${userText}
       }
     );
 
+    if(!response.ok){
+
+      return null;
+    }
+
     const data =
     await response.json();
 
     console.log(data);
 
-    const ai =
+    return (
       data.answer ||
       data.response ||
-      data.text;
-
-    if(
-      !ai ||
-      ai.length < 2
-    ){
-
-      return `
-Maaf, AI sedang sibuk.
-Silakan coba lagi.
-`;
-    }
-
-    return ai;
+      data.text ||
+      null
+    );
 
   }catch(err){
 
     console.log(err);
 
-    return `
-❌ Gagal terhubung ke AI server.
-`;
+    return null;
   }
 }
 
-/* ================= SMART REPLY ================= */
+/* ================= AI ENGINE ================= */
 
-async function smartReply(text){
+async function AIResponse(userText){
 
   const lower =
-  text.toLowerCase();
+  userText.toLowerCase();
+
+  /* ===== COMMAND ===== */
 
   if(
-    lower.startsWith("bacakan ") ||
-    lower.startsWith("baca ")
+    lower.startsWith("wiki ")
   ){
 
-    const isi =
-    text
-    .replace(/^bacakan\s+/i,"")
-    .replace(/^baca\s+/i,"");
-
-    speak(isi);
-
-    return `
-🔊 Sedang membacakan:
-
-${isi}
-`;
-  }
-
-  if(lower.startsWith("wiki ")){
-
     const q =
-    text.replace(/^wiki\s+/i,"");
+    userText.replace(/^wiki\s+/i,"");
 
-    const hasil =
+    const wiki =
     await searchWikipedia(q);
 
-    return hasil
-    ? `
-📚 Wikipedia:
-
-${hasil}
-`
-    : "Wikipedia tidak menemukan hasil.";
+    if(wiki) return wiki;
   }
 
-  if(lower.startsWith("cari ")){
+  if(
+    lower.startsWith("cari ")
+  ){
 
     const q =
-    text.replace(/^cari\s+/i,"");
+    userText.replace(/^cari\s+/i,"");
 
-    const hasil =
-    await duckSearch(q);
+    const ddg =
+    await searchDuckDuckGo(q);
 
-    return hasil
-    ? `
-🌐 Hasil pencarian:
-
-${hasil}
-`
-    : "Tidak ditemukan.";
+    if(ddg) return ddg;
   }
 
-  if(lower==="siapa kamu"){
+  /* ================= TRY GEMINI ================= */
+
+  const gemini =
+  await askGemini(userText);
+
+  if(
+    gemini &&
+    gemini.length > 3
+  ){
 
     return `
-# 🤖 GeminiTok AI Ultra
+🤖 Gemini AI
 
-Aku adalah AI assistant modern.
-
-## Fitur:
-- AI pintar
-- Coding assistant
-- Voice AI
-- Memory chat
-- Internet search
-- Markdown render
-- Syntax highlight
-- Responsive UI
+${gemini}
 `;
   }
 
-  const ai =
-  await askGemini(text);
+  /* ================= FALLBACK WIKIPEDIA ================= */
 
-  return ai;
+  const wikiFallback =
+  await searchWikipedia(userText);
+
+  if(wikiFallback){
+
+    return wikiFallback;
+  }
+
+  /* ================= FALLBACK DUCKDUCKGO ================= */
+
+  const ddgFallback =
+  await searchDuckDuckGo(userText);
+
+  if(ddgFallback){
+
+    return ddgFallback;
+  }
+
+  /* ================= DEFAULT ================= */
+
+  return `
+❌ Maaf, jawaban tidak ditemukan.
+
+Coba:
+- gunakan kata yang lebih jelas
+- gunakan "wiki nama"
+- gunakan "cari topik"
+`;
 }
 
 /* ================= SEND ================= */
@@ -711,7 +683,10 @@ async function kirim(){
 
   if(!teks) return;
 
-  tambahPesan(teks,"user");
+  tambahPesan(
+    teks,
+    "user"
+  );
 
   history.push({
     role:"user",
@@ -728,18 +703,18 @@ async function kirim(){
   typing.className =
   "message bot typing";
 
-  const loadingTexts = [
-    "🤖 AI sedang berpikir",
-    "🧠 Menganalisis pertanyaan",
-    "🌐 Mengakses pengetahuan",
-    "⚡ Membuat jawaban terbaik"
+  const loading = [
+    "🤖 AI sedang berpikir...",
+    "🧠 Menganalisis...",
+    "🌐 Mengakses internet...",
+    "⚡ Membuat jawaban..."
   ];
 
   typing.innerText =
-  loadingTexts[
+  loading[
     Math.floor(
       Math.random() *
-      loadingTexts.length
+      loading.length
     )
   ];
 
@@ -748,8 +723,10 @@ async function kirim(){
   chat.scrollTop =
   chat.scrollHeight;
 
+  /* ================= GET RESPONSE ================= */
+
   const jawaban =
-  await smartReply(teks);
+  await AIResponse(teks);
 
   typing.remove();
 
@@ -770,11 +747,11 @@ async function kirim(){
 
 function exportChat(){
 
-  let content = "";
+  let isi = "";
 
   history.forEach(h=>{
 
-    content +=
+    isi +=
     h.role.toUpperCase() +
     ":\n" +
     h.text +
@@ -783,7 +760,7 @@ function exportChat(){
 
   const blob =
   new Blob(
-    [content],
+    [isi],
     {type:"text/plain"}
   );
 
@@ -803,9 +780,11 @@ function exportChat(){
 
 function resetChat(){
 
-  if(confirm(
-    "Hapus semua chat?"
-  )){
+  if(
+    confirm(
+      "Hapus semua chat?"
+    )
+  ){
 
     localStorage.clear();
 
@@ -813,57 +792,22 @@ function resetChat(){
   }
 }
 
-/* ================= IMAGE ================= */
-
-document
-.getElementById("imgUpload")
-.addEventListener(
-"change",
-function(e){
-
-  const file =
-  e.target.files[0];
-
-  if(!file) return;
-
-  tambahPesan(
-    "📷 Gambar dikirim:\n" +
-    file.name,
-    "user"
-  );
-});
-
-/* ================= CLOCK ================= */
-
-setInterval(()=>{
-
-  const now =
-  new Date();
-
-  document
-  .getElementById("clock")
-  .innerText =
-  now.toLocaleTimeString();
-
-},1000);
-
 /* ================= ENTER ================= */
 
 input.addEventListener(
-  "keydown",
-  function(e){
+"keydown",
+function(e){
 
-    if(
-      e.key === "Enter" &&
-      !e.shiftKey
-    ){
+  if(
+    e.key === "Enter" &&
+    !e.shiftKey
+  ){
 
-      e.preventDefault();
+    e.preventDefault();
 
-      kirim();
-    }
+    kirim();
   }
-);
+});
 
 /* ================= LOAD ================= */
 
@@ -887,16 +831,20 @@ window.onload = ()=>{
 `
 # 👋 Halo
 
-Aku adalah **GeminiTok AI Ultra**
+Aku GeminiTok AI Ultra
+
+Sumber AI:
+- Gemini Worker API
+- Wikipedia
+- DuckDuckGo
 
 Aku bisa:
-- Menjawab pertanyaan
-- Membantu coding
-- Voice AI
-- Browsing sederhana
-- Memory chat
-- Markdown & code
-- Responsive AI assistant
+- menjawab pertanyaan
+- coding
+- pengetahuan
+- info internet
+- voice AI
+- markdown
 `,
       "bot"
     );
@@ -904,6 +852,5 @@ Aku bisa:
 };
 
 </script>
+```
 
-</body>
-</html>
