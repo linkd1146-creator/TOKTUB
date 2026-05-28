@@ -2,140 +2,131 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>GeminiTok AI Ultra</title>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.3.136/pdf.min.js"></script>
 
 <style>
 
 *{
-margin:0;
-padding:0;
-box-sizing:border-box;
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
 }
 
 body{
-background:#0f0f0f;
-color:white;
-font-family:Arial,sans-serif;
-height:100vh;
-display:flex;
-flex-direction:column;
+  background:#0f0f0f;
+  color:white;
+  font-family:Arial,sans-serif;
+  height:100vh;
+  display:flex;
+  flex-direction:column;
 }
 
 .header{
-background:#111;
-padding:14px;
-display:flex;
-justify-content:space-between;
-align-items:center;
-border-bottom:1px solid #222;
-box-shadow:0 0 15px rgba(43,108,255,.2);
+  background:#111;
+  padding:14px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  border-bottom:1px solid #222;
+  box-shadow:0 0 15px rgba(43,108,255,.2);
 }
 
 .logo{
-font-size:18px;
-font-weight:bold;
+  font-size:18px;
+  font-weight:bold;
 }
 
 .menu{
-display:flex;
-align-items:center;
-gap:10px;
-flex-wrap:wrap;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
 }
 
 .menu span{
-cursor:pointer;
-background:#1e1e1e;
-padding:8px 10px;
-border-radius:10px;
-transition:.2s;
-}
-
-.menu span:hover{
-background:#2563eb;
+  cursor:pointer;
+  background:#1e1e1e;
+  padding:8px;
+  border-radius:10px;
 }
 
 .chat{
-flex:1;
-overflow-y:auto;
-padding:20px;
-display:flex;
-flex-direction:column;
-gap:14px;
+  flex:1;
+  overflow-y:auto;
+  padding:20px;
+  display:flex;
+  flex-direction:column;
+  gap:14px;
 }
 
 .message{
-padding:14px;
-border-radius:18px;
-max-width:80%;
-white-space:pre-wrap;
-line-height:1.5;
+  padding:14px;
+  border-radius:18px;
+  max-width:80%;
+  white-space:pre-line;
+  line-height:1.5;
 }
 
 .user{
-background:#2563eb;
-align-self:flex-end;
+  background:#2b6cff;
+  align-self:flex-end;
 }
 
 .bot{
-background:#1a1a1a;
-border:1px solid rgba(43,108,255,.2);
-align-self:flex-start;
+  background:#1a1a1a;
+  border:1px solid rgba(43,108,255,.2);
+  align-self:flex-start;
 }
 
 .typing{
-opacity:.6;
-font-style:italic;
+  opacity:.6;
+  font-style:italic;
 }
 
 .input-area{
-display:flex;
-gap:10px;
-padding:12px;
-background:#111;
-border-top:1px solid #222;
+  display:flex;
+  gap:10px;
+  padding:12px;
+  background:#111;
+  border-top:1px solid #222;
 }
 
 input{
-flex:1;
-background:#1e1e1e;
-border:none;
-color:white;
-padding:14px;
-border-radius:14px;
-outline:none;
+  flex:1;
+  background:#1e1e1e;
+  border:none;
+  color:white;
+  padding:14px;
+  border-radius:14px;
+  outline:none;
 }
 
 button{
-background:#2563eb;
-border:none;
-color:white;
-padding:14px 18px;
-border-radius:14px;
-cursor:pointer;
-font-weight:bold;
+  background:#2b6cff;
+  border:none;
+  color:white;
+  padding:14px 18px;
+  border-radius:14px;
+  cursor:pointer;
+  font-weight:bold;
 }
 
 button:hover{
-opacity:.9;
+  opacity:.9;
 }
 
 @media(max-width:700px){
 
-.message{
-max-width:100%;
-}
+  .message{
+    max-width:100%;
+  }
 
-.header{
-flex-direction:column;
-align-items:flex-start;
-gap:10px;
-}
-
+  .header{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:10px;
+  }
 }
 
 </style>
@@ -145,543 +136,601 @@ gap:10px;
 
 <div class="header">
 
-<div class="logo">
-🤖 GeminiTok AI Ultra
+  <div class="logo">🤖 GeminiTok AI Ultra</div>
+
+  <div class="menu">
+
+    <span onclick="startVoice()">🎤</span>
+    <span onclick="toggleVoice()">🔊</span>
+    <span onclick="readCurrentText()">📖</span>
+    <span onclick="exportChat()">📄</span>
+    <span onclick="resetChat()">🔄</span>
+
+  </div>
 </div>
-
-<div class="menu">
-
-<span onclick="startVoice()">🎤</span>
-
-<span onclick="toggleVoice()">🔊</span>
-
-<span onclick="readCurrentText()">📖</span>
-
-<span onclick="uploadPDF()">📄 PDF</span>
-
-<span onclick="searchWikiPrompt()">📚</span>
-
-<span onclick="searchDuckPrompt()">🦆</span>
-
-<span onclick="saveMemory()">🧠</span>
-
-<span onclick="clearMemory()">🗑️</span>
-
-<span onclick="exportChat()">💾</span>
-
-<span onclick="resetChat()">🔄</span>
-
-</div>
-
-</div>
-
-<input
-type="file"
-id="pdfFile"
-accept=".pdf"
-style="display:none"
->
 
 <div class="chat" id="chat"></div>
 
 <div class="input-area">
 
-<input
-type="text"
-id="input"
-placeholder="Tulis pertanyaan..."
-onkeydown="if(event.key==='Enter')kirim()"
->
+  <input
+    type="text"
+    id="input"
+    placeholder="Ketik pesan..."
+    onkeydown="if(event.key==='Enter') kirim()"
+  >
 
-<button onclick="kirim()">
-Kirim
-</button>
+  <button onclick="kirim()">Kirim</button>
 
 </div>
 
 <script>
 
-/* ================= API ================= */
+/* ================= WORKER API ================= */
 
-const WORKER_URL =
+const WORKER_API =
 "https://geminitok-api.linkd1146.workers.dev/";
 
 /* ================= ELEMENT ================= */
 
-const chat =
-document.getElementById("chat");
-
-const input =
-document.getElementById("input");
-
-const pdfFile =
-document.getElementById("pdfFile");
+const chat = document.getElementById("chat");
+const input = document.getElementById("input");
 
 /* ================= STORAGE ================= */
 
 let history =
-JSON.parse(
-localStorage.getItem("geminitok_history")
-) || [];
+JSON.parse(localStorage.getItem("ultraHistory")) || [];
 
-let memory =
-JSON.parse(
-localStorage.getItem("geminitok_memory")
-) || {};
+let memoryContext =
+JSON.parse(localStorage.getItem("aiContext")) || {};
 
 let voiceEnabled = true;
-
-let pdfText = "";
 
 /* ================= SAVE ================= */
 
 function saveAll(){
 
-localStorage.setItem(
-"geminitok_history",
-JSON.stringify(history)
-);
+  localStorage.setItem(
+    "ultraHistory",
+    JSON.stringify(history)
+  );
 
-localStorage.setItem(
-"geminitok_memory",
-JSON.stringify(memory)
-);
-
+  localStorage.setItem(
+    "aiContext",
+    JSON.stringify(memoryContext)
+  );
 }
 
 /* ================= MESSAGE ================= */
 
 function tambahPesan(text,type){
 
-const div =
-document.createElement("div");
+  const div = document.createElement("div");
 
-div.className =
-"message " + type;
+  div.className = "message " + type;
 
-div.innerText = text;
+  div.innerText = text;
 
-chat.appendChild(div);
+  chat.appendChild(div);
 
-chat.scrollTop =
-chat.scrollHeight;
+  chat.scrollTop = chat.scrollHeight;
 
-if(type==="bot"){
-speak(text);
-}
-
+  if(type==="bot"){
+    speak(text);
+  }
 }
 
 /* ================= VOICE ================= */
 
 function toggleVoice(){
 
-voiceEnabled = !voiceEnabled;
+  voiceEnabled = !voiceEnabled;
 
-tambahPesan(
-voiceEnabled
-? "🔊 Voice aktif"
-: "🔇 Voice nonaktif",
-"bot"
-);
-
+  tambahPesan(
+    voiceEnabled
+    ? "🔊 Voice diaktifkan"
+    : "🔇 Voice dimatikan",
+    "bot"
+  );
 }
 
 function speak(text){
 
-if(!voiceEnabled) return;
+  if(!voiceEnabled) return;
 
-if(!window.speechSynthesis) return;
+  if(!window.speechSynthesis) return;
 
-speechSynthesis.cancel();
+  speechSynthesis.cancel();
 
-const utter =
-new SpeechSynthesisUtterance(text);
+  const utter =
+  new SpeechSynthesisUtterance(text);
 
-utter.lang = "id-ID";
+  utter.lang = "id-ID";
 
-speechSynthesis.speak(utter);
+  speechSynthesis.speak(utter);
+}
 
+function readUserText(text){
+
+  if(!voiceEnabled) return;
+
+  if(!window.speechSynthesis) return;
+
+  speechSynthesis.cancel();
+
+  const utter =
+  new SpeechSynthesisUtterance(text);
+
+  utter.lang = "id-ID";
+
+  utter.rate = 1;
+  utter.pitch = 1;
+  utter.volume = 1;
+
+  speechSynthesis.speak(utter);
 }
 
 function readCurrentText(){
 
-const text =
-input.value.trim();
+  const teks = input.value.trim();
 
-if(!text){
+  if(!teks){
 
-alert("Masukkan teks");
-return;
+    alert("Masukkan teks terlebih dahulu");
+    return;
+  }
 
-}
-
-speak(text);
-
+  readUserText(teks);
 }
 
 function startVoice(){
 
-const SR =
-window.SpeechRecognition ||
-window.webkitSpeechRecognition;
+  const SR =
+    window.SpeechRecognition ||
+    window.webkitSpeechRecognition;
 
-if(!SR){
+  if(!SR){
 
-alert("Browser tidak mendukung");
+    alert("Speech Recognition tidak didukung browser ini.");
+    return;
+  }
 
-return;
+  const recog = new SR();
 
+  recog.lang = "id-ID";
+
+  recog.start();
+
+  recog.onresult = (e)=>{
+
+    input.value =
+    e.results[0][0].transcript;
+  };
 }
 
-const recog =
-new SR();
+/* ================= INTENT ================= */
 
-recog.lang = "id-ID";
+function analyze(text){
 
-recog.start();
+  const lower = text.toLowerCase();
 
-recog.onresult = (e)=>{
+  if(
+    ["halo","hai","hi","hello","assalamualaikum"]
+    .includes(lower)
+  ){
+    return "greeting";
+  }
 
-input.value =
-e.results[0][0].transcript;
+  if(
+    lower.includes("sedih") ||
+    lower.includes("capek") ||
+    lower.includes("lelah")
+  ){
+    return "emotion";
+  }
 
+  if(
+    lower.includes("cara") ||
+    lower.includes("bagaimana")
+  ){
+    return "how";
+  }
+
+  if(lower.includes("kenapa")){
+    return "why";
+  }
+
+  if(text.includes("?")){
+    return "question";
+  }
+
+  return "general";
+}
+
+/* ================= KNOWLEDGE ================= */
+
+const knowledgeDB = {
+
+  politik:
+  "Politik adalah sistem pengelolaan kekuasaan dan kebijakan publik dalam negara.",
+
+  ai:
+  "Artificial Intelligence adalah teknologi yang memungkinkan mesin belajar dan mengambil keputusan otomatis.",
+
+  bisnis:
+  "Bisnis adalah proses menciptakan nilai melalui produk atau jasa untuk memperoleh keuntungan.",
+
+  ekonomi:
+  "Ekonomi mempelajari produksi, distribusi, dan konsumsi sumber daya.",
+
+  cinta:
+  "Cinta adalah kombinasi emosi, komitmen, dan kepercayaan.",
+
+  sejarah:
+  "Sejarah adalah catatan peristiwa masa lalu yang membentuk dunia saat ini.",
+
+  teknologi:
+  "Teknologi adalah penerapan ilmu pengetahuan untuk menyelesaikan masalah manusia.",
+
+  kesehatan:
+  "Kesehatan adalah kondisi fisik dan mental yang seimbang."
 };
 
+/* ================= KNOWLEDGE SEARCH ================= */
+
+function searchKnowledge(text){
+
+  for(const key in knowledgeDB){
+
+    if(
+      text.toLowerCase().includes(key)
+    ){
+
+      memoryContext.lastTopic = key;
+
+      return knowledgeDB[key];
+    }
+  }
+
+  return null;
 }
 
-/* ================= GEMINI ================= */
+/* ================= INTERNET SEARCH ================= */
 
-async function askGemini(prompt){
+async function searchInternet(query){
 
-const res = await fetch(
-WORKER_URL,
-{
-method:"POST",
+  try{
 
-headers:{
-"Content-Type":"application/json"
-},
+    const res = await fetch(
+      "https://id.wikipedia.org/api/rest_v1/page/summary/" +
+      encodeURIComponent(query)
+    );
 
-body:JSON.stringify({
-prompt:
-(pdfText
-? "ISI PDF:\n"+pdfText+"\n\n"
-: "")
-+ prompt
-})
+    if(res.ok){
 
-}
-);
+      const data = await res.json();
 
-const data =
-await res.json();
+      if(data.extract){
+        return data.extract;
+      }
+    }
 
-return data.answer ||
-"Tidak ada jawaban";
+  }catch(err){
 
+    console.log(err);
+  }
+
+  return null;
 }
 
-/* ================= WIKIPEDIA ================= */
-
-async function wikiSearch(query){
-
-try{
-
-const res =
-await fetch(
-"https://id.wikipedia.org/api/rest_v1/page/summary/" +
-encodeURIComponent(query)
-);
-
-const data =
-await res.json();
-
-return data.extract || "Tidak ditemukan.";
-
-}catch{
-
-return "Wikipedia error.";
-
-}
-
-}
-
-async function searchWikiPrompt(){
-
-const q =
-prompt("Cari Wikipedia:");
-
-if(!q) return;
-
-const hasil =
-await wikiSearch(q);
-
-tambahPesan(
-"📚 Wikipedia:\n\n" + hasil,
-"bot"
-);
-
-}
-
-/* ================= DUCKDUCKGO ================= */
+/* ================= DUCKDUCKGO SEARCH ================= */
 
 async function duckSearch(query){
 
-try{
+  try{
 
-const res =
-await fetch(
-"https://api.duckduckgo.com/?q=" +
-encodeURIComponent(query) +
-"&format=json"
-);
+    const res = await fetch(
+      "https://api.duckduckgo.com/?q=" +
+      encodeURIComponent(query) +
+      "&format=json&no_redirect=1"
+    );
 
-const data =
-await res.json();
+    const data = await res.json();
 
-return data.AbstractText ||
-"Tidak ditemukan.";
+    return (
+      data.AbstractText ||
+      data.Heading ||
+      "Tidak ditemukan hasil dari DuckDuckGo."
+    );
 
-}catch{
+  }catch(err){
 
-return "DuckDuckGo error.";
+    return "❌ DuckDuckGo error.";
 
-}
-
-}
-
-async function searchDuckPrompt(){
-
-const q =
-prompt("Cari DuckDuckGo:");
-
-if(!q) return;
-
-const hasil =
-await duckSearch(q);
-
-tambahPesan(
-"🦆 DuckDuckGo:\n\n" + hasil,
-"bot"
-);
+  }
 
 }
 
-/* ================= PDF ================= */
+/* ================= GEMINI API ================= */
 
-function uploadPDF(){
+async function askGemini(prompt){
 
-pdfFile.click();
+  try{
 
-}
+    const res = await fetch(
+      WORKER_API,
+      {
+        method:"POST",
 
-pdfFile.onchange =
-async (e)=>{
+        headers:{
+          "Content-Type":"application/json"
+        },
 
-const file =
-e.target.files[0];
+        body:JSON.stringify({
+          prompt:prompt
+        })
+      }
+    );
 
-if(!file) return;
+    const data = await res.json();
 
-const buffer =
-await file.arrayBuffer();
+    return (
+      data.answer ||
+      "Tidak ada jawaban dari Gemini."
+    );
 
-const pdf =
-await pdfjsLib
-.getDocument(
-new Uint8Array(buffer)
-).promise;
+  }catch(err){
 
-pdfText = "";
+    return "❌ Error koneksi ke Gemini API";
 
-for(
-let i=1;
-i<=pdf.numPages;
-i++
-){
-
-const page =
-await pdf.getPage(i);
-
-const text =
-await page.getTextContent();
-
-pdfText +=
-text.items
-.map(i=>i.str)
-.join(" ");
+  }
 
 }
 
-tambahPesan(
-"📄 PDF berhasil dimuat",
-"bot"
-);
+/* ================= SMART REPLY ================= */
 
-};
+async function smartReply(text){
 
-/* ================= MEMORY ================= */
+  if(
+    text.toLowerCase().startsWith("bacakan ") ||
+    text.toLowerCase().startsWith("baca ")
+  ){
 
-function saveMemory(){
+    const isi = text
+      .replace(/^bacakan\s+/i,"")
+      .replace(/^baca\s+/i,"");
 
-memory.lastChat =
-history;
+    readUserText(isi);
 
-saveAll();
+    return "🔊 Sedang membacakan:\n\n" + isi;
+  }
 
-tambahPesan(
-"🧠 Memory disimpan",
-"bot"
-);
+  const intent = analyze(text);
 
-}
+  /* ================= DUCK COMMAND ================= */
 
-function clearMemory(){
+  if(
+    text.toLowerCase().startsWith("duck ")
+  ){
 
-localStorage.clear();
+    const query =
+    text.replace(/^duck\s+/i,"");
 
-tambahPesan(
-"🗑️ Memory dihapus",
-"bot"
-);
+    const result =
+    await duckSearch(query);
 
-}
+    return "🦆 DuckDuckGo:\n\n" + result;
+  }
 
-/* ================= EXPORT ================= */
+  /* ================= INTERNET COMMAND ================= */
 
-function exportChat(){
+  if(
+    text.toLowerCase().startsWith("cari internet ")
+  ){
 
-let txt = "";
+    const query =
+    text.replace(/^cari internet\s+/i,"");
 
-history.forEach(h=>{
+    const result =
+    await duckSearch(query);
 
-txt +=
-h.role.toUpperCase() +
-":\n" +
-h.text +
-"\n\n";
+    return "🌐 Internet:\n\n" + result;
+  }
 
-});
+  if(intent==="greeting"){
 
-const blob =
-new Blob(
-[txt],
-{type:"text/plain"}
-);
+    if(
+      text.toLowerCase() ===
+      "assalamualaikum"
+    ){
 
-const a =
-document.createElement("a");
+      return "Waalaikumsalam 🤍 Semoga harimu penuh keberkahan.";
+    }
 
-a.href =
-URL.createObjectURL(blob);
+    return "Halo 👋 Ada yang ingin kamu bahas?";
+  }
 
-a.download =
-"GeminiTok_Chat.txt";
+  if(intent==="emotion"){
 
-a.click();
+    return "Aku bisa merasakan itu berat 😔 Kalau mau cerita, aku siap mendengarkan.";
+  }
 
-}
+  /* ================= GEMINI AI ================= */
 
-/* ================= RESET ================= */
+  let finalAnswer =
+  await askGemini(text);
 
-function resetChat(){
+  /* ================= FALLBACK ================= */
 
-localStorage.clear();
+  if(
+    !finalAnswer ||
+    finalAnswer.includes("Error")
+  ){
 
-location.reload();
+    const online =
+    await searchInternet(text);
 
+    finalAnswer = online;
+  }
+
+  if(!finalAnswer){
+
+    finalAnswer =
+    searchKnowledge(text);
+  }
+
+  if(
+    !finalAnswer &&
+    memoryContext.lastTopic
+  ){
+
+    finalAnswer =
+    "Melanjutkan topik tentang " +
+    memoryContext.lastTopic +
+    ", hal ini berkaitan dengan perkembangan sosial dan teknologi.";
+  }
+
+  if(!finalAnswer){
+
+    finalAnswer =
+    "Topik ini dapat dijelaskan dari berbagai sudut pandang tergantung konteks dan tujuan pembahasannya.";
+  }
+
+  if(intent==="how"){
+
+    finalAnswer =
+    "Langkah-langkah:\n" +
+    "1. Pahami dasar konsep.\n" +
+    "2. Tentukan tujuan.\n" +
+    "3. Susun strategi.\n" +
+    "4. Evaluasi hasil.\n\n" +
+    finalAnswer;
+  }
+
+  if(intent==="why"){
+
+    finalAnswer =
+    "Hal tersebut biasanya dipengaruhi faktor internal dan eksternal.\n\n" +
+    finalAnswer;
+  }
+
+  return "🧠 AI Response:\n\n" + finalAnswer;
 }
 
 /* ================= SEND ================= */
 
 async function kirim(){
 
-const text =
-input.value.trim();
+  const teks =
+  input.value.trim();
 
-if(!text) return;
+  if(!teks) return;
 
-tambahPesan(text,"user");
+  tambahPesan(teks,"user");
 
-history.push({
-role:"user",
-text:text
-});
+  history.push({
+    role:"user",
+    text:teks
+  });
 
-saveAll();
+  saveAll();
 
-input.value = "";
+  input.value = "";
 
-const typing =
-document.createElement("div");
+  const typing =
+  document.createElement("div");
 
-typing.className =
-"message bot typing";
+  typing.className =
+  "message bot typing";
 
-typing.innerText =
-"GeminiTok AI sedang berpikir...";
+  typing.innerText =
+  "GeminiTok AI sedang menganalisis...";
 
-chat.appendChild(typing);
+  chat.appendChild(typing);
 
-chat.scrollTop =
-chat.scrollHeight;
+  chat.scrollTop =
+  chat.scrollHeight;
 
-try{
+  const final =
+  await smartReply(teks);
 
-const answer =
-await askGemini(text);
+  typing.remove();
 
-typing.remove();
+  history.push({
+    role:"bot",
+    text:final
+  });
 
-history.push({
-role:"bot",
-text:answer
-});
+  saveAll();
 
-saveAll();
-
-tambahPesan(answer,"bot");
-
-}catch(err){
-
-typing.remove();
-
-tambahPesan(
-"❌ Error koneksi Gemini API",
-"bot"
-);
-
+  tambahPesan(final,"bot");
 }
 
+/* ================= EXPORT ================= */
+
+function exportChat(){
+
+  let content = "";
+
+  history.forEach(h=>{
+
+    content +=
+    h.role.toUpperCase() +
+    ":\n" +
+    h.text +
+    "\n\n";
+  });
+
+  const blob =
+  new Blob(
+    [content],
+    {type:"text/plain"}
+  );
+
+  const a =
+  document.createElement("a");
+
+  a.href =
+  URL.createObjectURL(blob);
+
+  a.download =
+  "GeminiTok_Chat.txt";
+
+  a.click();
+}
+
+/* ================= RESET ================= */
+
+function resetChat(){
+
+  localStorage.clear();
+
+  location.reload();
 }
 
 /* ================= LOAD ================= */
 
 window.onload = ()=>{
 
-if(history.length){
+  if(history.length > 0){
 
-history.forEach(h=>{
+    history.forEach(h=>{
 
-tambahPesan(
-h.text,
-h.role==="user"
-? "user"
-: "bot"
-);
+      tambahPesan(
+        h.text,
+        h.role==="user"
+        ? "user"
+        : "bot"
+      );
+    });
 
-});
+  }else{
 
-}else{
-
-tambahPesan(
-"👋 Halo! Selamat datang di GeminiTok AI Ultra",
-"bot"
-);
-
-}
-
+    tambahPesan(
+      "Halo 👋 Aku GeminiTok AI Ultra.\nTanya apa saja dan aku akan menjawab.",
+      "bot"
+    );
+  }
 };
 
 </script>
