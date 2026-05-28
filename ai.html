@@ -203,7 +203,8 @@ Kirim
 
 /* ================= API ================= */
 
-const GEMINI_API_KEY = "ISI_API_KEY_GEMINI";
+const WORKER_URL =
+"https://geminitok-api.linkd1146.workers.dev";
 
 /* ================= ELEMENT ================= */
 
@@ -354,7 +355,7 @@ e.results[0][0].transcript;
 async function askGemini(prompt){
 
 const res = await fetch(
-"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + GEMINI_API_KEY,
+WORKER_URL,
 {
 method:"POST",
 
@@ -363,21 +364,11 @@ headers:{
 },
 
 body:JSON.stringify({
-
-contents:[
-{
-parts:[
-{
-text:
+prompt:
 (pdfText
-? "ISI PDF:\n" + pdfText + "\n\n"
+? "ISI PDF:\n"+pdfText+"\n\n"
 : "")
 + prompt
-}
-]
-}
-]
-
 })
 
 }
@@ -386,8 +377,8 @@ text:
 const data =
 await res.json();
 
-return data?.candidates?.[0]?.content?.parts?.[0]?.text
-|| "Tidak ada jawaban.";
+return data.answer ||
+"Tidak ada jawaban";
 
 }
 
