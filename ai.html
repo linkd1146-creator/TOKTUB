@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -49,6 +50,11 @@ body{
   background:#1e1e1e;
   padding:8px;
   border-radius:10px;
+  transition:.2s;
+}
+
+.menu span:hover{
+  background:#2b6cff;
 }
 
 .chat{
@@ -308,91 +314,72 @@ function startVoice(){
   };
 }
 
-/* ================= INTENT ================= */
+/* ================= GEMINI API ================= */
 
-function analyze(text){
+async function askGemini(prompt){
 
-  const lower = text.toLowerCase();
+  try{
 
-  if(
-    ["halo","hai","hi","hello","assalamualaikum"]
-    .includes(lower)
-  ){
-    return "greeting";
+    const response = await fetch(
+      WORKER_API,
+      {
+        method:"POST",
+
+        headers:{
+          "Content-Type":"application/json"
+        },
+
+        body:JSON.stringify({
+          prompt:prompt
+        })
+      }
+    );
+
+    const data =
+    await response.json();
+
+    console.log(data);
+
+    return (
+      data.answer ||
+      "Tidak ada jawaban dari Gemini."
+    );
+
+  }catch(err){
+
+    console.log(err);
+
+    return "❌ Gagal terhubung ke Gemini API";
   }
-
-  if(
-    lower.includes("sedih") ||
-    lower.includes("capek") ||
-    lower.includes("lelah")
-  ){
-    return "emotion";
-  }
-
-  if(
-    lower.includes("cara") ||
-    lower.includes("bagaimana")
-  ){
-    return "how";
-  }
-
-  if(lower.includes("kenapa")){
-    return "why";
-  }
-
-  if(text.includes("?")){
-    return "question";
-  }
-
-  return "general";
 }
 
-/* ================= KNOWLEDGE ================= */
+/* ================= DUCKDUCKGO ================= */
 
-const knowledgeDB = {
+async function duckDuckGoSearch(query){
 
-  politik:
-  "Politik adalah sistem pengelolaan kekuasaan dan kebijakan publik dalam negara.",
+  try{
 
-  ai:
-  "Artificial Intelligence adalah teknologi yang memungkinkan mesin belajar dan mengambil keputusan otomatis.",
+    const res = await fetch(
+      "https://api.duckduckgo.com/?q=" +
+      encodeURIComponent(query) +
+      "&format=json"
+    );
 
-  bisnis:
-  "Bisnis adalah proses menciptakan nilai melalui produk atau jasa untuk memperoleh keuntungan.",
+    const data =
+    await res.json();
 
-  ekonomi:
-  "Ekonomi mempelajari produksi, distribusi, dan konsumsi sumber daya.",
+    return (
+      data.AbstractText ||
+      data.RelatedTopics?.[0]?.Text ||
+      "Tidak ditemukan."
+    );
 
-  cinta:
-  "Cinta adalah kombinasi emosi, komitmen, dan kepercayaan.",
+  }catch(err){
 
-  sejarah:
-  "Sejarah adalah catatan peristiwa masa lalu yang membentuk dunia saat ini.",
+    console.log(err);
 
-  teknologi:
-  "Teknologi adalah penerapan ilmu pengetahuan untuk menyelesaikan masalah manusia.",
-
-  kesehatan:
-  "Kesehatan adalah kondisi fisik dan mental yang seimbang."
-};
-
-/* ================= KNOWLEDGE SEARCH ================= */
-
-function searchKnowledge(text){
-
-  for(const key in knowledgeDB){
-
-    if(
-      text.toLowerCase().includes(key)
-    ){
-
-      memoryContext.lastTopic = key;
-
-      return knowledgeDB[key];
-    }
+    return "DuckDuckGo error";
   }
-
-  return null;
 }
 
 /* ================= INTERNET SEARCH ================= */
@@ -423,70 +410,6 @@ async function searchInternet(query){
   return null;
 }
 
-/* ================= DUCKDUCKGO SEARCH ================= */
-
-async function duckSearch(query){
-
-  try{
-
-    const res = await fetch(
-      "https://api.duckduckgo.com/?q=" +
-      encodeURIComponent(query) +
-      "&format=json&no_redirect=1"
-    );
-
-    const data = await res.json();
-
-    return (
-      data.AbstractText ||
-      data.Heading ||
-      "Tidak ditemukan hasil dari DuckDuckGo."
-    );
-
-  }catch(err){
-
-    return "❌ DuckDuckGo error.";
-
-  }
-
-}
-
-/* ================= GEMINI API ================= */
-
-async function askGemini(prompt){
-
-  try{
-
-    const res = await fetch(
-      WORKER_API,
-      {
-        method:"POST",
-
-        headers:{
-          "Content-Type":"application/json"
-        },
-
-        body:JSON.stringify({
-          prompt:prompt
-        })
-      }
-    );
-
-    const data = await res.json();
-
-    return (
-      data.answer ||
-      "Tidak ada jawaban dari Gemini."
-    );
-
-  }catch(err){
-
-    return "❌ Error koneksi ke Gemini API";
-
-  }
-
-}
-
 /* ================= SMART REPLY ================= */
 
 async function smartReply(text){
@@ -505,116 +428,36 @@ async function smartReply(text){
     return "🔊 Sedang membacakan:\n\n" + isi;
   }
 
-  const intent = analyze(text);
-
-  /* ================= DUCK COMMAND ================= */
-
   if(
-    text.toLowerCase().startsWith("duck ")
+    text.toLowerCase().startsWith("wiki ")
   ){
 
-    const query =
-    text.replace(/^duck\s+/i,"");
+    const q =
+    text.replace(/^wiki\s+/i,"");
 
-    const result =
-    await duckSearch(query);
+    const hasil =
+    await searchInternet(q);
 
-    return "🦆 DuckDuckGo:\n\n" + result;
+    return "📚 Wikipedia:\n\n" + hasil;
   }
-
-  /* ================= INTERNET COMMAND ================= */
 
   if(
-    text.toLowerCase().startsWith("cari internet ")
+    text.toLowerCase().startsWith("cari ")
   ){
 
-    const query =
-    text.replace(/^cari internet\s+/i,"");
+    const q =
+    text.replace(/^cari\s+/i,"");
 
-    const result =
-    await duckSearch(query);
+    const hasil =
+    await duckDuckGoSearch(q);
 
-    return "🌐 Internet:\n\n" + result;
+    return "🦆 DuckDuckGo:\n\n" + hasil;
   }
 
-  if(intent==="greeting"){
-
-    if(
-      text.toLowerCase() ===
-      "assalamualaikum"
-    ){
-
-      return "Waalaikumsalam 🤍 Semoga harimu penuh keberkahan.";
-    }
-
-    return "Halo 👋 Ada yang ingin kamu bahas?";
-  }
-
-  if(intent==="emotion"){
-
-    return "Aku bisa merasakan itu berat 😔 Kalau mau cerita, aku siap mendengarkan.";
-  }
-
-  /* ================= GEMINI AI ================= */
-
-  let finalAnswer =
+  const ai =
   await askGemini(text);
 
-  /* ================= FALLBACK ================= */
-
-  if(
-    !finalAnswer ||
-    finalAnswer.includes("Error")
-  ){
-
-    const online =
-    await searchInternet(text);
-
-    finalAnswer = online;
-  }
-
-  if(!finalAnswer){
-
-    finalAnswer =
-    searchKnowledge(text);
-  }
-
-  if(
-    !finalAnswer &&
-    memoryContext.lastTopic
-  ){
-
-    finalAnswer =
-    "Melanjutkan topik tentang " +
-    memoryContext.lastTopic +
-    ", hal ini berkaitan dengan perkembangan sosial dan teknologi.";
-  }
-
-  if(!finalAnswer){
-
-    finalAnswer =
-    "Topik ini dapat dijelaskan dari berbagai sudut pandang tergantung konteks dan tujuan pembahasannya.";
-  }
-
-  if(intent==="how"){
-
-    finalAnswer =
-    "Langkah-langkah:\n" +
-    "1. Pahami dasar konsep.\n" +
-    "2. Tentukan tujuan.\n" +
-    "3. Susun strategi.\n" +
-    "4. Evaluasi hasil.\n\n" +
-    finalAnswer;
-  }
-
-  if(intent==="why"){
-
-    finalAnswer =
-    "Hal tersebut biasanya dipengaruhi faktor internal dan eksternal.\n\n" +
-    finalAnswer;
-  }
-
-  return "🧠 AI Response:\n\n" + finalAnswer;
+  return "🤖 Gemini AI:\n\n" + ai;
 }
 
 /* ================= SEND ================= */
@@ -727,7 +570,7 @@ window.onload = ()=>{
   }else{
 
     tambahPesan(
-      "Halo 👋 Aku GeminiTok AI Ultra.\nTanya apa saja dan aku akan menjawab.",
+      "Halo 👋 Aku GeminiTok AI Ultra.\n\nKetik:\n- wiki Indonesia\n- cari berita AI\n- pertanyaan biasa untuk Gemini AI",
       "bot"
     );
   }
@@ -737,3 +580,4 @@ window.onload = ()=>{
 
 </body>
 </html>
+```
